@@ -2,6 +2,8 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Lab faster load  v3.5</title>
   <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',segoe ui}body{background:#e1f5fe}.X{margin:auto;background:#fff;max-width:58vw;padding:1vh 1vw;height:96vh;box-shadow:0 .3vw .3vw #0003}
@@ -17,66 +19,13 @@
   <div class="X">
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium, sapiente dolores odio voluptate facere impedit, ratione molestias nostrum, nisi at cupiditate quidem quas. Minus doloremque id distinctio doloribus! Labore, ea!
 </div>  
-<script id="rendered-js" >
-function mijQuery() {
-// Verifica si jQuery ya está disponible en el entorno.
-if (window.jQuery && window.$) {
-// Si no se ha ejecutado antes, marca como hecho y aplica el callback.
-if (!window.done) {
-    window.done = true;
-    $(function () {
-        // JESUS ES MI GUIA [START]
-        $('body').addClass('good');
-        // JESUS ES MI GUIA [END]
-    });
-}
-} else {
-// Intenta nuevamente después de 50 ms si jQuery aún no está cargado.
-setTimeout(mijQuery, 50);
-}
-}
+<script >
+function mijQuery(){(window.jQuery&&window.$)&&!window.d&&(window.d=1,$(function(){ 
+    // JESUS ES MI GUIA [START]
+    $('body').addClass('good'); 
+    // JESUS ES MI GUIA [END]
+}))||setTimeout(mijQuery,50)}let l=0;q=!localStorage.getItem('c');q&&(['click','mousemove'].map(e=>addEventListener(e,Q)),setTimeout(Q,5800))||Q();function Q(){l||(l=1,q&&['click','mousemove'].map(e=>removeEventListener(e,Q)),((s=document.createElement('script')).src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js',s.onload=()=>{localStorage.setItem('c',1),mijQuery()},document.head.appendChild(s)))}
 
-// Inicializa las variables de estado.
-let lQv = false;
-const Qpvez = !localStorage.getItem('completado');
-
-if (Qpvez) {
-// Si es la primera vez, escucha eventos de clic y movimiento.
-['click', 'mousemove'].forEach(event =>
-addEventListener(event, ldjQuery)
-);
-
-// También establece un tiempo límite de 5800 ms para cargar jQuery.
-setTimeout(ldjQuery, 5800);
-} else {
-// Si no es la primera vez, carga directamente jQuery.
-ldjQuery();
-}
-
-function ldjQuery() {
-if (!lQv) {
-lQv = true;
-
-if (Qpvez) {
-    // Si es la primera vez, elimina los event listeners.
-    removeEventListener('click', ldjQuery);
-    removeEventListener('mousemove', ldjQuery);
-}
-
-// Crea un elemento de script para cargar jQuery dinámicamente.
-const lQs = document.createElement("script");
-lQs.src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js";
-
-// Una vez cargado, guarda el estado en localStorage y ejecuta la función principal.
-lQs.onload = () => {
-    localStorage.setItem('completado', 'sip');
-    mijQuery();
-};
-
-// Agrega el script al `<head>` del documento.
-document.head.appendChild(lQs);
-}
-}
 </script>  
 </body>
 </html>
