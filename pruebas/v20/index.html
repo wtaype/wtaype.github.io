@@ -3,28 +3,269 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>Lab faster load  v3.5</title>
-  <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',segoe ui}body{background:#e1f5fe}.X{margin:auto;background:#fff;max-width:58vw;padding:1vh 1vw;height:96vh;box-shadow:0 .3vw .3vw #0003}
-.good{
-  background:skyblue;
-}
-.sun{
-  background:yellow;
-}
-</style> 
+  <style id='page-skin-1' type='text/css'><!--
+    :root{--f:#fff;--0:#000;--P:'Poppins', segoe ui;--Q:'Quicksand', segoe ui;--R:'Rubik', segoe ui;--bxsp:0 0.07vw 0.11vw 0 #c4c5c6, 0 0.06vw 0.16vw 0.06vw #e1e2e2;--cog:#e9ecef;--cg1:#868e96;--bxs1:0 .2vw 1vw #0000001a;--fz_x:0.78vw;--fz_xs:0.57vw;--fz_sm:0.7vw;--fz_md:0.8vw;--fz_lg:1vw;--fz_xl:1.3vw;--fz_ll:1.4vw}:root[data-theme="Cielo"]{--bg:#d6f4ff;--co1:#12a3b5;--co2:#18c5c5}:root[data-theme="Dulce"]{--bg:#fef1f1;--co1:#ff808a;--co2:#ff99a1}:root[data-theme="Paz"]{--bg:#e0ffe0;--co1:#0ccf6a;--co2:#1cf284}.thms{top:35vh;position:fixed}.thms .thm{width:2vw;height:2.3vw;margin-left:-.5vw;cursor:pointer}.thms .mtha{width:2.5vw;transition:.4s ease-in-out;border-radius:.2vw}.thms .th1{background:#0EBEFF}.thms .th2{background:#ff5c69}.thms .th3{background:#29c72e}*{margin:0;padding:0;box-sizing:border-box;font-family:var(--P);font-size:var(--fz_x)}body{background:var(--bg)}.hd{background:linear-gradient(to bottom,var(--co1),var(--co2));height:57vh;border-bottom:1vh solid var(--co1)}::-webkit-scrollbar{display:none}.txc,.phr{text-align:center}.dpf{display:flex}.dpc,.phr,.control-btn{display:flex;justify-content:center;align-items:center}.dpw{display:flex;justify-content:space-between;align-items:center}.dpgv{display:grid;grid-template-columns: 2vh 10vh;justify-content:center;justify-items:center;gap:2vh 0}.dpv{display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center}.dpvc{display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center}.dpg{display:grid}.mwb{max-width:87vw;margin:auto;width:100%}img{width:auto;height:auto;max-width:100%;max-height:88%}a{text-decoration:none;color:var(--co1)}nav a{color:var(--f)}li{list-style:none}button,input,textarea{border:none;outline:none}nav{height:3.8vh;font-family:var(--Q);font-weight:600;font-size:.78vw;letter-spacing:.018vw}.mpg{display:inline-flex;padding:.9vh .57vw}.mpg:hover{font-weight:800;transition:.38s ease-in-out}.mlp{display:grid;grid-template-columns:40% auto;height:96%;align-items:center;justify-content:center;color:var(--f);gap:1vw}.lpx img{box-shadow:.022vw .126vw .1vw rgb(0 0 0 / 50%);border-radius:.25vw}.sph{font-size:var(--fz_xs)}.tph{text-shadow:.052vw .156vw .104vw #77797b;margin-bottom:-1.2vh;font-size:var(--fz_ll)}.sph,.mph{font-weight:600;line-height:1.7;padding-block:.5vh;text-shadow:.022vw .126vw .1vw #77797b}.phrs{padding-block:2vh;width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:1vh 1vw}.phr{height:18.5vh;border-radius:.25vw;background:var(--f);box-shadow:var(--bxsp);line-height:1.8}.ani{opacity:0;transform:translateY(4vh)}.anip{opacity:1;transform:translateY(0)}.ph.ani{transition-duration:1.2s}.ph0.ani{transition-duration:1.22s}.ph1.ani{transition-duration:.8s}.ph2.ani{transition-duration:1s}.ph3.ani{transition-duration:1.2s}.ph4.ani{transition-duration:1.4s}.ph5.ani{transition-duration:1.5s}.ph6.ani{transition-duration:1.6s}.ph7.ani{transition-duration:1.7s}.ph8.ani{transition-duration:1.8s}.mp3{background:var(--bgim),linear-gradient(to bottom,var(--co2),var(--co1));width:100%;height:100vh}.go3{display:grid;grid-template-columns:1fr 23vw;gap:1vw;height:calc(100vh - 2vh);padding-block:2.3vh}.player-container{background:var(--f);border-radius:.3vw;box-shadow:var(--bxs1);overflow:hidden;display:flex;flex-direction:column}.visualizer{flex:1;background:var(--bgim),linear-gradient(to bottom,var(--co1),var(--co2));position:relative}.wave{display:flex;align-items:center;justify-content:center;gap:2px;height:100%;padding:20px}.wave-bar{width:.5vw;height:7vh;background:var(--f);border-radius:.3vw;animation:wave 3s ease-in-out infinite;margin:.3vw}@keyframes wave{50%{height:60%}}.wave-bar:nth-child(2n){animation-delay:.2s}.wave-bar:nth-child(3n){animation-delay:.4s}.wave-bar:nth-child(4n){animation-delay:.6s}.wave-bar:nth-child(5n){animation-delay:.8s}.track-info{padding:2vh}.track-info h2{font-weight:500;font-size:var(--fz_xl)}.progress-container{padding-inline:1.1vw 2vw}.progress-bar{height:.9vh;background:var(--cog);border-radius:.3vw;cursor:pointer}.progress-bar:hover,.volume-bar:hover{height:1.1vh;transition:.5s ease-in-out}.progress{height:100%;background:var(--co1);border-radius:.3vw;width:0}.time-info{padding:.5vh 0;color:var(--cg1);font-size:var(--fz_md)}.controls{gap:1vw;padding-block:1.5vh 5vh}.control-btn{height:60%;border-radius:.3vw;background:var(--co2)}.play-btn{height:100%;border-radius:50%}.playlist-container{background:var(--f);border-radius:.3vw;box-shadow:var(--bxs1);overflow:hidden;display:flex;flex-direction:column}.playlist-header{padding:1vh 1.2vw;border-bottom:.12vw solid var(--cog);font-weight:600}.playlist{overflow-y:auto;flex:1}.playlist-item{padding:1.2vh 1.2vw;display:flex;align-items:center;cursor:pointer;transition:.2s;border-bottom:.1vw solid var(--cog)}.playlist-item:hover{background:var(--bg);color:var(--co1);font-weight:600}.playlist-item.active{background:var(--bg);color:var(--co1);font-weight:700}.playlist-item .number{width:1.9vw;font-size:var(--fz_sm)}.playlist-item .title{flex:1;font-size:var(--fz_x);letter-spacing:.02vw}#muteBtn svg{width:2.35vw}.volume-bar{width:7vw;height:1vh;background:var(--co2);border-radius:.3vw;position:relative;cursor:pointer;margin-left:.5vw}.volume-level{height:100%;background:var(--co1);border-radius:.3vw}#searchInput{padding:.7vh .5vw}.ipy svg{height:100%}.ipy rect{fill:var(--co2)}.ipy rect:nth-child(2),.ipy rect:nth-child(3){fill:var(--f);width:.18vw;height:.63vw}.ipy polygon{fill:var(--f)}.ipy path{fill:none;stroke:var(--f)}.ipy .play-btn svg{width:4vw}.ipy button:hover,.pya{transform:scale(1.18);transition:.5s ease-in-out;cursor:pointer;background:var(--co1)}#playBtn svg:hover rect:nth-child(2),#playBtn svg:hover rect:nth-child(3){fill:var(--f)}.visualizer:hover{cursor:pointer;transform:scale(1.02);transition:.4s ease-in-out}.awb{width:47%;line-height:1.9;text-align:justify;padding:5vh 1vw}.foo .ftx{padding:1vh .2vw 1.5vh .2vw;font-size:var(--fz_xs)}.foo svg{width:.5vw;fill:var(--co1)}.awbt{font-size:var(--fz_lg)}.awbc p{padding:.4vh 0}.lpx{height:100%} @media (max-width:770px){:root{--fz_x:1.5vw;--fz_xs:1.2vw;--fz_sm:1.4vw;--fz_md:1.6vw;--fz_lg:1.8vw;--fz_xl:2vw;--fz_ll:2.2vw}.mlp{grid-template-columns:52vw auto}.mwb,.awb{max-width:97vw;width:100%}.phrs{grid-template-columns:repeat(3,1fr)}.ph7{grid-column:span 2}.tph{margin-bottom:-.7vw}}@media (max-width:570px){:root{--fz_x:2.5vw;--fz_xs:2.2vw;--fz_sm:2.4vw;--fz_md:2.6vw;--fz_lg:2.8vw;--fz_xl:3vw;--fz_ll:3.2vw}.mwb,.awb{max-width:97.8%}.hd{height:auto}.mlp{grid-template-columns:auto;padding:2vw 1vw}.phrs,.go3{grid-template-columns:repeat(1,1fr)}.ph7{grid-column:span 1}.go3{padding-block:1.5vh}.player-container{min-height:40vh}.playlist-container{min-height:85vw}.controls{gap:0 7vw;padding-block:1vh 5vw}.control-btn{transform:scale(2.4)}#muteBtn{transform:scale(2.6)}.volume-bar{margin-left:4vw;width:12vw}.playlist-item,.playlist-header{padding:1.4vw 3vw}.playlist-item .number{width:5vw}.foo .ftx{padding:1vw}.thms .thm{height:6vw;width:3.4vw}.thms .mtha{width:4vw}}@media (max-width:470px){:root{--fz_x:3.2vw;--fz_xs:2.8vw;--fz_sm:3vw;--fz_md:3.4vw;--fz_lg:3.6vw;--fz_xl:3.8vw;--fz_ll:4vw}}
+    --></style>
 </head>
 <body>
-  <div class="X">
-  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium, sapiente dolores odio voluptate facere impedit, ratione molestias nostrum, nisi at cupiditate quidem quas. Minus doloremque id distinctio doloribus! Labore, ea!
-</div>  
-<img src="" alt="" >
-<img src="https://i.postimg.cc/gJb8QnJb/Wilder-Taype-Foto1.webp" alt="Descripción de la imagen" loading="lazy">
+<!--DIOS ES MI SALVADOR[START V21]-->
+<header class='hd'>
+    <nav class='mwb dpw'>
+    <a class='nvl' href='#logo'>Wiihope</a>
+    <div class='nvr'>
+    <a class='mpg pg1' href='#oracion'>Oración</a>
+    <a class='mpg pg2' href='#frases'>Frases</a>
+    <a class='mpg pg3' href='#biblia'>Biblia</a>
+    <a class='mpg pg5' href='#acerca'>Acerca</a>
+    </div>
+    </nav>
+    <div class='mlp mwb txc' id='oracion'>
+    <div class='lpx ani ph dpc'></div>
+    <div class='lpy ani ph0'>
+    <h1 class='tph'>Padre Nuestro</h1>
+    <span class='sph'>(Teléfono de Dios)</span>
+    <div class='mph'>
+    <p>Padre nuestro, que estás en el cielo,</p>
+    <p>santificado sea tu Nombre;</p>
+    <p>venga a nosotros tu reino;</p>
+    <p>hágase tu voluntad</p>
+    <p>en la tierra como en el cielo.</p>
+    <p>Danos hoy nuestro pan de cada día;</p>
+    <p>perdona nuestras ofensas,</p>
+    <p>como también nosotros perdonamos</p>
+    <p>a los que nos ofenden;</p>
+    <p>no nos dejes caer en la tentación,</p>
+    <p>y líbranos del mal.</p>
+    <p>Amén.</p>
+    </div>
+    </div>
+    </div>
+    </header>
+    <div class='phrs mwb dpw frases' id='frases'>
+    <div class='phr ph1 ani'>
+    <blockquote class='sld'>
+    <p class='bqt'>"Jehová es mi pastor; nada me faltará"</p>
+    <cite class='bqa'>- Salmo 23:1</cite>
+    </blockquote>
+    </div>
+    <div class='phr ph2 ani'>
+    <blockquote class='sld'>
+    <p class='bqt'> "La sangre de Cristo tiene poder para salvar"</p>
+    <cite class='bqa'>- Hebreos 9:14</cite>
+    </blockquote>
+    </div>
+    <div class='phr ph3 ani'>
+    <blockquote class='sld'>
+    <p class='bqt'>"Todo lo puedo en Cristo que me fortalece"</p>
+    <cite class='bqa'>- Filipenses 4:13</cite>
+    </blockquote>
+    </div>
+    <div class='phr ph4 ani'>
+    <blockquote class='sld'>
+    <p class='bqt'> "Por la sangre de Jesús soy más que vencedor"</p>
+    <cite class='bqa'>- Apocalipsis 12:11</cite>
+    </blockquote>
+    </div>
+    <div class='phr ph5 ani'>
+    <blockquote class='sld'>
+    <p class='bqt'> "No temas, porque yo estoy contigo"</p>
+    <cite class='bqa'>- Isaías 41:10</cite>
+    </blockquote>
+    </div>
+    <div class='phr ph6 ani'>
+    <blockquote class='sld'>
+    <p class='bqt'> "El que habita al abrigo del Altísimo morará bajo la sombra del Omnipotente"</p>
+    <cite class='bqa'>- Salmos 91:1</cite>
+    </blockquote>
+    </div>
+    <div class='phr ph7 ani'>
+    <blockquote class='sld'>
+    <p class='bqt'>"El Señor es mi pastor, nada me falta; en verdes pastos me hace descansar. Junto a tranquilas aguas me conduce; me infunde nuevas fuerzas. Me guía por sendas de justicia por amor a su nombre"</p>
+    <cite class='bqa'>- Salmo 23:1-3</cite>
+    </blockquote>
+    </div>
+    <div class='phr ph8 ani'>
+    <blockquote class='sld'>
+    <p class='bqt'> "El Señor es mi luz y mi salvación."</p>
+    <cite class='bqa'>- Salmos 27:1</cite>
+    </blockquote>
+    </div>
+    </div>
+    <div class='mp3 audio' id='biblia'>
+    <div class='mwb go3'>
+    <div class='player-container'>
+    <div class='visualizer'></div>
+    <div class='track-info'><h2 id='currentTrack'>Selecciona un capítulo</h2></div>
+    <div class='progress-container'>
+    <div class='progress-bar'><div class='progress'></div></div>
+    <div class='time-info dpw'><span id='currentTime'>0:00</span><span id='duration'>0:00</span></div>
+    </div>
+    <div class='controls dpc ipy'>
+    <button aria-label='control prev' class='control-btn' id='prevBtn'><svg viewBox='0 0 24 24'><rect></rect><polygon points='10,6 10,18 2,12'></polygon><polygon points='18,6 18,18 10,12'></polygon></svg></button>
+    <button aria-label='control play' class='control-btn play-btn' id='playBtn'><svg viewBox='0 0 24 24'><rect></rect><polygon points='8,6 20,12 8,18'></polygon></svg></button>
+    <button aria-label='control next' class='control-btn' id='nextBtn'><svg viewBox='0 0 24 24'><rect></rect><polygon points='14,6 14,18 22,12'></polygon><polygon points='6,6 6,18 14,12'></polygon></svg></button>
+    <button aria-label='control repetir' class='control-btn' id='repeatBtn'><svg viewBox='0 0 24 24'><rect></rect><path d='M8 10h8l-2-2m2 6h-8l2 2' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'></path></svg></button>
+    <div class='volume-container dpc'>
+    <button aria-label='control mute' class='control-btn' id='muteBtn'><svg viewBox='0 0 24 24'><rect></rect><polygon points='6,8 10,8 14,4 14,20 10,16 6,16'></polygon><path d='M15 9a2 3 0 0 1 0 6' stroke-width='2'></path><path d='M18 7.7a2 3 0 0 1 0 9' stroke-width='2'></path></svg></button>
+    <div class='volume-bar'>
+    <div class='volume-level'></div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class='playlist-container'>
+    <div class='playlist-header'>
+    <span>Biblia Audio </span>
+    <input id='searchInput' placeholder='Buscar...' type='text'/>
+    </div>
+    <div class='playlist' id='playlist'></div>
+    </div>
+    </div>
+    </div>
+    <div class='about awb mwb dpvc' id='acerca'>
+    <h3 class='awbt'>Acerca de nosotros</h3>
+    <div class='awbc'>
+    <p>Wiihope es una aplicación diseñada para compartir y aprender más sobre la palabra de Dios. Su propósito es fortalecer la fe y ser una herramienta de protección, prosperidad y bendición.</p>
+    <p>En esta app encontrarás el Padre Nuestro, o como mi madre solía llamarlo, "el teléfono de Dios". Ella me decía que esta oración es la clave para comunicarnos con Él, ya que fue la que Jesús nos enseñó para mostrar cómo orar correctamente.</p>
+    <p>Además, hemos reunido las mejores frases de protección, salvación y seguridad en Dios para inspirarte en tu día a día. También podrás disfrutar de audios dramatizados del Nuevo Testamento en quechua, ideales para entender y transmitir el mensaje de una manera más cercana y enriquecedora. Agradecemos a <a href='https://www.faithcomesbyhearing.com/audio-bible-resources/mp3-downloads' target='_blank'>Faith Comes By Hearing</a>, la creadora de este contenido maravilloso, por permitirnos incluirlo en Wiihope. Esta app fue desarrollada por mí, Wilder Taype, con el objetivo de digitalizar estos recursos y hacerlos accesibles para más personas.</p>
+    <p>Si llegaste hasta aquí, &#161;Dios te bendiga! Y si no, también, porque su amor y cuidado están contigo siempre. &#161;Recuerda avanzar con fe y confianza!</p>
+    <p>Con amor.</p>
+    <p><strong>Wilder Taype</strong><br/>Creador de Wiihope</p>
+    </div>
+    </div>
+    <footer class='foo txc dpc'>
+    <span class='ftx'>Creado con <svg class='svi foh' title='heart' viewBox='0 0 512 512' width='100'>
+    <path d='M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z'></path>
+    </svg> by @wilder.taype 2024 -</span><span class='ftx myr'>2024</span><span class='prt ftx'>| Política de privacidad  |</span><span class='ftx'>Actualizado: </span><span class='ftx myu'>12/9/2024, 2:49:41 PM</span>
+    </footer>
+    <div class='pssab'>
+    <div class='thms'>
+    <div class='thm th1 mtha' data-mth='Cielo#12a3b4'></div>
+    <div class='thm th2' data-mth='Dulce#ff818c'></div>
+    <div class='thm th3' data-mth='Paz#0dd06a'></div>
+    </div>
+    </div>
+    <!--DIOS ES MI SALVADOR[END V21]-->
+<script>
+function mijQuery(){window.jQuery&&window.$&&!window.done?(window.done=true,$(function(){ 
+//DIOS ES MI SALVADOR[START] 
+// FUNCIONES GENIALES
+$('.myr').text(new Date().getFullYear());
+$('.myu').text(new Date().toLocaleString())
+function adrm(a,b){$(a).addClass(b).siblings().removeClass(b)}
+function atim(x,y,z){$(x).text(y).addClass('btha').delay(1800).queue(q=>$(x).text(z).removeClass('btha').dequeue())}
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+// MI AUDIO FUNCION
+$(function(){
+const books={
+    "San Mateo":28,"San Marcos":16,"San Lucas":24,"San Juan":21,"Hechos":28,"Romanos":16,
+    "1 Corintios":16,"2 Corintios":13,"Galatas":6,"Efesios":6,"Filipenses":4,"Colosenses":4,
+    "1 Tesalonicenses":5,"2 Tesalonicenses":3,"1 Timoteo":6,"2 Timoteo":4,"Tito":3,"Filemon":1,
+    "Hebreos":13,"Santiago":5,"1 San Pedro":5,"2 San Pedro":3,"1 San Juan":5,"2 San Juan":1,
+    "3 San Juan":1,"Judas":1,"Apocalipsis":22
+  };
+  const baseUrl='https://raw.githubusercontent.com/geluksee/hope/main/';
+  const audio=new Audio();
+  let currentTrackIndex=0,isPlaying=false,repeat=false,tracks=[];
+  const playlist=$("#playlist");
+  let trackCounter=0; 
+  for(const [book,chapters] of Object.entries(books)){
+    for(let c=1;c<=chapters;c++){
+      trackCounter++;
+      const urlBookName=book.replace(/ /g,'_');
+      const chapterPadded=String(c).padStart(2,'0');
+      const trackUrl=`${baseUrl}${trackCounter}_${urlBookName}_${chapterPadded}.mp3`;
+      tracks.push({book,chapter:c,title:`${book} - Capitulo ${c}`,index:trackCounter-1,url:trackUrl});
+      playlist.append(`<div class="playlist-item" data-index="${trackCounter-1}"><span class="number">${trackCounter}</span><span class="title">${book} - Capitulo ${c}</span></div>`);
+    }
+  }
+  const formatTime=s=>isNaN(s)?"0:00":Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,'0');
+  function loadTrack(i){if(i<0||i>=tracks.length)return;currentTrackIndex=i;audio.src=tracks[i].url;$('#currentTrack').text(tracks[i].title);$('.playlist-item').removeClass('active');$(`.playlist-item[data-index="${i}"]`).addClass('active');}
+  function playTrack(){audio.play().then(()=>{isPlaying=true;$('#playBtn').html('<svg viewBox="0 0 24 24"><rect/><rect x="8" y="6" width="3" height="12"/><rect x="13" y="6" width="3" height="12"/></svg>');}).catch(e=>console.log(e));}
+  function pauseTrack(){audio.pause();isPlaying=false;$('#playBtn').html('<svg viewBox="0 0 24 24"><rect/><polygon points="8,6 20,12 8,18"/></svg>');}
+  function prevTrack(){if(currentTrackIndex>0){loadTrack(currentTrackIndex-1);playTrack();}}
+  function nextTrack(){if(currentTrackIndex<tracks.length-1){loadTrack(currentTrackIndex+1);playTrack();}else if(repeat){loadTrack(0);playTrack();}}
+  // Actualizar tiempo
+  $(audio).on('timeupdate',()=>{const c=audio.currentTime,d=audio.duration;$('#currentTime').text(formatTime(c));$('#duration').text(formatTime(d));$('.progress').css('width',((c/d)*100)+'%');});
+  $(audio).on('ended',()=>{repeat?(loadTrack(currentTrackIndex),playTrack()):nextTrack();});
+  $(audio).on('loadedmetadata',()=>{$('#duration').text(formatTime(audio.duration));});
+  // Controles básicos
+  $('#playBtn').click(()=>{if(!audio.src)loadTrack(0);isPlaying?pauseTrack():playTrack();});
+  $('#prevBtn').click(prevTrack);
+  $('#nextBtn').click(nextTrack);
+  $('#repeatBtn').click(function(){repeat=!repeat;$(this).toggleClass('pya');});
+  // Progreso al hacer click
+  $('.progress-bar').click(e=>{const w=$(e.currentTarget).width();audio.currentTime=(e.offsetX/w)*audio.duration;});
+  // Control de volumen con barra
+  let isMuted=false;
+  function updateVolumeBar(vol){
+    $('.volume-level').css('width',(vol*100)+'%');
+  }
+  audio.volume=1;
+  updateVolumeBar(audio.volume);
+  $('.volume-bar').click(e=>{
+    const w=$(e.currentTarget).width();
+    const clickX=e.offsetX;
+    const vol=clickX/w;
+    audio.volume=vol;
+    if(isMuted&&vol>0){
+      isMuted=false;$('#muteBtn').html('<svg viewBox="0 0 24 24"><rect/><polygon points="6,8 10,8 14,4 14,20 10,16 6,16"/><path d="M15 9a2 3 0 0 1 0 6" stroke-width="2"/><path d="M18 7.7a2 3 0 0 1 0 9" stroke-width="2"/></svg>');
+      audio.muted=false;
+    }
+    updateVolumeBar(vol);
+  });
+  $('#muteBtn').click(()=>{
+    isMuted=!isMuted;
+    audio.muted=isMuted;
+    $('#muteBtn').html(isMuted?'<svg viewBox="0 0 24 24"><rect/><polygon points="6,8 10,8 14,4 14,20 10,16 6,16"/></svg>':'<svg viewBox="0 0 24 24"><rect/><polygon points="6,8 10,8 14,4 14,20 10,16 6,16"/><path d="M15 9a2 3 0 0 1 0 6" stroke-width="2"/><path d="M18 7.7a2 3 0 0 1 0 9" stroke-width="2"/></svg>');
+    updateVolumeBar(isMuted?0:audio.volume);
+  });
+  // Selección de track en la lista
+  $(document).on('click','.playlist-item',function(){
+    loadTrack(parseInt($(this).data('index')));
+    playTrack();
+    saveCurrentTrack();
+  });
+  // Filtro de búsqueda
+  $('#searchInput').on('input',function(){
+    const query=$(this).val().toLowerCase();
+    $('.playlist-item').each(function(){
+      const text=$(this).text().toLowerCase();
+      $(this).toggle(text.includes(query));
+    });
+  });
+  // Guardando en LocalStorage 
+  function saveCurrentTrack(){
+    localStorage.setItem('currentTrackIndex', currentTrackIndex);
+  }
+  $(audio).on('ended',saveCurrentTrack);
+  $('#nextBtn,#prevBtn,#repeatBtn,#playBtn').click(saveCurrentTrack);
+  // Obteniendo en LocalStorage 
+  const savedTrack=localStorage.getItem('currentTrackIndex');
+  if(savedTrack!==null){
+    const idx=parseInt(savedTrack);
+    if(!isNaN(idx)&&idx>=0&&idx<tracks.length){
+      loadTrack(idx);
+    }
+  }
+// HACIENDO PAUSE Y WAVE PARA ANIMACIONES 
+$('.visualizer').click(()=>isPlaying?pauseTrack():playTrack()).html(`<div class="wave">${'<div class="wave-bar"></div>'.repeat(20)}</div>`)
+  
+});
+//FUNCIÓN PARA SUBIR IMAGENES
+const mstyles = '@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");:root{--bgim:url("https://d35aaqx5ub95lt.cloudfront.net/images/star-pattern.svg")}.hd{background:var(--bgim),linear-gradient(to bottom,var(--co1),var(--co2))}';        
+$('head').append(`<style>${mstyles}</style> `);
+$('.lpx').html('<img width="600" height="400" alt="Dios es bueno" src="https://i.postimg.cc/W1LZ2Try/Dios-Es-Bueno.webp"/>');
 
-<script src="https://www.googletagmanager.com/gtag/js?id=G-GH0352JLML" async></script> 
+//DIOS ES MI SALVADOR[END] 
+})):setTimeout(mijQuery,50)}let lQv=false,Qpvez=!localStorage.getItem('completado');Qpvez?(["click","mousemove"].forEach(e=>addEventListener(e,ldjQuery)),setTimeout(ldjQuery,5800)):ldjQuery();function ldjQuery(){if(!lQv){lQv=true;Qpvez&&["click","mousemove"].forEach(e=>removeEventListener(e,ldjQuery));let s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js";s.onload=()=>{localStorage.setItem("completado","sip");mijQuery()};document.head.appendChild(s)}}
+// MIS TEMAS PAGE
+const mtheme='Paz#0dd06a',thf=document.querySelector('meta[name="theme-color"]')||Object.assign(document.head.appendChild(document.createElement('meta')),{name:'theme-color'}),sv=v=>{const[t,c]=v.split('#');document.documentElement.dataset.theme=t,thf.content='#'+c,localStorage.mtheme=v,document.querySelector('.mtha')?.classList.remove('mtha'),document.querySelector(`[data-mth="${v}"]`)?.classList.add('mtha')};sv(localStorage.mtheme||mtheme);document.querySelectorAll('.thm').forEach(e=>e.onclick=()=>sv(e.dataset.mth));
+// ANIMACIONES GENIALES
+addEventListener('scroll',A=>(A=scrollY+innerHeight,document.querySelectorAll('.ani').forEach((e,i)=>A>e.offsetTop&&e.classList.add('anip')&&(e.style.transitionDelay=i*0.2+'s'))));onload=()=>dispatchEvent(new Event('scroll'));
 
+</script>
+ 
 </body>
 </html>
