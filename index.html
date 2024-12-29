@@ -210,8 +210,7 @@ const mstyles = '@import url("https://fonts.googleapis.com/css2?family=DM+Sans:i
 $('head').append(`<style>${mstyles}</style>`);
 
 //DIOS ES MI SALVADOR[END] 
-})):setTimeout(mijQuery,50)}let lQt=7000,lQv=0,lQz=!localStorage.getItem('wquery');lQz?(["click","mousemove"].forEach(e=>addEventListener(e,ldjQuery)),setTimeout(ldjQuery,lQt)):ldjQuery();function ldjQuery(){if(!lQv){lQv=1;lQz&&["click","mousemove"].forEach(e=>removeEventListener(e,ldjQuery));let s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js";s.onload=()=>{localStorage.setItem("wquery","wi");mijQuery()};document.head.appendChild(s)}}
-</script> 
+})):setTimeout(mijQuery,50)}let lQt=7000,lQv=0,lQz=!localStorage.getItem('wquery');lQz?(["scroll","mousemove"].forEach(e=>addEventListener(e,ldjQuery)),setTimeout(ldjQuery,lQt)):ldjQuery();function ldjQuery(){if(!lQv){lQv=1;lQz&&["scroll","mousemove"].forEach(e=>removeEventListener(e,ldjQuery));let s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js";s.onload=()=>{localStorage.setItem("wquery","wi");mijQuery()};document.head.appendChild(s)}}</script> 
 <script>
 //THEMES WEB
 const mtheme=document.querySelector('.thm.mtha').dataset.mth,thf=document.querySelector('meta[name="theme-color"]')||Object.assign(document.head.appendChild(document.createElement('meta')),{name:'theme-color'}),sv=v=>{const[t,c]=v.split('#');document.documentElement.dataset.theme=t,thf.content='#'+c,localStorage.mtheme=v,document.querySelector('.mtha')?.classList.remove('mtha'),document.querySelector(`[data-mth="${v}"]`)?.classList.add('mtha')};sv(localStorage.mtheme||mtheme);document.querySelectorAll('.thm').forEach(e=>e.onclick=()=>sv(e.dataset.mth));
