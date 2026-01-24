@@ -360,25 +360,6 @@ $('head').append(`${mstyles} ${fawicons} ${dvicons}`);
 //THEMES WEB[START]
 const sth=e=>{const[t,c]=e.dataset.tema.split('|');document.documentElement.dataset.theme=t,(document.querySelector('meta[name="theme-color"]')||Object.assign(document.head.appendChild(document.createElement('meta')),{name:'theme-color'})).content=c,localStorage.mtheme=e.dataset.tema,document.querySelector('.mtha')?.classList.remove('mtha'),e.classList.add('mtha')};sth(document.querySelector(`[data-tema="${localStorage.mtheme}"]`)||document.querySelector('.mtha'));document.querySelectorAll('[data-tema]').forEach(e=>e.onclick=()=>sth(e));
 </script>
-<script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Wilder Taype",
-      "jobTitle": "Desarrollador Full Stack",
-      "url": "https://wtaype.github.io/",
-      "image": "https://i.postimg.cc/gJb8QnJb/Wilder-Taype-Foto1.webp",
-      "sameAs": [
-        "https://github.com/wtaype",
-        "https://linkedin.com/in/wildertaype",
-        "https://www.instagram.com/wilder.taype"
-      ],
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Lima",
-        "addressCountry": "Perú"
-      }
-    }
-</script>
+
 </body>
 </html>
