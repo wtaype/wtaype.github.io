@@ -1,0 +1,137 @@
+.miweb {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.mhead {
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--bg1);
+}
+
+.mh1 {
+  font-size: 28px;
+  color: var(--tx);
+  margin: 0;
+  text-align: center;
+}
+
+.mh1 i {
+  color: var(--mco);
+  margin-right: 10px;
+}
+
+.mibody {
+  background: var(--F);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.nota-text {
+  width: 100%;
+  min-height: 400px;
+  padding: 20px;
+  border: 2px solid var(--bg1);
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: var(--ff_P);
+  resize: vertical;
+  background: var(--bg);
+  color: var(--tx);
+  transition: all 0.3s;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.nota-text:focus {
+  outline: none;
+  border-color: var(--mco);
+  box-shadow: 0 0 0 4px var(--bg4);
+}
+
+.nota-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.nota-fecha {
+  font-size: 14px;
+  color: var(--hv);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nota-fecha i {
+  color: var(--mco);
+}
+
+.nota-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #3cd751 0%, #2db534 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(60, 215, 81, 0.3);
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(60, 215, 81, 0.4);
+}
+
+.btn-delete {
+  background: var(--error);
+  color: white;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.btn-delete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* === RESPONSIVE === */
+@media(max-width:768px){
+  .nota-text {
+    min-height: 300px;
+    font-size: 14px;
+  }
+  
+  .nota-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .nota-btns {
+    width: 100%;
+  }
+  
+  .btn {
+    flex: 1;
+  }
+}
