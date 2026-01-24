@@ -14,17 +14,7 @@ export default defineConfig(({ mode }) => ({
           vendor: ['jquery'],
           firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore']
         }
-      },
-      plugins: [{
-        name: 'minify-html',
-        generateBundle(_, b) {
-          for (const f in b) {
-            if (f.endsWith('.html') && b[f].type === 'asset') {
-              b[f].source = b[f].source.replace(/\n\s*/g, '').replace(/>\s+</g, '><').replace(/\s{2,}/g, ' ').replace(/<!--.*?-->/g, '').trim();
-            }
-          }
-        }
-      }]
+      }
     }
   }, 
   publicDir: 'public'
