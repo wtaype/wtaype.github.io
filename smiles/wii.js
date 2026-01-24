@@ -1,7 +1,7 @@
 
 // INFORMACIÓN DEL APP 
 export let app = 'wtaype'
-export let lanzamiento = 2023;
+export let lanzamiento = 2024;
 export let autor = '@wilder.taype';
 export let link = 'https://wtaype.github.io/';
 export let version = 'v8';

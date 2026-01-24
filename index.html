@@ -201,165 +201,240 @@
   </div>
   <!-- JESUS ES MI GUIA [END PAGE] -->
 <script>
-function mijQuery(){window.jQuery&&window.$&&!window.done?(window.done=1,$(function(){ 
-//DIOS ES MI SALVADOR[START V20 3385357715164968503] 
-// FUNCIONES GENIALES 
-$('.wty').text(new Date().getFullYear());
-$('.wtu').text(new Date().toLocaleString())
-function adr(a,b){$(a).addClass(b).siblings().removeClass(b)}
-function atc(x,y){$(x).addClass(y).delay(2800).queue(q=>$(x).removeClass(y).dequeue())}
-function atx(x,y,z){$(x).text(y).addClass('btha').delay(1800).queue(q=>$(x).text(z).removeClass('btha').dequeue())}
-let tmx;function atxs(ts,tx,ty){$(ts).text(tx).addClass('btha');clearTimeout(tmx), tmx=setTimeout(()=>$('.bsv').text(ty).removeClass('btha'),1e3)}
-// ACTUALIZANDO IDIOMA
-$('.mlg').click(()=>$('.idioma').toggleClass('dpn'));
-  
-//MI LOCALSTORAGE
-function savels(key,value,hours){localStorage.setItem(key, JSON.stringify({value:value,expiry:Date.now()+hours*3600000}))};function getls(key){var item=JSON.parse(localStorage.getItem(key));if(!item||Date.now()>item.expiry){localStorage.removeItem(key);return null}return item.value};function removels(key){localStorage.removeItem(key)};
-// ACTUALIZANDO PROYECTOS NUEVOS
-$('.mrprj').on('click',function(){
-const miprjs = [
-{pid: 9, name: "WINOTAS", url: "https://winotas.blogspot.com/", alt: "Winotas App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png",
-description: "Es un excelente programa que permite realizar cambios de palaras de minusculas a mayuscylas y viciversa",
-},
-{pid: 10, name: "IABUENO", url: "https://iabueno.blogspot.com/", alt: "Clauqi App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png",
-description: "Es un excelente programa que permite realizar cambios de palaras de minusculas a mayuscylas y viciversa",
-},
-{pid: 11, name: "CONVERTIR IBASE64", url: "https://ibase64.blogspot.com/", alt: "IBASE64 App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png",
-description: "Es un excelente programa que permite realizar cambios de palaras de minusculas a mayuscylas y viciversa",
-},
-{pid: 12, name: "MIDRAW Painter", url: "https://midraw.blogspot.com/", alt: "Midraw App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png",
-description: "Es un excelente programa que permite realizar cambios de palaras de minusculas a mayuscylas y viciversa",
-},
-{pid: 13, name: "DSCTOSM", url: "https://dsctosm.blogspot.com/", alt: "Dsctosm App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png",
-description: "Es un excelente programa que permite realizar cambios de palaras de minusculas a mayuscylas y viciversa",
-},
-{pid: 14, name: "AWOMBE", url: "https://awombe.blogspot.com/", alt: "Awombe App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png",
-description: "Es un excelente programa que permite realizar cambios de palaras de minusculas a mayuscylas y viciversa",
-},
-{pid: 15, name: "En Proceso", url: "https://clauqi.blogspot.com/", alt: "Clauqi App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png",
-description: "Es un excelente programa que permite realizar cambios de palaras de minusculas a mayuscylas y viciversa",
-},
-{pid: 16, name: "En Proceso", url: "https://clauqi.blogspot.com/", alt: "Clauqi App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png",
-description: "Es un excelente programa que permite realizar cambios de palaras de minusculas a mayuscylas y viciversa",
-}, 
-];
-miprjs.forEach((mprj) => {
-  $('.prjs').append(`
-      <a class="prj animadojs prj${mprj.pid}" href="${mprj.url}" target="_blank">
-          <div class="prim"><img src="${mprj.img}" alt="${mprj.alt}"/></div>
-          <h3 class="prtl">${mprj.name}</h3>
-          <p class="prds">${mprj.description}</p>    
-          <button aria-label='Proyecto ${mprj.name}' class="prb">VAMOS!</button>
-      </a>
-  `);
-});
-$(this).remove();
-});
-// ACTUALIZANDO IMAGENES
-$('[data-img]').each(function(i,e){
-  const src=$(this).data('img'), alt=$(this).data('alt');
-  $(this).html(`<img src="${src}" alt="${alt}"/>`)
-});
-  
-// SKILLS NUEVOS    
-const skills = [
-{skpc:99, skalt:"HTML5", skimg:"html5/html5-original.svg"},
-{skpc:99, skalt:"CSS3", skimg:"css3/css3-original.svg"},
-{skpc:89, skalt:"JavaScript", skimg:"javascript/javascript-original.svg"},
-{skpc:97, skalt:"jQuery", skimg:"jquery/jquery-original.svg"},
-{skpc:90, skalt:"GitHub", skimg:"github/github-original.svg"},
-{skpc:70, skalt:"Git", skimg:"git/git-original.svg"},
-{skpc:90, skalt:"Boostrap", skimg:"bootstrap/bootstrap-original.svg"},
-{skpc:90, skalt:"Tailwindcss", skimg:"tailwindcss/tailwindcss-original.svg"},
-{skpc:93, skalt:"React", skimg:"react/react-original.svg"},
-{skpc:90, skalt:"Angular", skimg:"angular/angular-original.svg"},
-{skpc:78, skalt:"Vuejs", skimg:"vuejs/vuejs-original.svg"},
-{skpc:96, skalt:"Blogger", skimg:"angularmaterial/angularmaterial-original.svg"},
-{skpc:80, skalt:"PHP", skimg:"php/php-original.svg"},
-{skpc:90, skalt:"WordPress", skimg:"wordpress/wordpress-original.svg"},
-{skpc:70, skalt:"MySQL", skimg:"mysql/mysql-original.svg"},
-{skpc:70, skalt:"Python", skimg:"python/python-original.svg"},
-{skpc:75, skalt:"Kotlin", skimg:"kotlin/kotlin-original.svg"},
-{skpc:88, skalt:"AndroidStudio", skimg:"androidstudio/androidstudio-original.svg"},
-{skpc:96, skalt:"VS Code", skimg:"vscode/vscode-original.svg"},
-{skpc:80, skalt:"Flutter", skimg:"flutter/flutter-original.svg"},
-{skpc:60, skalt:"Firebase", skimg:"firebase/firebase-original.svg"},
-{skpc:96, skalt:"Canva", skimg:"canva/canva-original.svg"},
-{skpc:97, skalt:"Photoshop", skimg:"photoshop/photoshop-original.svg"},
-{skpc:95, skalt:"PremierePro", skimg:"premierepro/premierepro-original.svg"},
-];
-skills.forEach((mski) => {
- $('.skis').append(`
-    <div class="ski" data-skn="${mski.skalt}" data-skp="${mski.skpc}">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${mski.skimg}" alt="${mski.skalt}"/> 
-    </div> 
-  `);
-});
-
-// SKILLS ICONOS 
-$('.ski').each(function() {
-  const skporc = $(this).data('skp'), mkname = $(this).data('skn');
-  const skanim = 283 - (283*skporc)/100;
-  $(this).append(`
-    <svg viewBox="0 0 100 100">
-      <circle class="skc1" cx="50" cy="50" r="45"/>
-      <circle class="skc2" cx="50" cy="50" r="45" style="stroke-dashoffset:${skanim}"/>
-      <text class="sktp" x="50" y="45">${skporc}%</text>
-      <text class="sktn" x="50" y="63">${mkname}</text>
-    </svg>`);
-
-  new IntersectionObserver(([e]) => {
-    if(e.isIntersecting && !$(e.target).data('animated')) {
-      $(e.target).data('animated', true);
-      (async () => {
-        const txd = $(e.target).find(".sktp");
-        for(let i = 0; i <= skporc; i++) 
-          await new Promise(mpr => setTimeout(() => (txd.text(`${i}%`), mpr()), 38)); // Cuenta porcentajes cada 38ms
-      })();
-    }
-  }).observe(this);
-});
-
-
-  
-
-  
-  
-  
-  
-// GENERANDO ANIMACION 
-$('#Acerca .animado, #Proyectos .animado, #Skills .animado, #Logros .animado').each(function() {
-  const $grupo = $(this).parent().find('.animado');
-  const index = $grupo.index(this);
-  const translateY = 5 + (index * 1.5);
-  const duration = 0.7 + (index * 0.15);
-  $(this).css({
-    opacity: 0.9,
-    transform: `translateY(${translateY}vh)`,
-    transition: `all ${duration}s ease-in-out`
-  });
-  new IntersectionObserver(([e]) => {
-    if(e.isIntersecting) {
-      $(e.target).css({
-        opacity: 1,
-        transform: 'translateY(0)'
+// CARGA INTELIGENTE DE JQUERY
+function mijQuery(){
+  if(window.jQuery && window.$ && !window.done){
+    window.done = 1;
+    $(function(){ 
+      //DIOS ES MI SALVADOR[START V21 wtaype.github.io] 
+      
+      // FUNCIONES UTILITARIAS
+      $('.wty').text(new Date().getFullYear());
+      $('.wtu').text(new Date().toLocaleString());
+      
+      const adr = (a,b) => $(a).addClass(b).siblings().removeClass(b);
+      const atc = (x,y) => $(x).addClass(y).delay(2800).queue(q => $(x).removeClass(y).dequeue());
+      const atx = (x,y,z) => $(x).text(y).addClass('btha').delay(1800).queue(q => $(x).text(z).removeClass('btha').dequeue());
+      
+      let tmx;
+      const atxs = (ts,tx,ty) => {
+        $(ts).text(tx).addClass('btha');
+        clearTimeout(tmx);
+        tmx = setTimeout(() => $('.bsv').text(ty).removeClass('btha'), 1000);
+      };
+      
+      // MENU IDIOMAS
+      $('.mlg').click(() => $('.idioma').toggleClass('dpn'));
+      
+      // LOCALSTORAGE HELPERS
+      const savels = (key, value, hours) => {
+        localStorage.setItem(key, JSON.stringify({
+          value: value,
+          expiry: Date.now() + hours * 3600000
+        }));
+      };
+      
+      const getls = (key) => {
+        const item = JSON.parse(localStorage.getItem(key));
+        if(!item || Date.now() > item.expiry){
+          localStorage.removeItem(key);
+          return null;
+        }
+        return item.value;
+      };
+      
+      const removels = (key) => localStorage.removeItem(key);
+      
+      // PROYECTOS ADICIONALES
+      $('.mrprj').on('click', function(){
+        const miprjs = [
+          {pid: 9, name: "WINOTAS", url: "https://winotas.blogspot.com/", alt: "Winotas App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png", description: "Aplicación de notas inteligentes con recordatorios y organización eficiente"},
+          {pid: 10, name: "IABUENO", url: "https://iabueno.blogspot.com/", alt: "IABueno App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png", description: "Asistente de IA para mejorar productividad y automatización de tareas"},
+          {pid: 11, name: "IBASE64", url: "https://ibase64.blogspot.com/", alt: "IBase64 App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png", description: "Conversor rápido de imágenes y archivos a formato Base64"},
+          {pid: 12, name: "MIDRAW", url: "https://midraw.blogspot.com/", alt: "Midraw App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png", description: "Herramienta de dibujo digital con múltiples pinceles y capas"},
+          {pid: 13, name: "DSCTOSM", url: "https://dsctosm.blogspot.com/", alt: "Dsctosm App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png", description: "Calculadora de descuentos para comercio y ventas al por menor"},
+          {pid: 14, name: "AWOMBE", url: "https://awombe.blogspot.com/", alt: "Awombe App", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png", description: "Plataforma de gestión de proyectos y colaboración en equipo"},
+          {pid: 15, name: "En Desarrollo", url: "#", alt: "Próximamente", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png", description: "Nuevo proyecto en fase de desarrollo - Próximamente"},
+          {pid: 16, name: "En Desarrollo", url: "#", alt: "Próximamente", img: "https://i.postimg.cc/GL5RgcrL/dscto-orig.png", description: "Nuevo proyecto en fase de desarrollo - Próximamente"}
+        ];
+        
+        miprjs.forEach((mprj) => {
+          $('.prjs').append(`
+            <a class="prj animadojs prj${mprj.pid}" href="${mprj.url}" target="_blank">
+              <div class="prim"><img src="${mprj.img}" alt="${mprj.alt}" loading="lazy"/></div>
+              <h3 class="prtl">${mprj.name}</h3>
+              <p class="prds">${mprj.description}</p>
+              <button aria-label='Proyecto ${mprj.name}' class="prb">VAMOS!</button>
+            </a>
+          `);
+        });
+        $(this).remove();
       });
-    }
-  }).observe(this);
-});
+      
+      // LAZY LOADING DE IMÁGENES
+      $('[data-img]').each(function(){
+        const src = $(this).data('img');
+        const alt = $(this).data('alt');
+        $(this).html(`<img src="${src}" alt="${alt}" loading="lazy"/>`);
+      });
+      
+      // SKILLS CON TECNOLOGÍAS ACTUALIZADAS
+      const skills = [
+        {skpc: 99, skalt: "HTML5", skimg: "html5/html5-original.svg"},
+        {skpc: 99, skalt: "CSS3", skimg: "css3/css3-original.svg"},
+        {skpc: 89, skalt: "JavaScript", skimg: "javascript/javascript-original.svg"},
+        {skpc: 97, skalt: "jQuery", skimg: "jquery/jquery-original.svg"},
+        {skpc: 90, skalt: "GitHub", skimg: "github/github-original.svg"},
+        {skpc: 70, skalt: "Git", skimg: "git/git-original.svg"},
+        {skpc: 90, skalt: "Bootstrap", skimg: "bootstrap/bootstrap-original.svg"},
+        {skpc: 90, skalt: "Tailwind", skimg: "tailwindcss/tailwindcss-original.svg"},
+        {skpc: 93, skalt: "React", skimg: "react/react-original.svg"},
+        {skpc: 90, skalt: "Angular", skimg: "angular/angular-original.svg"},
+        {skpc: 78, skalt: "Vue.js", skimg: "vuejs/vuejs-original.svg"},
+        {skpc: 96, skalt: "Blogger", skimg: "angularmaterial/angularmaterial-original.svg"},
+        {skpc: 80, skalt: "PHP", skimg: "php/php-original.svg"},
+        {skpc: 90, skalt: "WordPress", skimg: "wordpress/wordpress-original.svg"},
+        {skpc: 70, skalt: "MySQL", skimg: "mysql/mysql-original.svg"},
+        {skpc: 70, skalt: "Python", skimg: "python/python-original.svg"},
+        {skpc: 75, skalt: "Kotlin", skimg: "kotlin/kotlin-original.svg"},
+        {skpc: 88, skalt: "Android", skimg: "androidstudio/androidstudio-original.svg"},
+        {skpc: 96, skalt: "VS Code", skimg: "vscode/vscode-original.svg"},
+        {skpc: 80, skalt: "Flutter", skimg: "flutter/flutter-original.svg"},
+        {skpc: 60, skalt: "Firebase", skimg: "firebase/firebase-original.svg"},
+        {skpc: 96, skalt: "Canva", skimg: "canva/canva-original.svg"},
+        {skpc: 97, skalt: "Photoshop", skimg: "photoshop/photoshop-original.svg"},
+        {skpc: 95, skalt: "Premiere", skimg: "premierepro/premierepro-original.svg"}
+      ];
+      
+      skills.forEach((mski) => {
+        $('.skis').append(`
+          <div class="ski" data-skn="${mski.skalt}" data-skp="${mski.skpc}">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${mski.skimg}" alt="${mski.skalt}" loading="lazy"/> 
+          </div>
+        `);
+      });
+      
+      // ANIMACIÓN DE SKILLS CON SVG
+      $('.ski').each(function(){
+        const skporc = $(this).data('skp');
+        const mkname = $(this).data('skn');
+        const skanim = 283 - (283 * skporc) / 100;
+        
+        $(this).append(`
+          <svg viewBox="0 0 100 100">
+            <circle class="skc1" cx="50" cy="50" r="45"/>
+            <circle class="skc2" cx="50" cy="50" r="45" style="stroke-dashoffset:${skanim}"/>
+            <text class="sktp" x="50" y="45">${skporc}%</text>
+            <text class="sktn" x="50" y="63">${mkname}</text>
+          </svg>
+        `);
+        
+        // INTERSECTION OBSERVER PARA ANIMACIÓN
+        new IntersectionObserver(([e]) => {
+          if(e.isIntersecting && !$(e.target).data('animated')){
+            $(e.target).data('animated', true);
+            (async () => {
+              const txd = $(e.target).find(".sktp");
+              for(let i = 0; i <= skporc; i++){
+                await new Promise(resolve => 
+                  setTimeout(() => {
+                    txd.text(`${i}%`);
+                    resolve();
+                  }, 38)
+                );
+              }
+            })();
+          }
+        }).observe(this);
+      });
+      
+      // ANIMACIONES DE ENTRADA
+      $('#Acerca .animado, #Proyectos .animado, #Skills .animado, #Logros .animado').each(function(){
+        const $grupo = $(this).parent().find('.animado');
+        const index = $grupo.index(this);
+        const translateY = 5 + (index * 1.5);
+        const duration = 0.7 + (index * 0.15);
+        
+        $(this).css({
+          opacity: 0.9,
+          transform: `translateY(${translateY}vh)`,
+          transition: `all ${duration}s ease-in-out`
+        });
+        
+        new IntersectionObserver(([e]) => {
+          if(e.isIntersecting){
+            $(e.target).css({
+              opacity: 1,
+              transform: 'translateY(0)'
+            });
+          }
+        }).observe(this);
+      });
+      
+      // CARGA DE RECURSOS EXTERNOS
+      const mstyles = '<style>@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");</style>';
+      const fawicons = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>';
+      const dvicons = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"/>';
+      $('head').append(`${mstyles}${fawicons}${dvicons}`);
+      
+      //DIOS ES MI SALVADOR[END] 
+    });
+  } else {
+    setTimeout(mijQuery, 50);
+  }
+}
 
-  
-  
-// SUBIENDO GOOGLE FONTS MORE
-const mstyles = '<style>@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"); </style>';
-const fawicons = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>';
-const dvicons = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"/>';
-$('head').append(`${mstyles} ${fawicons} ${dvicons}`);
-//DIOS ES MI SALVADOR[END] 
-})):setTimeout(mijQuery,50)}let lQt=7000,lQv=0,lQz=!localStorage.getItem('wquery');lQz?(["scroll","mousemove"].forEach(e=>addEventListener(e,ldjQuery)),setTimeout(ldjQuery,lQt)):ldjQuery();function ldjQuery(){if(!lQv){lQv=1;lQz&&["scroll","mousemove"].forEach(e=>removeEventListener(e,ldjQuery));let s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js";s.onload=()=>{localStorage.setItem("wquery","wi");mijQuery()};document.head.appendChild(s)}}
-//THEMES WEB[START]
-const sth=e=>{const[t,c]=e.dataset.tema.split('|');document.documentElement.dataset.theme=t,(document.querySelector('meta[name="theme-color"]')||Object.assign(document.head.appendChild(document.createElement('meta')),{name:'theme-color'})).content=c,localStorage.mtheme=e.dataset.tema,document.querySelector('.mtha')?.classList.remove('mtha'),e.classList.add('mtha')};sth(document.querySelector(`[data-tema="${localStorage.mtheme}"]`)||document.querySelector('.mtha'));document.querySelectorAll('[data-tema]').forEach(e=>e.onclick=()=>sth(e));
+// CARGA LAZY DE JQUERY
+let lQt = 7000, lQv = 0, lQz = !localStorage.getItem('wquery');
+lQz ? (["scroll", "mousemove"].forEach(e => addEventListener(e, ldjQuery)), setTimeout(ldjQuery, lQt)) : ldjQuery();
+
+function ldjQuery(){
+  if(!lQv){
+    lQv = 1;
+    lQz && ["scroll", "mousemove"].forEach(e => removeEventListener(e, ldjQuery));
+    let s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js";
+    s.onload = () => {
+      localStorage.setItem("wquery", "wi");
+      mijQuery();
+    };
+    document.head.appendChild(s);
+  }
+}
+
+// SISTEMA DE TEMAS
+const sth = e => {
+  const [t, c] = e.dataset.tema.split('|');
+  document.documentElement.dataset.theme = t;
+  (document.querySelector('meta[name="theme-color"]') || 
+   Object.assign(document.head.appendChild(document.createElement('meta')), {name: 'theme-color'})).content = c;
+  localStorage.mtheme = e.dataset.tema;
+  document.querySelector('.mtha')?.classList.remove('mtha');
+  e.classList.add('mtha');
+};
+
+sth(document.querySelector(`[data-tema="${localStorage.mtheme}"]`) || document.querySelector('.mtha'));
+document.querySelectorAll('[data-tema]').forEach(e => e.onclick = () => sth(e));
 </script>
-
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Wilder Taype",
+      "jobTitle": "Desarrollador Full Stack",
+      "url": "https://wtaype.github.io/",
+      "image": "https://i.postimg.cc/gJb8QnJb/Wilder-Taype-Foto1.webp",
+      "sameAs": [
+        "https://github.com/wtaype",
+        "https://linkedin.com/in/wildertaype",
+        "https://www.instagram.com/wilder.taype"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Lima",
+        "addressCountry": "Perú"
+      }
+    }
+</script>
 </body>
 </html>
