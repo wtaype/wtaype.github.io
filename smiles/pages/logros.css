@@ -1,0 +1,614 @@
+.logros_container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 4vh 2vw 8vh;
+}
+
+/* ==================== HERO LOGROS ==================== */
+.logros_hero {
+  text-align: center;
+  padding: 6vh 0 5vh;
+}
+
+.hero_title {
+  font-size: var(--fz_x2);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 2vh;
+  animation: fadeInDown 0.6s ease;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero_subtitle {
+  font-size: var(--fz_m4);
+  color: var(--txe);
+  max-width: 800px;
+  margin: 0 auto 4vh;
+  line-height: 1.7;
+  animation: fadeInUp 0.6s ease 0.2s backwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero_stats_logros {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2vw;
+  max-width: 1000px;
+  margin: 0 auto;
+  animation: fadeIn 0.6s ease 0.4s backwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.stat_logro {
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  padding: 2.5vh 2vw;
+  background: var(--wb);
+  border-radius: 16px;
+  border: 2px solid transparent;
+  transition: all var(--tr_m);
+}
+
+.stat_logro:hover {
+  border-color: var(--mco);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.stat_logro i {
+  font-size: 2.5rem;
+  color: var(--mco);
+}
+
+.stat_data {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.stat_numero {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  line-height: 1;
+}
+
+.stat_texto {
+  font-size: var(--fz_m1);
+  color: var(--txe);
+  margin-top: 0.5vh;
+}
+
+/* ==================== FILTROS ==================== */
+.logros_filtros {
+  margin-bottom: 5vh;
+}
+
+.filtros_tipos {
+  display: flex;
+  justify-content: center;
+  gap: 1.5vh;
+  flex-wrap: wrap;
+}
+
+.tipo_btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8vh;
+  padding: 1.8vh 2.5vw;
+  background: var(--wb);
+  color: var(--tx);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: var(--fz_m2);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_m);
+  min-width: 140px;
+}
+
+.tipo_btn i {
+  font-size: 1.8rem;
+  color: var(--txe);
+  transition: all var(--tr_f);
+}
+
+.tipo_btn:hover {
+  border-color: var(--mco);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.tipo_btn:hover i {
+  color: var(--mco);
+  transform: scale(1.1);
+}
+
+.tipo_btn.active {
+  background: var(--mco);
+  color: var(--txa);
+  border-color: var(--mco);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.tipo_btn.active i {
+  color: var(--txa);
+}
+
+/* ==================== GRID LOGROS ==================== */
+.logros_grid_section {
+  margin-bottom: 8vh;
+}
+
+.logros_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 3vh 2vw;
+}
+
+.logro_card {
+  background: var(--wb);
+  border-radius: 20px;
+  padding: 3vh 2.5vw;
+  border: 2px solid transparent;
+  transition: all var(--tr_m);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cardFadeIn 0.5s ease forwards;
+}
+
+@keyframes cardFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logro_card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.logro_card:hover {
+  border-color: var(--mco);
+  transform: translateY(-10px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+}
+
+.logro_icon_wrapper {
+  width: 100%;
+  height: 140px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2.5vh;
+  position: relative;
+}
+
+.logro_icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--F);
+  font-size: 2.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  transition: transform var(--tr_m);
+}
+
+.logro_card:hover .logro_icon {
+  transform: scale(1.1) rotateY(15deg);
+}
+
+.logro_badges {
+  display: flex;
+  gap: 1vh;
+  margin-bottom: 2vh;
+  flex-wrap: wrap;
+}
+
+.logro_tipo {
+  padding: 0.8vh 1.5vw;
+  border-radius: 8px;
+  color: var(--F);
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.logro_destacado {
+  padding: 0.8vh 1.5vw;
+  background: var(--warning);
+  color: var(--F);
+  border-radius: 8px;
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5vh;
+}
+
+.logro_titulo {
+  font-size: var(--fz_l1);
+  font-weight: 700;
+  color: var(--tx);
+  margin-bottom: 1.5vh;
+  line-height: 1.3;
+}
+
+.logro_descripcion {
+  font-size: var(--fz_m2);
+  color: var(--txe);
+  line-height: 1.6;
+  margin-bottom: 2.5vh;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.logro_footer {
+  padding-top: 2vh;
+  border-top: 2px solid var(--bg);
+}
+
+.logro_info {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  margin-bottom: 2vh;
+}
+
+.info_item {
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+  font-size: var(--fz_m1);
+  color: var(--txe);
+}
+
+.info_item i {
+  color: var(--mco);
+  font-size: var(--fz_m3);
+}
+
+.btn_ver_logro {
+  width: 100%;
+  padding: 1.5vh 2vw;
+  background: var(--mco);
+  color: var(--txa);
+  border: none;
+  border-radius: 10px;
+  font-size: var(--fz_m3);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8vh;
+}
+
+.btn_ver_logro:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+/* ==================== ESTADÍSTICAS ANUALES ==================== */
+.stats_anuales {
+  padding: 6vh 4vw;
+  background: var(--wb);
+  border-radius: 24px;
+  margin-bottom: 4vh;
+}
+
+.section_title {
+  text-align: center;
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 5vh;
+}
+
+.stats_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3vw;
+}
+
+.stat_anual_card {
+  text-align: center;
+  padding: 4vh 2vw;
+  background: var(--bg);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  transition: all var(--tr_m);
+}
+
+.stat_anual_card:hover {
+  border-color: var(--mco);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+}
+
+.stat_anual_icon {
+  width: 80px;
+  height: 80px;
+  background: var(--bg4);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 2.5vh;
+  color: var(--mco);
+  font-size: 2.5rem;
+  transition: transform var(--tr_m);
+}
+
+.stat_anual_card:hover .stat_anual_icon {
+  transform: rotateY(180deg);
+}
+
+.stat_anual_card h3 {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 2.5vh;
+}
+
+.stat_anual_bar {
+  width: 100%;
+  height: 16px;
+  background: var(--bg);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2vh;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat_bar_fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mco), var(--bg2));
+  border-radius: 8px;
+  width: 0;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat_bar_fill.animate {
+  width: var(--width);
+}
+
+.stat_anual_numero {
+  font-size: var(--fz_l1);
+  color: var(--mco);
+  font-weight: 800;
+}
+
+/* ==================== MODAL LOGRO ==================== */
+.modal_logro_body {
+  max-width: 750px;
+  background: var(--wb);
+}
+
+.modal_logro_header {
+  position: relative;
+  padding: 4vh 3vw 3vh;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal_logro_icon_wrapper {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal_logro_icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--F);
+  font-size: 3rem;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+}
+
+.modal_logro_destacado {
+  position: absolute;
+  top: 2vh;
+  right: 2vw;
+  background: var(--warning);
+  color: var(--F);
+  padding: 1vh 2vw;
+  border-radius: 10px;
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5vh;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.modal_logro_body_content {
+  padding: 4vh 4vw;
+}
+
+.modal_logro_tipo {
+  display: inline-block;
+  padding: 1vh 2vw;
+  border-radius: 10px;
+  color: var(--F);
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2vh;
+}
+
+.modal_logro_titulo {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 2vh;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.modal_logro_descripcion {
+  font-size: var(--fz_m4);
+  color: var(--txe);
+  line-height: 1.8;
+  margin-bottom: 4vh;
+  text-align: center;
+}
+
+.modal_logro_detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  margin-bottom: 4vh;
+}
+
+.detalle_item {
+  display: flex;
+  align-items: center;
+  gap: 2vh;
+  padding: 2vh 2vw;
+  background: var(--bg);
+  border-radius: 12px;
+  transition: all var(--tr_f);
+}
+
+.detalle_item:hover {
+  transform: translateX(5px);
+}
+
+.detalle_item i {
+  font-size: 1.8rem;
+  color: var(--mco);
+  min-width: 30px;
+}
+
+.detalle_item > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.detalle_label {
+  font-size: var(--fz_s4);
+  color: var(--txe);
+  margin-bottom: 0.5vh;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detalle_valor {
+  font-size: var(--fz_m4);
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.modal_logro_acciones {
+  display: flex;
+  gap: 2vh;
+}
+
+.btn_logro {
+  flex: 1;
+  padding: 2vh 2vw;
+  border-radius: 12px;
+  font-size: var(--fz_m3);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_f);
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1vh;
+  border: 2px solid transparent;
+}
+
+.btn_verificar {
+  background: var(--mco);
+  color: var(--txa);
+}
+
+.btn_compartir {
+  background: var(--bg);
+  color: var(--tx);
+  border-color: var(--bg5);
+}
+
+.btn_logro:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .hero_stats_logros {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .logros_grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats_grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero_stats_logros {
+    grid-template-columns: 1fr;
+  }
+
+  .logros_grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros_tipos {
+    gap: 1vh;
+  }
+
+  .tipo_btn {
+    min-width: 110px;
+    padding: 1.5vh 2vw;
+  }
+
+  .modal_logro_acciones {
+    flex-direction: column;
+  }
+
+  .modal_logro_body_content {
+    padding: 3vh 2vw;
+  }
+}

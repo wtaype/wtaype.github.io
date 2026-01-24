@@ -1,7 +1,7 @@
 import $ from 'jquery';
+import { titulo } from '../wii.js';
 import { Notificacion, wiPath, wiAnimate} from './rutadev.js';
 
-let app = 'Wiizom';
 class WiRouter {
   constructor() {
     this.ruta = {};
@@ -35,7 +35,7 @@ class WiRouter {
       await wiAnimate.fade(this.contentContainer, content);
 
       const pageName = normalizedPath.replace('/', '').replace(/^(\w)/, c => c.toUpperCase()) || 'Hora';
-      document.title = `${pageName} - ${app}`;
+      document.title = `${pageName} - ${titulo}`;
 
       if (module.init) module.init();
 
