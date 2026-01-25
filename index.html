@@ -67,20 +67,20 @@
   --Mora: #7000FF;
   --Futuro: #21273B;
 
-  --bg: #ccefff;
-  --wb: #e5f7ff;
+  --bg: #ccffce;
+  --wb: #ebffeb;
   --tx: #000;
   --txa: #FFF;
   --txe: #000;
-  --hv: #00a8e6;
-  --hva: #1873cd;
-  --mco: #1978d7;
-  --bg1: #ffffff26;
-  --bg2: #1978d7;
-  --bg3: #e5f7ff;
-  --bg4: rgba(25, 120, 215, 0.1);
-  --bg5: rgba(25, 120, 215, 0.2);
-  --bg6: rgba(204, 239, 255, 0.5);
+  --hv: #3cd741;
+  --hva: #25b62a;
+  --mco: #25b62a;
+  --bg1: #ffffff42;
+  --bg2: #25b62a;
+  --bg3: #ebffeb;
+  --bg4: rgba(37, 182, 42, 0.1);
+  --bg5: rgba(37, 182, 42, 0.2);
+  --bg6: rgba(204, 255, 206, 0.5);
   --bg7: #FFF; 
   --bg8: #FFF; 
 }
@@ -102,21 +102,21 @@
   --bg7: #FFF; 
   --bg8: #FFF; 
 }
-:root[data-theme="Paz"] {
-  --bg: #ccffce;
-  --wb: #ebffeb;
+:root[data-theme="Cielo"] {
+  --bg: #ccefff;
+  --wb: #e5f7ff;
   --tx: #000;
   --txa: #FFF;
   --txe: #000;
-  --hv: #3cd741;
-  --hva: #25b62a;
-  --mco: #25b62a;
-  --bg1: #ffffff42;
-  --bg2: #25b62a;
-  --bg3: #ebffeb;
-  --bg4: rgba(37, 182, 42, 0.1);
-  --bg5: rgba(37, 182, 42, 0.2);
-  --bg6: rgba(204, 255, 206, 0.5);
+  --hv: #00a8e6;
+  --hva: #1873cd;
+  --mco: #1978d7;
+  --bg1: #ffffff26;
+  --bg2: #1978d7;
+  --bg3: #e5f7ff;
+  --bg4: rgba(25, 120, 215, 0.1);
+  --bg5: rgba(25, 120, 215, 0.2);
+  --bg6: rgba(204, 239, 255, 0.5);
   --bg7: #FFF; 
   --bg8: #FFF; 
 }
@@ -251,9 +251,9 @@ a{text-decoration:none}
       </div><!-- LADO IZQUIERDO: Logo + Navegación -->
       <div class="wiheader_right"> 
         <div id="wiTema">
-          <div class="tema mtha" data-ths="Cielo|#0EBEFF"></div>
+          <div class="tema" data-ths="Cielo|#0EBEFF"></div>
           <div class="tema" data-ths="Dulce|#FF5C69"></div>
-          <div class="tema" data-ths="Paz|#29C72E"></div>
+          <div class="tema mtha" data-ths="Paz|#29C72E"></div>
           <div class="tema" data-ths="Mora|#7000FF"></div>
           <div class="tema" data-ths="Futuro|#21273B"></div>
         </div>
@@ -263,7 +263,7 @@ a{text-decoration:none}
     <main id="wimain"></main>
   </div>
 </body>
-<script>(()=>{const d=document,h=d.documentElement,w=d.querySelector('#wiTema');if(!w)return;const ts=[...w.querySelectorAll('.tema')],m=d.querySelector('meta[name="theme-color"]')||d.head.appendChild(Object.assign(d.createElement('meta'),{name:'theme-color'})),st=t=>{const[n,c]=t.dataset.ths.split('|');h.dataset.theme=n;m.content=c;localStorage.wiTema=t.dataset.ths;ts.forEach(x=>x.classList.toggle('mtha',x===t))};w.addEventListener('click',e=>e.target.matches('.tema')&&st(e.target),{passive:!0});const i=w.querySelector(`[data-ths="${localStorage.wiTema}"]`)||ts[0];i&&st(i)})();</script>
+<script>(()=>{const d=document,h=d.documentElement,w=d.querySelector('#wiTema');if(!w)return;const ts=[...w.querySelectorAll('.tema')],m=d.querySelector('meta[name="theme-color"]')||d.head.appendChild(Object.assign(d.createElement('meta'),{name:'theme-color'})),st=t=>{const[n,c]=t.dataset.ths.split('|');h.dataset.theme=n;m.content=c;localStorage.wiTema=t.dataset.ths;ts.forEach(x=>x.classList.toggle('mtha',x===t))};w.addEventListener('click',e=>e.target.matches('.tema')&&st(e.target),{passive:!0});const i=w.querySelector(`[data-ths="${localStorage.wiTema}"]`)||ts[2];i&&st(i)})();</script>
 <script type="module">
   (()=>{const k='wiflash',c=localStorage[k],e=['touchstart','scroll','click','mousemove'];let l=0;const load=()=>{if(l++)return;const h=document.head,css=[
     'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap',
