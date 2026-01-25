@@ -2,13 +2,13 @@ import $ from 'jquery';
 
 // === 🧠 LOADER SECUENCIAL v14 ===
 export const wiLoad = (() => {
-  const carga = new Set();
+  const carga = new Set(), opt = { rootMargin: '0px 0px -40% 0px', threshold: 0.15 };
   return (id, fn) => {
-    const sel = id[0] === '#' ? id : `#${id}`;
-    if (!$(sel).length) $('#wimain').append(`<div id="${id.replace('#', '')}" style="min-height:100vh"></div>`);
-    const elem = $(sel)[0];
-    elem && !carga.has(sel) && new IntersectionObserver(([x], vista) => !x.isIntersecting 
-    || carga.has(sel) ? null : (carga.add(sel), fn(), vista.disconnect()), { threshold: 0.1 }).observe(elem);
+    const sel = id[0] === '#' ? id : `#${id}`; if (!$(sel).length) $('#wimain').append(`<div id="${id.replace('#','')}" style="min-height:100vh"></div>`);
+    const el = $(sel)[0];
+    el && new IntersectionObserver(([x]) => x.isIntersecting && (history.replaceState(null,'',sel), 
+    import('./wii.js').then(({ titulo }) => document.title = `${sel.slice(1).charAt(0).toUpperCase() + sel.slice(2)} - ${titulo}`), carga.has(sel) 
+    || (carga.add(sel), fn())), opt).observe(el);
   };
 })();
 
