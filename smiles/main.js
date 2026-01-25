@@ -11,3 +11,4 @@ $('#wimain').children().css('opacity', 0).animate({ opacity: 1 }, 400);
 });
 
 export const cleanup = () => $('#wimain').empty();
+import './footer.js';
