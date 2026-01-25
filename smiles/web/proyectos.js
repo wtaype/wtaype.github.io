@@ -3,25 +3,33 @@ import $ from 'jquery';
 import { wiVista, wicopy } from '../widev.js';
 
 const proyectosData = [
-  { id: 1, titulo: 'DSCTO - Calculadora Móvil', descripcion: 'Aplicación móvil para calcular descuentos, ajustes en recibos, tiempos de beneficios y más, con bloc de notas integrado.', img: 'https://i.postimg.cc/dq8nVhCx/Dscto.png', url: 'https://dscto.blogspot.com/', categoria: 'mobile', tecnologias: ['JavaScript', 'PWA', 'Firebase', 'CSS3'], fecha: '2024-01-15', destacado: true },
-  { id: 2, titulo: 'CODEWIL - Optimizador de Código', descripcion: 'Herramienta profesional para convertir XML, optimizar formatos, cambiar mayúsculas y minificar código de forma eficiente.', img: 'https://i.postimg.cc/CSQcPTYm/Codewil.png', url: 'https://codewil.blogspot.com/', categoria: 'tools', tecnologias: ['React', 'Node.js', 'API', 'TypeScript'], fecha: '2023-11-20', destacado: true },
-  { id: 3, titulo: 'CODESBE - Convertidor de Texto', descripcion: 'Programa eficiente que permite realizar cambios de palabras entre minúsculas y mayúsculas de manera instantánea.', img: 'https://i.postimg.cc/FNRPVstY/Codesbe.png', url: 'https://codesbe.blogspot.com/', categoria: 'tools', tecnologias: ['JavaScript', 'HTML5', 'CSS3'], fecha: '2023-09-10', destacado: false },
-  { id: 4, titulo: 'WIIHOPE - Plataforma Educativa', descripcion: 'Plataforma interactiva diseñada para facilitar el aprendizaje y compartir conocimientos de manera colaborativa.', img: 'https://i.postimg.cc/YrMRGtfq/Wiihope.png', url: 'https://wiihope.blogspot.com/', categoria: 'web', tecnologias: ['Vue.js', 'Firebase', 'WebRTC', 'Sass'], fecha: '2024-03-05', destacado: true },
-  { id: 5, titulo: 'WICOLORS - Paleta de Colores', descripcion: 'Generador inteligente de paletas de colores con exportación en múltiples formatos para diseñadores.', img: 'https://i.postimg.cc/FhkDwWHm/Wiicolors.png', url: 'https://wicolors.blogspot.com/', categoria: 'web', tecnologias: ['Vue.js', 'Canvas API', 'Design', 'CSS3'], fecha: '2023-07-22', destacado: false },
-  { id: 6, titulo: 'SUVEMY - Gestión de Ventas', descripcion: 'Sistema completo para gestionar ventas, inventario y clientes de pequeños negocios de forma eficiente.', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://suvemy.blogspot.com/', categoria: 'web', tecnologias: ['Angular', 'Firebase', 'Material UI', 'Charts.js'], fecha: '2023-12-18', destacado: false },
-  { id: 7, titulo: 'MEEXPO - Portfolio Showcase', descripcion: 'Plataforma para crear portfolios profesionales y exhibir proyectos de manera atractiva con animaciones.', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://meexpo.blogspot.com/', categoria: 'web', tecnologias: ['Next.js', 'Tailwind', 'Framer Motion', 'MDX'], fecha: '2024-02-10', destacado: false },
-  { id: 8, titulo: 'CLAUQI - App Financiera', descripcion: 'Aplicación móvil para control de gastos personales y planificación financiera inteligente con gráficos.', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://clauqi.blogspot.com/', categoria: 'mobile', tecnologias: ['Flutter', 'Dart', 'SQLite', 'Charts'], fecha: '2023-10-30', destacado: false },
-  { id: 9, titulo: 'WINOTAS - Bloc de Notas Inteligente', descripcion: 'Bloc de notas con sincronización en la nube, markdown y organización por etiquetas y carpetas.', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://winotas.blogspot.com/', categoria: 'tools', tecnologias: ['Electron', 'React', 'Firebase', 'Markdown'], fecha: '2024-04-12', destacado: false },
-  { id: 10, titulo: 'TASKFLOW - Gestor de Tareas', descripcion: 'Aplicación de gestión de tareas con tableros kanban, recordatorios y colaboración en tiempo real.', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://taskflow.example.com/', categoria: 'web', tecnologias: ['React', 'Redux', 'Socket.io', 'MongoDB'], fecha: '2024-05-20', destacado: false },
-  { id: 11, titulo: 'FITNESSPAL - App de Ejercicios', descripcion: 'Aplicación móvil para seguimiento de ejercicios, rutinas personalizadas y progreso físico.', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://fitnesspal.example.com/', categoria: 'mobile', tecnologias: ['React Native', 'Firebase', 'Health Kit', 'Redux'], fecha: '2024-06-15', destacado: false },
-  { id: 12, titulo: 'RECIPEBOOK - Recetas de Cocina', descripcion: 'Plataforma para compartir, descubrir y guardar recetas de cocina con videos y valoraciones.', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://recipebook.example.com/', categoria: 'web', tecnologias: ['Next.js', 'PostgreSQL', 'Cloudinary', 'Tailwind'], fecha: '2024-07-10', destacado: false }
+  { id: 1, titulo: 'DSCTO - Calculadora Móvil', descripcion: 'Aplicación para calcular descuentos, ajustes en recibos, tiempos de beneficios y más, con bloc de notas y actualizaciones útiles.', img: 'https://i.postimg.cc/dq8nVhCx/Dscto.png', url: 'https://dscto.blogspot.com/', categoria: 'mobile', tecnologias: ['JavaScript', 'PWA', 'Firebase', 'CSS3'], fecha: '2024-01-15', destacado: true },
+  { id: 2, titulo: 'CODEWIL - Optimizador de Código', descripcion: 'Herramienta para convertir XML, formatos, mayúsculas y optimizar código, haciéndolo más legible, eficiente y optimizado.', img: 'https://i.postimg.cc/CSQcPTYm/Codewil.png', url: 'https://codewil.blogspot.com/', categoria: 'tools', tecnologias: ['React', 'Node.js', 'API', 'TypeScript'], fecha: '2023-11-20', destacado: true },
+  { id: 3, titulo: 'CODESBE - Convertidor de Texto', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/FNRPVstY/Codesbe.png', url: 'https://codesbe.blogspot.com/', categoria: 'tools', tecnologias: ['JavaScript', 'HTML5', 'CSS3'], fecha: '2023-09-10', destacado: false },
+  { id: 4, titulo: 'WIIHOPE - Plataforma Educativa', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/YrMRGtfq/Wiihope.png', url: 'https://wiihope.blogspot.com/', categoria: 'web', tecnologias: ['Vue.js', 'Firebase', 'WebRTC', 'Sass'], fecha: '2024-03-05', destacado: true },
+  { id: 5, titulo: 'WICOLORS - Paleta de Colores', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/FhkDwWHm/Wiicolors.png', url: 'https://wicolors.blogspot.com/', categoria: 'web', tecnologias: ['Vue.js', 'Canvas API', 'Design', 'CSS3'], fecha: '2023-07-22', destacado: false },
+  { id: 6, titulo: 'SUVEMY - Gestión de Ventas', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://suvemy.blogspot.com/', categoria: 'web', tecnologias: ['Angular', 'Firebase', 'Material UI', 'Charts.js'], fecha: '2023-12-18', destacado: false },
+  { id: 7, titulo: 'MEEXPO - Portfolio Showcase', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://meexpo.blogspot.com/', categoria: 'web', tecnologias: ['Next.js', 'Tailwind', 'Framer Motion', 'MDX'], fecha: '2024-02-10', destacado: false },
+  { id: 8, titulo: 'CLAUQI - App Financiera', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://clauqi.blogspot.com/', categoria: 'mobile', tecnologias: ['Flutter', 'Dart', 'SQLite', 'Charts'], fecha: '2023-10-30', destacado: false },
+  { id: 9, titulo: 'WINOTAS - Bloc de Notas Inteligente', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://winotas.blogspot.com/', categoria: 'windows', tecnologias: ['Electron', 'React', 'Firebase', 'Markdown'], fecha: '2024-04-12', destacado: false },
+  { id: 10, titulo: 'IABUENO - IA Conversacional', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://iabueno.blogspot.com/', categoria: 'tools', tecnologias: ['Python', 'OpenAI', 'FastAPI', 'Redis'], fecha: '2024-05-20', destacado: false },
+  { id: 11, titulo: 'IBASE64 - Convertidor Base64', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://ibase64.blogspot.com/', categoria: 'tools', tecnologias: ['JavaScript', 'HTML5', 'CSS3'], fecha: '2024-06-15', destacado: false },
+  { id: 12, titulo: 'MIDRAW Painter - Editor Gráfico', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://midraw.blogspot.com/', categoria: 'tools', tecnologias: ['Canvas API', 'JavaScript', 'WebGL'], fecha: '2024-07-10', destacado: false },
+  { id: 13, titulo: 'DSCTOSM - Descuentos Smart', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://dsctosm.blogspot.com/', categoria: 'mobile', tecnologias: ['React Native', 'Firebase', 'Expo'], fecha: '2024-08-05', destacado: false },
+  { id: 14, titulo: 'AWOMBE - Sistema de Gestión', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://awombe.blogspot.com/', categoria: 'web', tecnologias: ['Laravel', 'MySQL', 'Bootstrap'], fecha: '2024-09-12', destacado: false },
+  { id: 15, titulo: 'En Proceso - Proyecto Secreto', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '#', categoria: 'web', tecnologias: ['React', 'Node.js', 'MongoDB'], fecha: '2025-01-01', destacado: false },
+  { id: 16, titulo: 'En Proceso - Nueva Idea', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '#', categoria: 'mobile', tecnologias: ['Flutter', 'Firebase', 'Stripe'], fecha: '2025-02-01', destacado: false }
 ];
 
 const techPrincipales = [
   { nombre: 'JavaScript', icono: 'fab fa-js', color: '#F7DF1E' },
+  { nombre: 'jQuery', icono: 'fas fa-dollar-sign', color: '#0769AD' },
   { nombre: 'Node.js', icono: 'fab fa-node', color: '#339933' },
-  { nombre: 'React', icono: 'fab fa-react', color: '#61DAFB' },
-  { nombre: 'Vue.js', icono: 'fab fa-vuejs', color: '#4FC08D' },
+  { nombre: 'GitHub', icono: 'fab fa-github', color: '#181717' },
+  { nombre: 'Railway', icono: 'fas fa-train', color: '#0B0D0E' },
+  { nombre: 'Blogger', icono: 'fab fa-blogger', color: '#FF5722' },
+  { nombre: 'Git', icono: 'fab fa-git-alt', color: '#F05032' },
+  { nombre: 'Vite', icono: 'fas fa-bolt', color: '#646CFF' },
   { nombre: 'Firebase', icono: 'fas fa-fire', color: '#FFCA28' },
   { nombre: 'HTML5', icono: 'fab fa-html5', color: '#E34F26' },
   { nombre: 'CSS3', icono: 'fab fa-css3-alt', color: '#1572B6' },
@@ -30,11 +38,19 @@ const techPrincipales = [
 
 export const proyectos = () => {
   let filtrados = [...proyectosData];
-  let pagina = 1;
-  const porPagina = 8;
+  let mostrados = 0;
+  const porCarga = 4;
+  const inicial = 8;
 
   $('#proyectos').html(`
     <div class="proyectos_container">
+      <!-- HERO SECTION -->
+      <section class="proyectos_hero">
+        <h1 class="hero_title">Todos mis <span class="gradient_text">Proyectos</span></h1>
+        <p class="hero_subtitle">Explora mi colección de proyectos web, móviles y herramientas desarrolladas con las últimas tecnologías</p>
+      </section>
+
+      <!-- BUSCADOR GLASSMORPHISM -->
       <section class="search_section">
         <div class="search_wrapper">
           <i class="fas fa-search search_icon"></i>
@@ -42,11 +58,14 @@ export const proyectos = () => {
           <button class="search_clear" id="clearSearch" style="display:none;"><i class="fas fa-times"></i></button>
         </div>
       </section>
+
+      <!-- FILTROS -->
       <section class="filtros_section">
         <div class="filtros_wrapper">
           <button class="filtro_btn active" data-categoria="all"><i class="fas fa-layer-group"></i> Todos</button>
           <button class="filtro_btn" data-categoria="web"><i class="fas fa-globe"></i> Web Apps</button>
           <button class="filtro_btn" data-categoria="mobile"><i class="fas fa-mobile-alt"></i> Mobile</button>
+          <button class="filtro_btn" data-categoria="windows"><i class="fab fa-windows"></i> Windows</button>
           <button class="filtro_btn" data-categoria="tools"><i class="fas fa-tools"></i> Herramientas</button>
         </div>
         <div class="filtros_orden">
@@ -58,6 +77,8 @@ export const proyectos = () => {
           </select>
         </div>
       </section>
+
+      <!-- GRID PROYECTOS -->
       <section class="proyectos_grid_section">
         <div class="proyectos_grid" id="proyectosGrid"></div>
         <div class="no_resultados" style="display:none;">
@@ -66,11 +87,16 @@ export const proyectos = () => {
           <p>Intenta con otros términos de búsqueda</p>
         </div>
       </section>
-      <section class="paginacion_section" id="paginacionSection" style="display:none;">
-        <button class="paginacion_btn" id="btnAnterior" disabled><i class="fas fa-chevron-left"></i></button>
-        <div class="paginacion_paginas" id="paginacionPaginas"></div>
-        <button class="paginacion_btn" id="btnSiguiente"><i class="fas fa-chevron-right"></i></button>
+
+      <!-- BOTÓN MOSTRAR MÁS -->
+      <section class="load_more_section" id="loadMoreSection" style="display:none;">
+        <button class="btn_load_more" id="btnLoadMore">
+          <i class="fas fa-plus-circle"></i>
+          <span>Mostrar Más Proyectos</span>
+        </button>
       </section>
+
+      <!-- TECNOLOGÍAS -->
       <section class="tech_principales">
         <h2 class="section_title">Tecnologías Principales</h2>
         <div class="tech_grid">
@@ -81,30 +107,19 @@ export const proyectos = () => {
   `);
 
   const fmt = f => { const d = new Date(f + 'T00:00:00'); return ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][d.getMonth()] + ' ' + d.getFullYear(); };
-  const scroll = () => $('html, body').animate({ scrollTop: $('.proyectos_container').offset().top - 80 }, 300);
 
-  const actualizarPag = () => {
-    const total = Math.ceil(filtrados.length / porPagina);
-    if (total <= 1) return $('#paginacionSection').hide();
-    $('#paginacionSection').show();
-    $('#btnAnterior').prop('disabled', pagina === 1);
-    $('#btnSiguiente').prop('disabled', pagina === total);
-    const $pag = $('#paginacionPaginas').empty();
-    const max = 5, ini = Math.max(1, pagina - Math.floor(max / 2)), fin = Math.min(total, ini + max - 1);
-    if (ini > 1) { $pag.append(`<button class="paginacion_numero" data-pagina="1">1</button>`); if (ini > 2) $pag.append(`<span class="paginacion_dots">...</span>`); }
-    for (let i = ini; i <= fin; i++) $pag.append(`<button class="paginacion_numero ${i === pagina ? 'active' : ''}" data-pagina="${i}">${i}</button>`);
-    if (fin < total) { if (fin < total - 1) $pag.append(`<span class="paginacion_dots">...</span>`); $pag.append(`<button class="paginacion_numero" data-pagina="${total}">${total}</button>`); }
-    $('.paginacion_numero').on('click', function() { pagina = parseInt($(this).data('pagina')); cargar(); scroll(); });
-  };
-
-  const cargar = () => {
-    const grid = $('#proyectosGrid').empty();
-    if (!filtrados.length) { $('.no_resultados').fadeIn(300); return $('#paginacionSection').hide(); }
+  const cargarProyectos = (cantidad = inicial, reset = false) => {
+    const grid = $('#proyectosGrid');
+    if (reset) { grid.empty(); mostrados = 0; }
+    if (!filtrados.length) { $('.no_resultados').fadeIn(300); return $('#loadMoreSection').hide(); }
     $('.no_resultados').hide();
-    const ini = (pagina - 1) * porPagina, pag = filtrados.slice(ini, ini + porPagina);
-    pag.forEach((p, i) => {
-      grid.append(`
-        <a href="${p.url}" target="_blank" class="proyecto_card" data-proyecto="${p.id}" style="animation-delay: ${i * 0.05}s">
+    
+    const nuevos = filtrados.slice(mostrados, mostrados + cantidad);
+    const hayMas = mostrados + cantidad < filtrados.length;
+    
+    nuevos.forEach((p, i) => {
+      const $card = $(`
+        <a href="${p.url}" target="_blank" class="proyecto_card" data-proyecto="${p.id}" style="opacity: 0; transform: translateY(20px);">
           <div class="proyecto_imagen">
             <img src="${p.img}" alt="${p.titulo}" loading="lazy">
             <div class="proyecto_overlay"><i class="fas fa-external-link-alt"></i></div>
@@ -121,10 +136,14 @@ export const proyectos = () => {
           </div>
         </a>
       `);
+      grid.append($card);
+      setTimeout(() => $card.css({ opacity: 1, transform: 'translateY(0)', transition: `all 0.5s ease ${i * 0.1}s` }), 50);
     });
-    setTimeout(() => $('.proyecto_card').each((i, el) => setTimeout(() => $(el).addClass('visible'), i * 50)), 10);
-    $('.btn_copy_link').on('click', function(e) { e.preventDefault(); e.stopPropagation(); wicopy($(this).data('copy'), this, '¡Copiado!'); });
-    actualizarPag();
+    
+    mostrados += nuevos.length;
+    hayMas ? $('#loadMoreSection').fadeIn(300) : $('#loadMoreSection').fadeOut(300);
+    
+    $('.btn_copy_link').off('click').on('click', function(e) { e.preventDefault(); e.stopPropagation(); wicopy($(this).data('copy'), this, '¡Copiado!'); });
   };
 
   let timeout;
@@ -134,7 +153,7 @@ export const proyectos = () => {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
       filtrados = term ? proyectosData.filter(p => p.titulo.toLowerCase().includes(term.toLowerCase()) || p.descripcion.toLowerCase().includes(term.toLowerCase()) || p.tecnologias.some(t => t.toLowerCase().includes(term.toLowerCase()))) : [...proyectosData];
-      pagina = 1; cargar();
+      cargarProyectos(inicial, true);
     }, 300);
   });
   $('#clearSearch').on('click', () => $('#buscarProyecto').val('').trigger('input').focus());
@@ -144,7 +163,7 @@ export const proyectos = () => {
     $('.filtro_btn').removeClass('active'); $(this).addClass('active');
     const term = $('#buscarProyecto').val().toLowerCase().trim();
     filtrados = cat === 'all' ? (term ? proyectosData.filter(p => p.titulo.toLowerCase().includes(term) || p.descripcion.toLowerCase().includes(term) || p.tecnologias.some(t => t.toLowerCase().includes(term))) : [...proyectosData]) : proyectosData.filter(p => p.categoria === cat && (!term || p.titulo.toLowerCase().includes(term) || p.descripcion.toLowerCase().includes(term) || p.tecnologias.some(t => t.toLowerCase().includes(term))));
-    pagina = 1; cargar();
+    cargarProyectos(inicial, true);
   });
 
   $('#ordenarProyectos').on('change', function() {
@@ -153,12 +172,15 @@ export const proyectos = () => {
     else if (ord === 'antiguo') filtrados.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
     else if (ord === 'nombre') filtrados.sort((a, b) => a.titulo.localeCompare(b.titulo));
     else filtrados.sort((a, b) => b.destacado - a.destacado);
-    cargar();
+    cargarProyectos(inicial, true);
   });
 
-  $('#btnAnterior').on('click', () => { if (pagina > 1) { pagina--; cargar(); scroll(); } });
-  $('#btnSiguiente').on('click', () => { if (pagina < Math.ceil(filtrados.length / porPagina)) { pagina++; cargar(); scroll(); } });
+  $('#btnLoadMore').on('click', () => {
+    cargarProyectos(porCarga);
+    $('html, body').animate({ scrollTop: $('#proyectosGrid .proyecto_card').last().offset().top - 100 }, 400);
+  });
 
-  cargar();
+  wiVista('.proyectos_hero', () => $('.proyectos_hero').addClass('visible'));
+  cargarProyectos(inicial, true);
   console.log('✅ Proyectos cargados');
 };

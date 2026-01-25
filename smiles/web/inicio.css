@@ -53,7 +53,6 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  position: relative;
 }
 
 .hero_roles {
@@ -288,6 +287,26 @@
 .floating_tech:hover {
   transform: translateY(-10px) scale(1.1);
   box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+}
+
+.floating_tech:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -35px;
+  background: var(--mco);
+  color: var(--txa);
+  padding: 0.5vh 1vw;
+  border-radius: 6px;
+  font-size: var(--fz_s3);
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  animation: tooltipIn 0.2s ease;
+}
+
+@keyframes tooltipIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .floating_tech i {
@@ -567,167 +586,34 @@
   font-weight: 600;
 }
 
-/* Skeleton */
-.skeleton .skeleton_img {
-  background: var(--bg1);
-  aspect-ratio: 16/10;
-  animation: skeleton 1.5s infinite;
+/* Skeleton con Shimmer */
+.skeleton .skeleton_img,
+.skeleton .skeleton_text {
+  background: linear-gradient(90deg, var(--bg1) 0%, var(--bg3) 50%, var(--bg1) 100%);
+  background-size: 200% 100%;
 }
 
-.skeleton .skeleton_text {
-  background: var(--bg1);
+.skeleton_img {
+  aspect-ratio: 16/10;
+}
+
+.skeleton_text {
   height: 2vh;
   margin: 1vh 2vw;
   border-radius: 4px;
-  animation: skeleton 1.5s infinite;
 }
 
-.skeleton .skeleton_text.short {
+.skeleton_text.short {
   width: 60%;
 }
 
-@keyframes skeleton {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+.shimmer {
+  animation: shimmer 1.5s infinite;
 }
 
-/* Filtros */
-.tech_filter {
-  display: flex;
-  justify-content: center;
-  gap: 2vh;
-  flex-wrap: wrap;
-}
-
-.filter_btn {
-  display: flex;
-  align-items: center;
-  gap: 0.8vh;
-  padding: 1vh 2vw;
-  background: var(--bg1);
-  color: var(--tx);
-  border: 2px solid transparent;
-  border-radius: 50px;
-  font-size: var(--fz_m2);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--tr_f);
-}
-
-.filter_btn:hover {
-  border-color: var(--mco);
-}
-
-.filter_btn.active {
-  background: var(--mco);
-  color: var(--txa);
-  border-color: var(--mco);
-}
-
-/* ==================== FRASE MOTIVACIONAL ==================== */
-.quote_section {
-  padding: 8vh 0;
-}
-
-.quote_container {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 6vh 4vw;
-  background: var(--wb);
-  border-radius: 20px;
-  border-left: 5px solid var(--mco);
-  position: relative;
-}
-
-.quote_icon {
-  font-size: 3rem;
-  color: var(--bg5);
-  margin-bottom: 2vh;
-}
-
-.quote_text {
-  font-size: var(--fz_l1);
-  font-weight: 600;
-  color: var(--tx);
-  font-style: italic;
-  line-height: 1.6;
-  margin-bottom: 2vh;
-}
-
-.quote_author {
-  font-size: var(--fz_m3);
-  color: var(--mco);
-  font-weight: 700;
-}
-
-/* ==================== CTA FINAL ==================== */
-.cta_section {
-  padding: 8vh 0;
-  text-align: center;
-}
-
-.cta_content {
-  background: linear-gradient(135deg, var(--mco), var(--bg2));
-  padding: 6vh 4vw;
-  border-radius: 20px;
-  margin-bottom: 4vh;
-}
-
-.cta_title {
-  font-size: var(--fz_x1);
-  font-weight: 800;
-  color: var(--F);
-  margin-bottom: 2vh;
-}
-
-.cta_text {
-  font-size: var(--fz_m4);
-  color: rgba(255,255,255,0.95);
-  max-width: 700px;
-  margin: 0 auto 4vh;
-  line-height: 1.7;
-}
-
-.cta_btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 1.5vh;
-  padding: 2vh 4vw;
-  background: var(--F);
-  color: var(--mco);
-  border-radius: 12px;
-  font-size: var(--fz_m5);
-  font-weight: 700;
-  text-decoration: none;
-  transition: all var(--tr_m);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
-}
-
-.cta_btn:hover {
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 12px 36px rgba(0,0,0,0.35);
-}
-
-.cta_stats {
-  display: flex;
-  justify-content: center;
-  gap: 4vw;
-  flex-wrap: wrap;
-}
-
-.cta_stat {
-  display: flex;
-  align-items: center;
-  gap: 1vh;
-  font-size: var(--fz_m3);
-  color: var(--tx);
-  font-weight: 600;
-}
-
-.cta_stat i {
-  color: var(--mco);
-  font-size: var(--fz_l1);
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* ==================== RESPONSIVE ==================== */
@@ -770,5 +656,3 @@
     height: 250px;
   }
 }
-
-

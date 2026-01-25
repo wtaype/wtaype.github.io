@@ -3,14 +3,13 @@ import $ from 'jquery';
 import { wiVista, Saludar } from '../widev.js';
 
 export const inicio = () => {
-  // ✅ INSERTAR HTML
   $('#inicio').html(`
     <div class="inicio_container">
       <!-- HERO SECTION -->
       <section class="hero">
         <div class="hero_content">
           <div class="hero_saludo">
-            <span class="saludo_texto">${Saludar()}</span>
+            <span class="saludo_texto">${Saludar()} Tigre!</span>
             <span class="saludo_emoji">👋</span>
           </div>
           <h1 class="hero_title">
@@ -27,24 +26,24 @@ export const inicio = () => {
           </p>
           <div class="hero_stats">
             <div class="stat_card">
-              <div class="stat_number" data-target="5">0</div>
+              <div class="stat_number" data-target="6">0</div>
               <div class="stat_label">Años Experiencia</div>
             </div>
             <div class="stat_card">
-              <div class="stat_number" data-target="50">0</div>
+              <div class="stat_number" data-target="60">0</div>
               <div class="stat_label">Proyectos</div>
             </div>
             <div class="stat_card">
-              <div class="stat_number" data-target="25">0</div>
+              <div class="stat_number" data-target="30">0</div>
               <div class="stat_label">Tecnologías</div>
             </div>
           </div>
           <div class="hero_actions">
-            <a href="/proyectos" class="btn_primary">
+            <a href="#proyectos" class="btn_primary">
               <i class="fas fa-rocket"></i>
               <span>Ver Proyectos</span>
             </a>
-            <a href="/contacto" class="btn_secondary">
+            <a href="#contacto" class="btn_secondary">
               <i class="fas fa-envelope"></i>
               <span>Contactar</span>
             </a>
@@ -63,16 +62,16 @@ export const inicio = () => {
               <span>Disponible</span>
             </div>
           </div>
-          <div class="floating_tech tech1" data-tech="React">
+          <div class="floating_tech tech1" title="React">
             <i class="fab fa-react"></i>
           </div>
-          <div class="floating_tech tech2" data-tech="JavaScript">
+          <div class="floating_tech tech2" title="JavaScript">
             <i class="fab fa-js"></i>
           </div>
-          <div class="floating_tech tech3" data-tech="Node.js">
+          <div class="floating_tech tech3" title="Node.js">
             <i class="fab fa-node"></i>
           </div>
-          <div class="floating_tech tech4" data-tech="Firebase">
+          <div class="floating_tech tech4" title="Firebase">
             <i class="fas fa-fire"></i>
           </div>
         </div>
@@ -106,22 +105,29 @@ export const inicio = () => {
               <div class="timeline_item">
                 <div class="timeline_dot"></div>
                 <div class="timeline_content">
-                  <span class="timeline_year">2024</span>
-                  <p>Ingeniero de Sistemas Senior</p>
+                  <span class="timeline_year">2026</span>
+                  <p>Creando proyectos innovadores con tecnologías modernas</p>
                 </div>
               </div>
               <div class="timeline_item">
                 <div class="timeline_dot"></div>
                 <div class="timeline_content">
-                  <span class="timeline_year">2022</span>
-                  <p>Desarrollador Full Stack</p>
+                  <span class="timeline_year">2025</span>
+                  <p>Graduado de Ingeniería de Sistemas | +40 proyectos completados</p>
                 </div>
               </div>
               <div class="timeline_item">
                 <div class="timeline_dot"></div>
                 <div class="timeline_content">
-                  <span class="timeline_year">2020</span>
-                  <p>Inicio en Desarrollo Web</p>
+                  <span class="timeline_year">2021</span>
+                  <p>Universidad San Ignacio de Loyola - Ingeniería Empresarial</p>
+                </div>
+              </div>
+              <div class="timeline_item">
+                <div class="timeline_dot"></div>
+                <div class="timeline_content">
+                  <span class="timeline_year">2017</span>
+                  <p>Inicio del interés por la programación</p>
                 </div>
               </div>
             </div>
@@ -145,84 +151,32 @@ export const inicio = () => {
         <div class="section_header">
           <h2 class="section_title">Proyectos Destacados</h2>
           <div class="section_line"></div>
-          <a href="/proyectos" class="ver_todos">
+          <a href="#proyectos" class="ver_todos">
             Ver todos <i class="fas fa-arrow-right"></i>
           </a>
         </div>
         <div class="projects_grid">
           <div class="project_card skeleton" data-project="1">
-            <div class="skeleton_img"></div>
-            <div class="skeleton_text"></div>
-            <div class="skeleton_text short"></div>
+            <div class="skeleton_img shimmer"></div>
+            <div class="skeleton_text shimmer"></div>
+            <div class="skeleton_text short shimmer"></div>
           </div>
           <div class="project_card skeleton" data-project="2">
-            <div class="skeleton_img"></div>
-            <div class="skeleton_text"></div>
-            <div class="skeleton_text short"></div>
+            <div class="skeleton_img shimmer"></div>
+            <div class="skeleton_text shimmer"></div>
+            <div class="skeleton_text short shimmer"></div>
           </div>
           <div class="project_card skeleton" data-project="3">
-            <div class="skeleton_img"></div>
-            <div class="skeleton_text"></div>
-            <div class="skeleton_text short"></div>
-          </div>
-        </div>
-        <div class="tech_filter">
-          <button class="filter_btn active" data-filter="all">
-            <i class="fas fa-layer-group"></i> Todos
-          </button>
-          <button class="filter_btn" data-filter="web">
-            <i class="fas fa-globe"></i> Web Apps
-          </button>
-          <button class="filter_btn" data-filter="mobile">
-            <i class="fas fa-mobile-alt"></i> Mobile
-          </button>
-          <button class="filter_btn" data-filter="tools">
-            <i class="fas fa-tools"></i> Herramientas
-          </button>
-        </div>
-      </section>
-
-      <!-- FRASE MOTIVACIONAL -->
-      <section class="quote_section">
-        <div class="quote_container">
-          <i class="fas fa-quote-left quote_icon"></i>
-          <p class="quote_text">El código limpio no se escribe siguiendo reglas. Se escribe con pasión.</p>
-          <span class="quote_author">— Wilder Taype</span>
-        </div>
-      </section>
-
-      <!-- CTA FINAL -->
-      <section class="cta_section">
-        <div class="cta_content">
-          <h2 class="cta_title">¿Tienes un proyecto en mente?</h2>
-          <p class="cta_text">
-            Trabajemos juntos para convertir tu idea en realidad. 
-            Estoy disponible para nuevos proyectos y colaboraciones.
-          </p>
-          <a href="/contacto" class="cta_btn">
-            <i class="fas fa-paper-plane"></i>
-            <span>Iniciar Conversación</span>
-          </a>
-        </div>
-        <div class="cta_stats">
-          <div class="cta_stat">
-            <i class="fas fa-clock"></i>
-            <span>Respuesta en 24h</span>
-          </div>
-          <div class="cta_stat">
-            <i class="fas fa-shield-alt"></i>
-            <span>100% Confidencial</span>
-          </div>
-          <div class="cta_stat">
-            <i class="fas fa-handshake"></i>
-            <span>Compromiso Total</span>
+            <div class="skeleton_img shimmer"></div>
+            <div class="skeleton_text shimmer"></div>
+            <div class="skeleton_text short shimmer"></div>
           </div>
         </div>
       </section>
     </div>
   `);
 
-  // 🚀 INICIALIZACIÓN
+  // 🚀 ROLES ANIMADOS
   const roles = $('.hero_roles .role');
   let roleActual = 0;
   setInterval(() => {
@@ -231,6 +185,7 @@ export const inicio = () => {
     roles.eq(roleActual).addClass('active');
   }, 3000);
 
+  // 📊 STATS ANIMADOS
   wiVista('.hero_stats', () => {
     $('.stat_number').each(function() {
       const $num = $(this);
@@ -249,17 +204,18 @@ export const inicio = () => {
     });
   });
 
+  // 🎨 PROYECTOS CON SHIMMER
   setTimeout(() => {
     const proyectos = [
-      { id: 1, titulo: 'DSCTO - Calculadora Móvil', img: 'https://i.postimg.cc/dq8nVhCx/Dscto.png', descripcion: 'App para cálculos rápidos de descuentos y ajustes', url: 'https://dscto.blogspot.com/', tags: ['JavaScript', 'PWA', 'Firebase'], categoria: 'mobile' },
-      { id: 2, titulo: 'CODEWIL - Optimizador de Código', img: 'https://i.postimg.cc/CSQcPTYm/Codewil.png', descripcion: 'Herramienta para optimizar y embellecer código', url: 'https://codewil.blogspot.com/', tags: ['React', 'Node.js', 'API'], categoria: 'tools' },
-      { id: 3, titulo: 'WICOLORS - Paleta de Colores', img: 'https://i.postimg.cc/FhkDwWHm/Wiicolors.png', descripcion: 'Generador inteligente de paletas de colores', url: 'https://wicolors.blogspot.com/', tags: ['Vue.js', 'Design', 'CSS'], categoria: 'web' }
+      { id: 1, titulo: 'DSCTO - Calculadora Móvil', img: 'https://i.postimg.cc/dq8nVhCx/Dscto.png', descripcion: 'App para cálculos rápidos de descuentos y ajustes', url: 'https://dscto.blogspot.com/', tags: ['JavaScript', 'PWA', 'Firebase'] },
+      { id: 2, titulo: 'CODEWIL - Optimizador de Código', img: 'https://i.postimg.cc/CSQcPTYm/Codewil.png', descripcion: 'Herramienta para optimizar y embellecer código', url: 'https://codewil.blogspot.com/', tags: ['React', 'Node.js', 'API'] },
+      { id: 3, titulo: 'WICOLORS - Paleta de Colores', img: 'https://i.postimg.cc/FhkDwWHm/Wiicolors.png', descripcion: 'Generador inteligente de paletas de colores', url: 'https://wicolors.blogspot.com/', tags: ['Vue.js', 'Design', 'CSS'] }
     ];
 
     $('.project_card').each(function(i) {
       const p = proyectos[i];
       $(this).removeClass('skeleton').html(`
-        <a href="${p.url}" target="_blank" class="project_link" data-categoria="${p.categoria}">
+        <a href="${p.url}" target="_blank" class="project_link">
           <div class="project_img">
             <img src="${p.img}" alt="${p.titulo}" loading="lazy">
             <div class="project_overlay"><i class="fas fa-external-link-alt"></i></div>
@@ -274,21 +230,7 @@ export const inicio = () => {
     });
   }, 800);
 
-  $('.filter_btn').on('click', function() {
-    const filtro = $(this).data('filter');
-    $('.filter_btn').removeClass('active');
-    $(this).addClass('active');
-    
-    if (filtro === 'all') {
-      $('.project_card').fadeIn(300);
-    } else {
-      $('.project_card').each(function() {
-        const cat = $(this).find('.project_link').data('categoria');
-        cat === filtro ? $(this).fadeIn(300) : $(this).fadeOut(300);
-      });
-    }
-  });
-
+  // 👁️ ANIMACIÓN CARDS
   wiVista('.about_card', () => {
     $('.about_card').each((i, el) => {
       setTimeout(() => $(el).addClass('visible'), i * 150);
