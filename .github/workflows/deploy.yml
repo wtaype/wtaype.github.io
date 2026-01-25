@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IS_TAG: ${{ github.ref_type == 'tag' }}
-      BASE_URL: '/'
-      DEST_DIR: '.'
+      BASE_URL: ${{ github.ref_type == 'tag' && format('/{0}/', github.ref_name) || '/' }}
+      DEST_DIR: ${{ github.ref_type == 'tag' && github.ref_name || '.' }}
       
     steps:
       - uses: actions/checkout@v4
@@ -46,10 +46,10 @@ jobs:
           publish_branch: gh-pages
           publish_dir: ./dist
           destination_dir: ${{ env.DEST_DIR }}
-          keep_files: true  
-          exclude_assets: '.github'  
+          keep_files: true
 
       - name: 🔥 Build & Deploy to Firebase
+        if: env.IS_TAG == 'false'
         run: |
           npm run build -- --base=/
           npm install -g firebase-tools@latest
