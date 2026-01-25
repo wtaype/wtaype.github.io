@@ -1,14 +1,10 @@
 import $ from 'jquery';
-import { wiVista } from './widev.js';
+import { wiLoad } from './widev.js';
 
-$('#wimain').children().css('opacity', 0).animate({ opacity: 1 }, 400);
-
-['inicio', 'proyectos', 'skills', 'logros', 'contacto'].forEach(vista => {
-  wiVista(`#${vista}`, async () => {
-    const { [vista]: fn } = await import(`./web/${vista}.js`);
-    fn();
+['inicio', 'proyectos', 'skills', 'logros', 'contacto'].forEach(v => {
+  wiLoad(`#${v}`, async () => {
+    const { [v]: fn } = await import(`./web/${v}.js`); fn();
   });
 });
 
-export const cleanup = () => $('#wimain').empty();
 import './footer.js';

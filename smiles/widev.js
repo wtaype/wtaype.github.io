@@ -1,5 +1,17 @@
 import $ from 'jquery'; 
 
+// === 🧠 LOADER SECUENCIAL v14 ===
+export const wiLoad = (() => {
+  const carga = new Set();
+  return (id, fn) => {
+    const sel = id[0] === '#' ? id : `#${id}`;
+    if (!$(sel).length) $('#wimain').append(`<div id="${id.replace('#', '')}" style="min-height:100vh"></div>`);
+    const elem = $(sel)[0];
+    elem && !carga.has(sel) && new IntersectionObserver(([x], vista) => !x.isIntersecting 
+    || carga.has(sel) ? null : (carga.add(sel), fn(), vista.disconnect()), { threshold: 0.1 }).observe(elem);
+  };
+})();
+
 // === 👁️ OBSERVER LAZY v11 ===
 export const wiVista = (sel, fn) => {
   const e = $(sel)[0];

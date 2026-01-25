@@ -260,45 +260,18 @@ a{text-decoration:none}
         <!-- <div class="wiauth"><div class="ski_auth"></div></div>  -->
       </div> <!-- LADO DERECHO: Tema + Autenticación -->
     </header>
-    <main id="wimain">
-      <div id="inicio"></div>
-      <div id="proyectos"></div>
-      <div id="skills"></div>
-      <div id="logros"></div>
-      <div id="contacto"></div>
-    </main>
+    <main id="wimain"></main>
   </div>
 </body>
-<script>
-(()=>{const d=document,h=d.documentElement,w=d.querySelector('#wiTema');if(!w)return;const ts=[...w.querySelectorAll('.tema')],m=d.querySelector('meta[name="theme-color"]')||d.head.appendChild(Object.assign(d.createElement('meta'),{name:'theme-color'})),st=t=>{const[n,c]=t.dataset.ths.split('|');h.dataset.theme=n;m.content=c;localStorage.wiTema=t.dataset.ths;ts.forEach(x=>x.classList.toggle('mtha',x===t))};w.addEventListener('click',e=>e.target.matches('.tema')&&st(e.target),{passive:!0});const i=w.querySelector(`[data-ths="${localStorage.wiTema}"]`)||ts[0];i&&st(i)})();
-</script>
+<script>(()=>{const d=document,h=d.documentElement,w=d.querySelector('#wiTema');if(!w)return;const ts=[...w.querySelectorAll('.tema')],m=d.querySelector('meta[name="theme-color"]')||d.head.appendChild(Object.assign(d.createElement('meta'),{name:'theme-color'})),st=t=>{const[n,c]=t.dataset.ths.split('|');h.dataset.theme=n;m.content=c;localStorage.wiTema=t.dataset.ths;ts.forEach(x=>x.classList.toggle('mtha',x===t))};w.addEventListener('click',e=>e.target.matches('.tema')&&st(e.target),{passive:!0});const i=w.querySelector(`[data-ths="${localStorage.wiTema}"]`)||ts[0];i&&st(i)})();</script>
 <script type="module">
-(()=>{const k='wiflash',c=localStorage[k],e=['touchstart','scroll','click','mousemove'];let l=0;const load=()=>{if(l++)return;const h=document.head,css=[
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap',
-  'https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css'
+  (()=>{const k='wiflash',c=localStorage[k],e=['touchstart','scroll','click','mousemove'];let l=0;const load=()=>{if(l++)return;const h=document.head,css=[
+    'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap',
+    'https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css'
   ];css.forEach(u=>h.appendChild(Object.assign(document.createElement('link'),{rel:'stylesheet',href:u}))); 
-    import('./smiles/main.js'); localStorage[k]=1};
+  import('./smiles/main.js'); localStorage[k]=1};
   c?load():e.forEach(v=>addEventListener(v,load,{passive:!0,once:!0}))})();
 </script>
-<script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Wilder Taype",
-      "jobTitle": "Desarrollador Full Stack",
-      "url": "https://wtaype.github.io/",
-      "image": "https://i.postimg.cc/gJb8QnJb/Wilder-Taype-Foto1.webp",
-      "sameAs": [
-        "https://github.com/wtaype",
-        "https://linkedin.com/in/wildertaype",
-        "https://www.instagram.com/wilder.taype"
-      ],
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Lima",
-        "addressCountry": "Perú"
-      }
-    }
-</script>
+<script type="application/ld+json">{"@context": "https://schema.org","@type": "Person","name": "Wilder Taype","jobTitle": "Desarrollador Full Stack","url": "https://wtaype.github.io/","image": "https://i.postimg.cc/gJb8QnJb/Wilder-Taype-Foto1.webp","sameAs": ["https://github.com/wtaype","https://linkedin.com/in/wildertaype","https://www.instagram.com/wilder.taype"],"address": {"@type": "PostalAddress","addressLocality": "Lima","addressCountry": "Perú"}}</script>
 </html>
