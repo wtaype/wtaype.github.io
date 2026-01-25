@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-const permitir = new Set(['chatwiil.web.app', 'localhost', '192.168.18.62']); // 'wtaype.me' <- agregar para ver en github pages
+const permitir = new Set(['wtaype.web.app', 'localhost', '192.168.18.62', 'wtaype.me']); // 'wtaype.me' <- agregar para ver en github pages
 const permitido = permitir.has(window.location.hostname);
 
 const app = permitido ? initializeApp({
