@@ -223,7 +223,7 @@ a{text-decoration:none}
 #wimain{padding:1.5vh 3vw}
 }
 </style>
-<style>@import url(/smiles/inicio.css);</style>
+<style>@import url(/smiles/web/inicio.css);</style>
 </head>
 <body>
 <!--DIOS ES MI SALVADOR[START]-->
@@ -231,23 +231,23 @@ a{text-decoration:none}
     <header class="wiheader">
       <div class="wiheader_left">
         <h1 class="wilogo"><a href="/"><i class="fas fa-code"></i> Wilder Taype</a></h1>
-        <nav class="winav">
-          <a href="/" class="winav_item active" data-page="inicio">
-            <i class="fas fa-house"></i> <span>Bienvenido</span>
-          </a>
-          <a href="/proyectos" class="winav_item" data-page="proyectos">
-            <i class="fas fa-folder-open"></i> <span>Proyectos</span>
-          </a>
-          <a href="/skills" class="winav_item" data-page="skills">
-            <i class="fas fa-code"></i> <span>Skills</span>
-          </a>
-          <a href="/logros" class="winav_item" data-page="logros">
-            <i class="fas fa-trophy"></i> <span>Logros</span>
-          </a>
-          <a href="/contacto" class="winav_item" data-page="contacto">
-            <i class="fas fa-envelope"></i> <span>Contacto</span>
-          </a>
-        </nav>        
+          <nav class="winav">
+            <a href="#inicio" class="winav_item active">
+              <i class="fas fa-house"></i> <span>Bienvenido</span>
+            </a>
+            <a href="#proyectos" class="winav_item">
+              <i class="fas fa-folder-open"></i> <span>Proyectos</span>
+            </a>
+            <a href="#skills" class="winav_item">
+              <i class="fas fa-code"></i> <span>Skills</span>
+            </a>
+            <a href="#logros" class="winav_item">
+              <i class="fas fa-trophy"></i> <span>Logros</span>
+            </a>
+            <a href="#contacto" class="winav_item">
+              <i class="fas fa-envelope"></i> <span>Contacto</span>
+            </a>
+          </nav>      
       </div><!-- LADO IZQUIERDO: Logo + Navegación -->
       <div class="wiheader_right"> 
         <div id="wiTema">
@@ -260,7 +260,13 @@ a{text-decoration:none}
         <!-- <div class="wiauth"><div class="ski_auth"></div></div>  -->
       </div> <!-- LADO DERECHO: Tema + Autenticación -->
     </header>
-    <main id="wimain"><div class="ski_inicio"></div></main>
+    <main id="wimain">
+      <div id="inicio"></div>
+      <div id="proyectos"></div>
+      <div id="skills"></div>
+      <div id="logros"></div>
+      <div id="contacto"></div>
+    </main>
   </div>
 </body>
 <script>

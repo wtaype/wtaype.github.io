@@ -1,14 +1,13 @@
-import './header.js';
-import './footer.js';
 import $ from 'jquery';
-import { getls } from './widev.js';
-import { rutas } from './rutas/ruta.js';
+import { wiVista } from './widev.js';
 
-rutas.register('/inicio', () => import('./inicio.js')); // Página pública
+$('#wimain').children().css('opacity', 0).animate({ opacity: 1 }, 400);
 
-const pages = ['proyectos', 'skills', 'logros', 'contacto'];
-pages.forEach(pg => rutas.register(`/${pg}`, () => import(`./web/${pg}.js`))); // Páginas generales
+['inicio', 'proyectos', 'skills', 'logros', 'contacto'].forEach(vista => {
+  wiVista(`#${vista}`, async () => {
+    const { [vista]: fn } = await import(`./web/${vista}.js`);
+    fn();
+  });
+});
 
-rutas.register('/smile', () => getls('wiSmile') ? import('./smile/smile.js') : import('./smile/descubre.js')); //Con Auth 
-
-rutas.init(); // Rutas registrados y go excelente app. 
+export const cleanup = () => $('#wimain').empty();
