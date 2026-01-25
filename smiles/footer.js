@@ -12,6 +12,7 @@ function footer(){
     <span class="wtu">${ahora.toLocaleString()}</span></span>
   </footer>
   `;
+  console.log('✅ Actualizado: '+version)
 }; $('body').append(footer());  //Actualizar 
 
 const mstyles = `
