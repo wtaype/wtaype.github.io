@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="Paz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Términos y Condiciones - ChatWiil</title>
+  <link rel="icon" href="/smile.png">
+  <meta name="theme-color" content="#29C72E">
+  <meta name="description" content="Términos y Condiciones de ChatWiil - Aplicación espiritual con el Padre Nuestro, frases inspiradoras, Biblia y audios en quechua">
+  <style>
+    @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css);
+
+/* ========== 🎨 VARIABLES Y CONFIGURACIÓN GLOBAL ====== */
+:root {
+  /* === TAMAÑOS DE FUENTE RESPONSIVOS === */
+  --fz_s1: clamp(0.625rem, 0.8vh, 0.7rem);
+  --fz_s2: clamp(0.675rem, 0.85vh, 0.75rem);
+  --fz_s3: clamp(0.725rem, 0.9vh, 0.8rem);
+  --fz_s4: clamp(0.775rem, 1vh, 0.85rem);
+  --fz_m: clamp(0.8rem, 1.05vh, 0.9rem);
+  --fz_m1: clamp(0.85rem, 1.1vh, 0.95rem);
+  --fz_m2: clamp(0.9rem, 1.15vh, 1rem);
+  --fz_m3: clamp(0.95rem, 1.2vh, 1.05rem);
+  --fz_m4: clamp(1rem, 1.3vh, 1.1rem);
+  --fz_m5: clamp(1.15rem, 1.5vh, 1.25rem);
+  --fz_l1: clamp(1.5rem, 2vh, 1.7rem);
+  --fz_l2: clamp(1.8rem, 2.3vh, 2rem);
+  --fz_x1: clamp(2.2rem, 3vh, 2.8rem);
+  --fz_x2: clamp(2.5rem, 3.6vh, 3.5rem);
+  --fz_x3: clamp(2.9rem, 5vh, 3.9rem);
+  --fz_x4: clamp(3.3rem, 5.9vh, 4.3rem);
+  --fz_y1: clamp(3rem, 14vh, 8rem);
+
+  /* === SOMBRAS Y EFECTOS === */
+  --bs_m: 0 0 0.3vh 0.1vh var(--F);
+  --bs_l: 0 0.4vh 0.8vh rgba(0,0,0,0.15);
+
+  /* === TRANSICIONES === */
+  --tr_s: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --tr_m: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --tr_f: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* === FUENTES === */
+  --ff_P: 'Poppins', 'Segoe UI', system-ui;
+  --ff_R: 'Rubik', 'Segoe UI', system-ui;
+
+  /* === COLORES BASE === */
+  --F: #fff;
+  --0: #000;
+  --D: #ddd;
+  --G: #374151;
+  --success: #3cd741;
+  --error: #ff3849;
+  --warning: #ffa726;
+  --info: #00a8e6;
+  --Cielo: #0EBEFF;
+  --Dulce: #FF5C69;
+  --Paz: #29C72E;
+  --Mora: #7000FF;
+  --Futuro: #21273B;
+
+  /* Tema Paz por defecto */
+  --bg: #ccffce;
+  --wb: #ebffeb;
+  --tx: #000;
+  --txa: #FFF;
+  --txe: #000;
+  --hv: #3cd741;
+  --hva: #25b62a;
+  --mco: #25b62a;
+  --bg1: #ffffff42;
+  --bg2: #25b62a;
+  --bg3: #ebffeb;
+  --bg4: rgba(37, 182, 42, 0.1);
+  --bg5: rgba(37, 182, 42, 0.2);
+  --bg6: rgba(204, 255, 206, 0.5);
+}
+
+:root[data-theme="Dulce"] {
+  --bg: #ffccd1;
+  --wb: #ffebed;
+  --tx: #000;
+  --txa: #FFF;
+  --txe: #000;
+  --hv: #ff7a85;
+  --hva: #ff3849;
+  --mco: #ff3849;
+  --bg1: #ffffff61;
+  --bg2: #ff3849;
+  --bg3: #ffebed;
+  --bg4: rgba(255, 56, 73, 0.1);
+  --bg5: rgba(255, 56, 73, 0.2);
+  --bg6: rgba(255, 204, 209, 0.5);
+}
+
+:root[data-theme="Mora"] {
+  --bg: #e4ccff;
+  --wb: #f4ebff;
+  --tx: #000;
+  --txa: #FFF;
+  --txe: #000;
+  --hv: #9442ff;
+  --hva: #5f00db;
+  --mco: #6a00f5;
+  --bg1: #ffffff61;
+  --bg2: #6a00f5;
+  --bg3: #f4ebff;
+  --bg4: rgba(106, 0, 245, 0.1);
+  --bg5: rgba(106, 0, 245, 0.2);
+  --bg6: rgba(228, 204, 255, 0.5);
+}
+
+:root[data-theme="Cielo"] {
+  --bg: #ccefff;
+  --wb: #e5f7ff;
+  --tx: #000;
+  --txa: #FFF;
+  --txe: #000;
+  --hv: #00a8e6;
+  --hva: #1873cd;
+  --mco: #1978d7;
+  --bg1: #ffffff26;
+  --bg2: #1978d7;
+  --bg3: #e5f7ff;
+  --bg4: rgba(25, 120, 215, 0.1);
+  --bg5: rgba(25, 120, 215, 0.2);
+  --bg6: rgba(204, 239, 255, 0.5);
+}
+
+:root[data-theme="Futuro"] {
+  --bg: #1d273f;
+  --wb: #2a385b;
+  --tx: #fff;
+  --txa: #00f3ff;
+  --txe: #3e496f;
+  --hv: #4d5a89;
+  --hva: #3e496f;
+  --mco: #3e496f;
+  --bg1: #ffffff26;
+  --bg2: #00f3ff;
+  --bg3: #2a385b;
+  --bg4: rgba(0, 243, 255, 0.1);
+  --bg5: rgba(0, 243, 255, 0.2);
+  --bg6: rgba(42, 56, 91, 0.5); 
+}
+
+*, *::before, *::after{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth;}
+*{font-family:var(--ff_P);scrollbar-width:thin;scrollbar-color:var(--mco) var(--bg);}
+a{text-decoration:none;}
+    
+body{min-height:100vh;display:flex;flex-direction:column;opacity:0;animation:fadeIn .8s ease forwards;background:var(--bg)!important}
+@keyframes fadeIn{to{opacity:1}}
+.terminos_main{flex:1;max-width:90vw;width:100%;margin:8vh auto 4vh;padding:0 2vw}
+.terminos_box{background:var(--wb);border-radius:2vh;padding:4vw;box-shadow:var(--bs_l);border:1px solid var(--bg5);backdrop-filter:blur(10px)}
+.terminos_header{text-align:center;margin-bottom:4vh;padding-bottom:3vh;border-bottom:2px solid var(--mco);position:relative}
+.terminos_header::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:10vw;height:2px;background:var(--mco);box-shadow:0 0 2vh var(--mco)}
+.terminos_header h1{font-size:clamp(2rem,4vw,3rem);color:var(--mco);margin-bottom:1vh;font-weight:700;text-shadow:0 0 3vh var(--bg5)}
+.terminos_header h1 i{margin-right:1vw;animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.terminos_header .subtitle{font-size:clamp(.9rem,1.5vw,1.1rem);color:var(--tx);margin-top:1vh;opacity:.8}
+.terminos_header .meta{display:flex;justify-content:center;gap:3vw;margin-top:2vh;font-size:clamp(.85rem,1.3vw,.95rem);color:var(--tx);flex-wrap:wrap;opacity:.9}
+.terminos_header .meta span{display:flex;align-items:center;gap:.5vw;padding:1vh 2vw;background:var(--bg1);border-radius:1vh;transition:all .3s;border:1px solid var(--bg5)}
+.terminos_header .meta span:hover{transform:translateY(-.5vh);box-shadow:0 .5vh 1vh var(--bg5);background:var(--bg4)}
+.terminos_header .meta i{color:var(--mco)}
+.terminos_content{animation:slideUp .6s ease .3s backwards}
+@keyframes slideUp{from{opacity:0;transform:translateY(3vh)}to{opacity:1;transform:translateY(0)}}
+.terminos_section{margin-bottom:3vh;padding:2.5vh 2vw;background:var(--bg1);border-radius:1.5vh;border-left:.5vw solid var(--mco);transition:all .4s cubic-bezier(.4,0,.2,1);opacity:0;transform:translateX(-2vw);animation:slideRight .5s ease forwards;border:1px solid var(--bg5)}
+.terminos_section:nth-child(1){animation-delay:.1s}
+.terminos_section:nth-child(2){animation-delay:.2s}
+.terminos_section:nth-child(3){animation-delay:.3s}
+.terminos_section:nth-child(4){animation-delay:.4s}
+.terminos_section:nth-child(5){animation-delay:.5s}
+.terminos_section:nth-child(6){animation-delay:.6s}
+.terminos_section:nth-child(7){animation-delay:.7s}
+.terminos_section:nth-child(8){animation-delay:.8s}
+.terminos_section:nth-child(9){animation-delay:.9s}
+.terminos_section:nth-child(10){animation-delay:1s}
+@keyframes slideRight{to{opacity:1;transform:translateX(0)}}
+.terminos_section:hover{transform:translateX(1vw) scale(1.02);box-shadow:0 1vh 3vw var(--bg5);border-left-width:1vw;background:var(--bg4)}    
+.terminos_section h2{font-size:clamp(1.3rem,2.5vw,1.8rem);color:var(--mco);margin-bottom:1.5vh;display:flex;align-items:center;gap:1vw;font-weight:600}
+.terminos_section h2 i{font-size:clamp(1.2rem,2vw,1.5rem);padding:1vh 1vw;background:var(--wb);border-radius:1vh;box-shadow:0 .5vh 1vw var(--bg5);border:1px solid var(--bg5)}    
+.terminos_section p{color:var(--tx);font-size:clamp(.95rem,1.5vw,1.1rem);margin-bottom:1.5vh;line-height:1.8}
+.terminos_section strong{color:var(--mco);font-weight:600}    
+.terminos_section ul{list-style:none;padding-left:0;margin-top:1.5vh}
+.terminos_section ul li{padding:1vh 0 1vh 3.5vw;position:relative;color:var(--tx);transition:all .3s;border-radius:.8vh}
+.terminos_section ul li:hover{background:var(--bg4);padding-left:4vw;color:var(--mco);box-shadow:inset 4px 0 0 var(--mco)}
+.terminos_section ul li::before{content:'\f00c';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;left:1vw;color:var(--mco);font-size:1.2rem;transition:transform .3s}
+.terminos_section ul li:hover::before{transform:scale(1.3) rotate(360deg)}    
+.terminos_alert{background:var(--bg4);border-left:.5vw solid var(--hv);padding:2vh 2vw;border-radius:1vh;margin:2vh 0;border:1px solid var(--bg5)}
+.terminos_alert p{margin:0;font-size:clamp(.9rem,1.4vw,1rem);line-height:1.6}
+.terminos_alert i{color:var(--hv);margin-right:1vw}    
+.terminos_footer{text-align:center;padding:4vh 2vw;margin-top:5vh;border-top:2px solid var(--mco);font-size:clamp(.85rem,1.3vw,.95rem);color:var(--tx);position:relative;opacity:.9}
+.terminos_footer::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:15vw;height:2px;background:linear-gradient(90deg,transparent,var(--mco),transparent)}
+.terminos_footer p{margin-bottom:1.5vh}
+.terminos_footer strong{color:var(--mco);font-weight:700}    
+.btn_volver{display:inline-flex;align-items:center;gap:1vw;padding:1.5vh 3vw;background:linear-gradient(135deg,var(--mco),var(--hv));color:var(--txa);border:none;border-radius:1vh;font-weight:600;cursor:pointer;transition:all .4s cubic-bezier(.4,0,.2,1);margin-top:2vh;text-decoration:none;font-size:clamp(.9rem,1.5vw,1rem);box-shadow:0 .5vh 2vw var(--bg5)}
+.btn_volver:hover{transform:translateY(-.8vh) scale(1.05);box-shadow:0 1.5vh 3vw var(--bg5)}
+.btn_volver i{transition:transform .3s}
+.btn_volver:hover i{transform:translateX(-.5vw)}    
+@media (max-width:768px){
+  .terminos_main{margin:6vh auto 3vh;max-width:95vw}
+  .terminos_box{padding:3vh 3vw}
+  .terminos_section{padding:2vh 3vw}
+  .terminos_header .meta{gap:2vw}
+}
+  </style>
+</head>
+<body>
+  <main class="terminos_main">
+    <div class="terminos_box">
+      <div class="terminos_header">
+        <h1><i class="fas fa-praying-hands"></i> Privacidad & Términos - ChatWiil</h1>
+        <p class="subtitle">Última actualización: 4 de Enero, 2026</p>
+        <div class="meta">
+          <span><i class="fas fa-church"></i> ChatWiil - Esperanza Espiritual</span>
+          <span><i class="fas fa-shield-check"></i> Versión 1.0.0</span>
+        </div>
+      </div>
+
+      <div class="terminos_content">
+        <div class="terminos_alert">
+          <p><i class="fas fa-info-circle"></i> <strong>IMPORTANTE:</strong> Al acceder, registrarse o utilizar cualquier servicio de ChatWiil, usted acepta expresamente estos Términos y Condiciones, así como nuestra Política de Privacidad. Si no está de acuerdo, debe cesar inmediatamente el uso de la aplicación.</p>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-handshake"></i> 1. Aceptación y Alcance de los Términos</h2>
+          <p>Estos Términos y Condiciones constituyen un acuerdo legal vinculante entre usted (el "Usuario") y <strong>ChatWiil</strong> (la "Aplicación"). Al utilizar nuestra plataforma, usted declara:</p>
+          <ul>
+            <li>Haber leído, entendido y aceptado la totalidad de estos términos</li>
+            <li>Ser mayor de 13 años o contar con autorización parental verificable</li>
+            <li>Tener capacidad legal para contratar en su jurisdicción</li>
+            <li>Proporcionar información veraz, precisa y actualizada</li>
+            <li>Aceptar recibir notificaciones sobre cambios en el servicio</li>
+            <li>Respetar el contenido espiritual y religioso de la aplicación</li>
+          </ul>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-dove"></i> 2. Descripción del Servicio y Uso Permitido</h2>
+          <p><strong>ChatWiil</strong> es una aplicación espiritual que proporciona acceso a contenido religioso, incluyendo el Padre Nuestro, frases inspiradoras, Biblia en quechua y audios dramatizados. El uso del servicio está sujeto a:</p>
+          <ul>
+            <li>Uso exclusivamente para fines espirituales, educativos y de reflexión personal</li>
+            <li>Respeto al contenido religioso y cultural presentado en la aplicación</li>
+            <li>No distribuir, modificar o comercializar el contenido sin autorización</li>
+            <li>No usar la plataforma para promover odio, discriminación o intolerancia religiosa</li>
+            <li>Respetar los derechos de autor del contenido bíblico y los audios dramatizados</li>
+            <li>No realizar actividades que interfieran con el funcionamiento normal del servicio</li>
+          </ul>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-shield-alt"></i> 3. Privacidad, Protección de Datos y Consentimiento</h2>
+          <p>La privacidad de sus datos es prioritaria. <strong>Al aceptar estos términos, usted otorga su consentimiento explícito para:</strong></p>
+          <ul>
+            <li>Recopilación de datos personales necesarios para el funcionamiento del servicio (nombre, email, preferencias espirituales)</li>
+            <li>Almacenamiento seguro de sus datos en servidores de Firebase (Google Cloud Platform)</li>
+            <li>Uso de cookies y tecnologías de seguimiento para mejorar la experiencia del usuario</li>
+            <li>Procesamiento de datos de uso para análisis estadísticos y mejoras del contenido espiritual</li>
+            <li>Compartir datos con proveedores de servicios esenciales (hosting, autenticación) bajo acuerdos de confidencialidad</li>
+            <li>Conservación de sus datos mientras mantenga su cuenta activa o según lo requiera la ley</li>
+            <li>Registro de sus interacciones con contenido bíblico y audios para personalizar su experiencia</li>
+          </ul>
+          <div class="terminos_alert">
+            <p><i class="fas fa-user-shield"></i> <strong>Sus derechos:</strong> Puede solicitar acceso, rectificación, portabilidad o eliminación de sus datos personales en cualquier momento contactándonos. No vendemos ni compartimos sus datos con terceros para fines publicitarios sin su consentimiento explícito.</p>
+          </div>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-bible"></i> 4. Contenido Espiritual y Derechos de Autor</h2>
+          <p><strong>ChatWiil</strong> proporciona acceso a contenido religioso protegido por derechos de autor:</p>
+          <ul>
+            <li>La Biblia en quechua es de dominio público, pero su presentación digital está protegida</li>
+            <li>Los audios dramatizados tienen derechos de autor de sus respectivos productores</li>
+            <li>Las frases inspiradoras y contenido original son propiedad de ChatWiil</li>
+            <li>El uso del contenido está limitado a fines personales y no comerciales</li>
+            <li>Queda prohibida la redistribución, copia o modificación del contenido sin autorización escrita</li>
+            <li>Respetamos todos los derechos de propiedad intelectual de terceros</li>
+          </ul>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-user-lock"></i> 5. Cuentas de Usuario y Seguridad</h2>
+          <p>Para acceder a funcionalidades completas de ChatWiil, puede crear una cuenta opcional. Es su responsabilidad:</p>
+          <ul>
+            <li>Mantener la confidencialidad de sus credenciales de acceso (contraseña, tokens)</li>
+            <li>Notificar inmediatamente cualquier acceso no autorizado o brecha de seguridad</li>
+            <li>Actualizar su información de contacto para recibir notificaciones espirituales</li>
+            <li>No compartir su cuenta con terceros ni permitir accesos múltiples simultáneos</li>
+            <li>Usar contraseñas seguras y únicas para su cuenta de ChatWiil</li>
+            <li>Respetar el uso personal e intransferible de su cuenta</li>
+          </ul>
+          <p><strong>Suspensión de cuenta:</strong> Nos reservamos el derecho de suspender o eliminar cuentas que violen estos términos, sin previo aviso y sin responsabilidad de nuestra parte.</p>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-exclamation-triangle"></i> 6. Limitación de Responsabilidad y Exención de Garantías</h2>
+          <p>El servicio se proporciona <strong>"TAL CUAL"</strong> y <strong>"SEGÚN DISPONIBILIDAD"</strong>, sin garantías de ningún tipo. ChatWiil no será responsable por:</p>
+          <ul>
+            <li>Interpretaciones personales del contenido bíblico o espiritual presentado</li>
+            <li>Decisiones de vida tomadas en base al contenido de la aplicación</li>
+            <li>Interrupciones temporales del servicio por mantenimiento, fallas técnicas o causas de fuerza mayor</li>
+            <li>Daños causados por virus, ataques cibernéticos o errores de terceros</li>
+            <li>Precisión teológica o doctrinal del contenido presentado</li>
+            <li>Incompatibilidad del servicio con dispositivos o navegadores específicos</li>
+            <li>Pérdida de datos, marcadores o contenido guardado por fallas técnicas</li>
+          </ul>
+          <p><strong>Nota espiritual:</strong> ChatWiil es una herramienta de apoyo espiritual y no sustituye la guía de líderes religiosos, consejeros o instituciones eclesiásticas reconocidas.</p>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-cross"></i> 7. Naturaleza del Contenido Religioso</h2>
+          <p>ChatWiil presenta contenido de naturaleza religiosa cristiana. Al usar la aplicación, usted reconoce que:</p>
+          <ul>
+            <li>El contenido refleja perspectivas cristianas tradicionales</li>
+            <li>Las traducciones al quechua pueden tener variaciones dialectales</li>
+            <li>Los audios dramatizados son interpretaciones artísticas del texto bíblico</li>
+            <li>Las frases inspiradoras provienen de diversas fuentes cristianas</li>
+            <li>No ofrecemos asesoramiento teológico, pastoral o espiritual profesional</li>
+            <li>Respetamos la libertad religiosa y no promovemos intolerancia</li>
+          </ul>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-ban"></i> 8. Conducta Prohibida y Consecuencias</h2>
+          <p>Queda estrictamente prohibido utilizar ChatWiil para:</p>
+          <ul>
+            <li>Promover odio, discriminación o intolerancia religiosa</li>
+            <li>Distribuir contenido malicioso, spam o material ofensivo</li>
+            <li>Suplantar identidades o falsificar información religiosa</li>
+            <li>Explotar vulnerabilidades de seguridad o realizar ataques cibernéticos</li>
+            <li>Usar el contenido con fines comerciales sin autorización</li>
+            <li>Tergiversar o modificar el contenido bíblico presentado</li>
+            <li>Realizar actividades ilegales o fraudulentas</li>
+          </ul>
+          <p><strong>Violaciones:</strong> Reportaremos actividades ilegales a las autoridades competentes y cooperaremos con investigaciones legales.</p>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-sync-alt"></i> 9. Modificaciones del Servicio y Términos</h2>
+          <p>Nos reservamos el derecho de modificar, actualizar o discontinuar cualquier aspecto del servicio, incluyendo:</p>
+          <ul>
+            <li>Contenido bíblico, audios y frases inspiradoras disponibles</li>
+            <li>Funcionalidades, diseño o estructura de la aplicación</li>
+            <li>Estos Términos y Condiciones o la Política de Privacidad</li>
+            <li>Versiones de traducción de la Biblia en quechua</li>
+          </ul>
+          <p><strong>Notificaciones:</strong> Los cambios importantes se notificarán con al menos 15 días de anticipación mediante notificaciones en la app o email. El uso continuado del servicio implica aceptación de los nuevos términos.</p>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-gavel"></i> 10. Ley Aplicable y Resolución de Disputas</h2>
+          <p>Estos términos se rigen por las leyes de <strong>Perú</strong>. Cualquier controversia será resuelta mediante:</p>
+          <ul>
+            <li>Negociación directa de buena fe como primer paso</li>
+            <li>Mediación o arbitraje si la negociación no prospera</li>
+            <li>Jurisdicción exclusiva de los tribunales de Lima, Perú como última instancia</li>
+          </ul>
+          <p><strong>Idioma:</strong> En caso de discrepancias entre versiones traducidas, prevalece la versión en español.</p>
+        </div>
+
+        <div class="terminos_section">
+          <h2><i class="fas fa-envelope"></i> 11. Contacto y Soporte</h2>
+          <p>Para consultas sobre estos Términos, solicitudes de datos personales o soporte técnico, puede contactarnos en:</p>
+          <ul>
+            <li><i class="fas fa-at"></i> Email: <strong>wilder.taype@hotmail.com</strong></li>
+            <li><i class="fab fa-github"></i> GitHub: <strong>github.com/wtaype/wiihope</strong></li>
+            <li><i class="fas fa-globe"></i> Website: <strong>https://wtaype.github.io/wiihope/</strong></li>
+          </ul>
+          <p>Tiempo de respuesta estimado: 24-48 horas laborables.</p>
+        </div>
+      </div>
+
+      <div class="terminos_footer">
+        <p><strong>Al usar ChatWiil, confirmas haber leído, entendido y aceptado estos Términos y Condiciones en su totalidad.</strong></p>
+        <p>"Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito..." - Juan 3:16</p>
+        <p><strong>Versión 1.0.0</strong> - © 2026 ChatWiil. Todos los derechos reservados.</p>
+        <a href="https://wtaype.github.io/wiihope/" class="btn_volver"><i class="fas fa-arrow-left"></i> Volver a ChatWiil</a>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
