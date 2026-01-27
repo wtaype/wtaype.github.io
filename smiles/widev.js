@@ -11,7 +11,10 @@ export const wiLoad = (() => {
     || (carga.add(sel), fn())), opt).observe(el);
   };
 })();
-
+// === CLICK SUMA V10.1 ===
+export const wiSuma = (sel, fn, num = 5) => {
+  let cont = 0; $(document).on('click', sel, () => ++cont === num && (fn(), cont = 0));
+};
 // === 👁️ OBSERVER LAZY v11 ===
 export const wiVista = (sel, fn) => {
   const e = $(sel)[0];

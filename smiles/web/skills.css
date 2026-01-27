@@ -376,3 +376,94 @@
     height: 100px;
   }
 }
+
+/* ==================== TECNOLOGÍAS PRINCIPALES ==================== */
+.tech_principales {
+  padding: 8vh 0;
+  text-align: center;
+  position: relative;
+}
+.tech_principales::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, var(--bg4), transparent 70%);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.tech_principales .section_title {
+  font-family: var(--ff_G);
+  font-size: var(--fz_x2);
+  font-weight: 900;
+  color: var(--tx);
+  margin-bottom: 6vh;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+.tech_principales .section_title::after {
+  content: '';
+  position: absolute;
+  bottom: -2vh; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px; 
+  height: 5px;
+  background: linear-gradient(90deg, var(--mco), var(--hv));
+  border-radius: 10px;
+}
+.tech_principales .tech_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 3vh 2.5vw;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+.tech_principales .tech_card {
+  background: var(--wb);
+  padding: 3vh 2vw;
+  border-radius: 20px;
+  border: 2px solid var(--bg5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+  transition: all var(--tr_m);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+}
+.tech_principales .tech_card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--tech-color);
+  opacity: 0;
+  transition: opacity var(--tr_m);
+}
+.tech_principales .tech_card:hover {
+  border-color: var(--tech-color);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+.tech_principales .tech_card:hover::before { opacity: 0.1; }
+.tech_principales .tech_card i {
+  font-size: 3.5rem;
+  color: var(--tech-color);
+  transition: all var(--tr_m);
+  position: relative;
+  z-index: 1;
+}
+.tech_principales .tech_card:hover i { transform: scale(1.2) rotateY(360deg); }
+.tech_principales .tech_card span {
+  font-size: var(--fz_m3);
+  font-weight: 700;
+  color: var(--tx);
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .tech_principales .tech_grid { grid-template-columns: repeat(2, 1fr); }
+  .tech_principales .tech_card i { font-size: 2.8rem; }
+}

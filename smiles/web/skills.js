@@ -29,6 +29,21 @@ const skillsData = [
   { id: 24, nombre: 'WordPress', porcentaje: 88, categoria: 'cms', icono: 'wordpress/wordpress-original.svg', color: '#21759B', experiencia: '4 años', proyectos: 30 }
 ];
 
+const techPrincipales = [
+  { nombre: 'JavaScript', icono: 'fab fa-js', color: '#F7DF1E' }, 
+  { nombre: 'jQuery', icono: 'fas fa-dollar-sign', color: '#0769AD' },
+  { nombre: 'Node.js', icono: 'fab fa-node', color: '#339933' }, 
+  { nombre: 'GitHub', icono: 'fab fa-github', color: '#181717' },
+  { nombre: 'Railway', icono: 'fas fa-train', color: '#0B0D0E' }, 
+  { nombre: 'Blogger', icono: 'fab fa-blogger', color: '#FF5722' },
+  { nombre: 'Git', icono: 'fab fa-git-alt', color: '#F05032' }, 
+  { nombre: 'Vite', icono: 'fas fa-bolt', color: '#646CFF' },
+  { nombre: 'Firebase', icono: 'fas fa-fire', color: '#FFCA28' }, 
+  { nombre: 'HTML5', icono: 'fab fa-html5', color: '#E34F26' },
+  { nombre: 'CSS3', icono: 'fab fa-css3-alt', color: '#1572B6' }, 
+  { nombre: 'VS Code', icono: 'fas fa-code', color: '#007ACC' }
+];
+
 export const skills = () => {
   let filtradas = [...skillsData];
 
@@ -64,6 +79,12 @@ export const skills = () => {
           <div class="experiencia_card"><i class="fas fa-database"></i><h3>Backend & Databases</h3><p class="exp_numero">${skillsData.filter(s => s.categoria === 'backend').reduce((a,b) => a + b.proyectos, 0)}+</p><p class="exp_label">Proyectos completados</p></div>
           <div class="experiencia_card"><i class="fas fa-mobile-screen"></i><h3>Mobile Apps</h3><p class="exp_numero">${skillsData.filter(s => s.categoria === 'mobile').reduce((a,b) => a + b.proyectos, 0)}+</p><p class="exp_label">Proyectos completados</p></div>
           <div class="experiencia_card"><i class="fas fa-paintbrush"></i><h3>Diseño & Creatividad</h3><p class="exp_numero">${skillsData.filter(s => s.categoria === 'design').reduce((a,b) => a + b.proyectos, 0)}+</p><p class="exp_label">Proyectos completados</p></div>
+        </div>
+      </section>
+      <section class="tech_principales">
+        <h2 class="section_title">Tecnologías Principales</h2>
+        <div class="tech_grid">
+          ${techPrincipales.map(t => `<div class="tech_card" style="--tech-color:${t.color}"><i class="${t.icono}"></i><span>${t.nombre}</span></div>`).join('')}
         </div>
       </section>
     </div>

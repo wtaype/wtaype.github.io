@@ -1,6 +1,5 @@
 import './auth/wiauth.js';
 import $ from 'jquery';
-import { rutas } from './rutas/ruta.js';
 import { getls, removels, Mensaje } from './widev.js';
 
 export function personal(wi) {
@@ -11,7 +10,6 @@ export function personal(wi) {
     </div>
     <button class="bt_salir"><i class="fas fa-sign-out-alt"></i> <span> Salir </span></button>
   `);
-  rutas.navigate('/smile');
 } // Funcion para Auth personal 
 
 export const header = (() => {

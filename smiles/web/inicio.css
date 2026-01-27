@@ -486,136 +486,6 @@
   text-align: justify;
 }
 
-/* ==================== PROYECTOS DESTACADOS ==================== */
-.featured_projects {
-  padding: 8vh 0;
-}
-
-.projects_grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3vw;
-  margin-bottom: 4vh;
-}
-
-.project_card {
-  border-radius: 16px;
-  overflow: hidden;
-  transition: all var(--tr_m);
-}
-
-.project_card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
-}
-
-.project_link {
-  display: block;
-  text-decoration: none;
-  background: var(--wb);
-  height: 100%;
-}
-
-.project_img {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 16/10;
-}
-
-.project_img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform var(--tr_m);
-}
-
-.project_card:hover .project_img img {
-  transform: scale(1.1);
-}
-
-.project_overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity var(--tr_m);
-}
-
-.project_card:hover .project_overlay {
-  opacity: 1;
-}
-
-.project_overlay i {
-  color: var(--F);
-  font-size: 2rem;
-}
-
-.project_info {
-  padding: 2vh 2vw;
-}
-
-.project_title {
-  font-size: var(--fz_m4);
-  font-weight: 700;
-  color: var(--tx);
-  margin-bottom: 1vh;
-}
-
-.project_desc {
-  font-size: var(--fz_m2);
-  color: var(--txe);
-  line-height: 1.6;
-  margin-bottom: 1.5vh;
-}
-
-.project_tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5vh;
-}
-
-.tag {
-  padding: 0.5vh 1vw;
-  background: var(--bg4);
-  color: var(--mco);
-  border-radius: 6px;
-  font-size: var(--fz_s3);
-  font-weight: 600;
-}
-
-/* Skeleton con Shimmer */
-.skeleton .skeleton_img,
-.skeleton .skeleton_text {
-  background: linear-gradient(90deg, var(--bg1) 0%, var(--bg3) 50%, var(--bg1) 100%);
-  background-size: 200% 100%;
-}
-
-.skeleton_img {
-  aspect-ratio: 16/10;
-}
-
-.skeleton_text {
-  height: 2vh;
-  margin: 1vh 2vw;
-  border-radius: 4px;
-}
-
-.skeleton_text.short {
-  width: 60%;
-}
-
-.shimmer {
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 1024px) {
   .hero {
@@ -627,14 +497,8 @@
     height: 50vh;
   }
 
-  .about_grid,
-  .projects_grid {
+  .about_grid {
     grid-template-columns: 1fr;
-  }
-
-  .ver_todos {
-    position: static;
-    margin-top: 2vh;
   }
 }
 

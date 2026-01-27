@@ -1,186 +1,312 @@
 import './proyectos.css';
 import $ from 'jquery';
-import { wiVista, wicopy } from '../widev.js';
-
-const proyectosData = [
-  { id: 1, titulo: 'DSCTO - Calculadora Móvil', descripcion: 'Aplicación para calcular descuentos, ajustes en recibos, tiempos de beneficios y más, con bloc de notas y actualizaciones útiles.', img: 'https://i.postimg.cc/dq8nVhCx/Dscto.png', url: 'https://dscto.blogspot.com/', categoria: 'mobile', tecnologias: ['JavaScript', 'PWA', 'Firebase', 'CSS3'], fecha: '2024-01-15', destacado: true },
-  { id: 2, titulo: 'CODEWIL - Optimizador de Código', descripcion: 'Herramienta para convertir XML, formatos, mayúsculas y optimizar código, haciéndolo más legible, eficiente y optimizado.', img: 'https://i.postimg.cc/CSQcPTYm/Codewil.png', url: 'https://codewil.blogspot.com/', categoria: 'tools', tecnologias: ['React', 'Node.js', 'API', 'TypeScript'], fecha: '2023-11-20', destacado: true },
-  { id: 3, titulo: 'CODESBE - Convertidor de Texto', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/FNRPVstY/Codesbe.png', url: 'https://codesbe.blogspot.com/', categoria: 'tools', tecnologias: ['JavaScript', 'HTML5', 'CSS3'], fecha: '2023-09-10', destacado: false },
-  { id: 4, titulo: 'WIIHOPE - Plataforma Educativa', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/YrMRGtfq/Wiihope.png', url: 'https://wiihope.blogspot.com/', categoria: 'web', tecnologias: ['Vue.js', 'Firebase', 'WebRTC', 'Sass'], fecha: '2024-03-05', destacado: true },
-  { id: 5, titulo: 'WICOLORS - Paleta de Colores', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/FhkDwWHm/Wiicolors.png', url: 'https://wicolors.blogspot.com/', categoria: 'web', tecnologias: ['Vue.js', 'Canvas API', 'Design', 'CSS3'], fecha: '2023-07-22', destacado: false },
-  { id: 6, titulo: 'SUVEMY - Gestión de Ventas', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://suvemy.blogspot.com/', categoria: 'web', tecnologias: ['Angular', 'Firebase', 'Material UI', 'Charts.js'], fecha: '2023-12-18', destacado: false },
-  { id: 7, titulo: 'MEEXPO - Portfolio Showcase', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://meexpo.blogspot.com/', categoria: 'web', tecnologias: ['Next.js', 'Tailwind', 'Framer Motion', 'MDX'], fecha: '2024-02-10', destacado: false },
-  { id: 8, titulo: 'CLAUQI - App Financiera', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://clauqi.blogspot.com/', categoria: 'mobile', tecnologias: ['Flutter', 'Dart', 'SQLite', 'Charts'], fecha: '2023-10-30', destacado: false },
-  { id: 9, titulo: 'WINOTAS - Bloc de Notas Inteligente', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://winotas.blogspot.com/', categoria: 'windows', tecnologias: ['Electron', 'React', 'Firebase', 'Markdown'], fecha: '2024-04-12', destacado: false },
-  { id: 10, titulo: 'IABUENO - IA Conversacional', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://iabueno.blogspot.com/', categoria: 'tools', tecnologias: ['Python', 'OpenAI', 'FastAPI', 'Redis'], fecha: '2024-05-20', destacado: false },
-  { id: 11, titulo: 'IBASE64 - Convertidor Base64', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://ibase64.blogspot.com/', categoria: 'tools', tecnologias: ['JavaScript', 'HTML5', 'CSS3'], fecha: '2024-06-15', destacado: false },
-  { id: 12, titulo: 'MIDRAW Painter - Editor Gráfico', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://midraw.blogspot.com/', categoria: 'tools', tecnologias: ['Canvas API', 'JavaScript', 'WebGL'], fecha: '2024-07-10', destacado: false },
-  { id: 13, titulo: 'DSCTOSM - Descuentos Smart', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://dsctosm.blogspot.com/', categoria: 'mobile', tecnologias: ['React Native', 'Firebase', 'Expo'], fecha: '2024-08-05', destacado: false },
-  { id: 14, titulo: 'AWOMBE - Sistema de Gestión', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://awombe.blogspot.com/', categoria: 'web', tecnologias: ['Laravel', 'MySQL', 'Bootstrap'], fecha: '2024-09-12', destacado: false },
-  { id: 15, titulo: 'En Proceso - Proyecto Secreto', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '#', categoria: 'web', tecnologias: ['React', 'Node.js', 'MongoDB'], fecha: '2025-01-01', destacado: false },
-  { id: 16, titulo: 'En Proceso - Nueva Idea', descripcion: 'Es un excelente programa que permite realizar cambios de palabras de minúsculas a mayúsculas y viceversa', img: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '#', categoria: 'mobile', tecnologias: ['Flutter', 'Firebase', 'Stripe'], fecha: '2025-02-01', destacado: false }
-];
-
-const techPrincipales = [
-  { nombre: 'JavaScript', icono: 'fab fa-js', color: '#F7DF1E' },
-  { nombre: 'jQuery', icono: 'fas fa-dollar-sign', color: '#0769AD' },
-  { nombre: 'Node.js', icono: 'fab fa-node', color: '#339933' },
-  { nombre: 'GitHub', icono: 'fab fa-github', color: '#181717' },
-  { nombre: 'Railway', icono: 'fas fa-train', color: '#0B0D0E' },
-  { nombre: 'Blogger', icono: 'fab fa-blogger', color: '#FF5722' },
-  { nombre: 'Git', icono: 'fab fa-git-alt', color: '#F05032' },
-  { nombre: 'Vite', icono: 'fas fa-bolt', color: '#646CFF' },
-  { nombre: 'Firebase', icono: 'fas fa-fire', color: '#FFCA28' },
-  { nombre: 'HTML5', icono: 'fab fa-html5', color: '#E34F26' },
-  { nombre: 'CSS3', icono: 'fab fa-css3-alt', color: '#1572B6' },
-  { nombre: 'VS Code', icono: 'fas fa-code', color: '#007ACC' }
-];
+import '../header.js';
+import { db } from '../smile/firebase.js';
+import { collection, doc, setDoc, getDocs, deleteDoc, serverTimestamp, Timestamp, query, orderBy } from 'firebase/firestore';
+import { Mensaje, wiSuma, wiVista, getls, savels, wiSpin, Notificacion, abrirModal, cerrarModal, wiDate } from '../widev.js';
 
 export const proyectos = () => {
-  let filtrados = [...proyectosData];
-  let mostrados = 0;
-  const porCarga = 4;
-  const inicial = 8;
+  const CACHE_KEY = 'proyectos';
+  const fechadb = wiDate(Timestamp);
+  const porCarga = 4, inicial = 8;
+  let todos = [], filtrados = [], mostrados = 0, autenticado = !!getls('wiSmile');
+
+  const destacados = [
+    { titulo: 'DSCTO - Calculadora Móvil', img: 'https://i.postimg.cc/dq8nVhCx/Dscto.png', descripcion: 'App para cálculos rápidos de descuentos y ajustes', url: 'https://dscto.blogspot.com/', tags: ['JavaScript', 'PWA', 'Firebase'] },
+    { titulo: 'CODEWIL - Optimizador de Código', img: 'https://i.postimg.cc/CSQcPTYm/Codewil.png', descripcion: 'Herramienta para optimizar y embellecer código', url: 'https://codewil.blogspot.com/', tags: ['React', 'Node.js', 'API'] },
+    { titulo: 'WICOLORS - Paleta de Colores', img: 'https://i.postimg.cc/FhkDwWHm/Wiicolors.png', descripcion: 'Generador inteligente de paletas de colores', url: 'https://wicolors.blogspot.com/', tags: ['Vue.js', 'Design', 'CSS'] }
+  ];
+
+  const fechaInput = v => {
+    const g = fechadb?.get?.(v, 'date') || fechadb?.get?.(v, 'full') || '';
+    if (/^\d{4}-\d{2}-\d{2}/.test(g)) return g.slice(0, 10);
+    const d = v?.toDate?.() || (typeof v === 'string' && new Date(v));
+    return d && !isNaN(d) ? d.toISOString().slice(0, 10) : '';
+  };
+  const fechaSave = v => fechadb?.save?.(v) || Timestamp.fromDate(new Date(v ? `${v}T00:00:00` : Date.now()));
+  const normaliza = s => (s || '').toString().toLowerCase();
+  const buildTechs = str => str.split(',').map(t => t.trim()).filter(Boolean);
 
   $('#proyectos').html(`
     <div class="proyectos_container">
-      <!-- HERO SECTION -->
       <section class="proyectos_hero">
-        <h1 class="hero_title">Todos mis <span class="gradient_text">Proyectos</span></h1>
+        <h1 class="hero_title">Mis <span class="gradient_text">Proyectos</span></h1>
         <p class="hero_subtitle">Explora mi colección de proyectos web, móviles y herramientas desarrolladas con las últimas tecnologías</p>
       </section>
-
-      <!-- BUSCADOR GLASSMORPHISM -->
-      <section class="search_section">
-        <div class="search_wrapper">
-          <i class="fas fa-search search_icon"></i>
-          <input type="text" id="buscarProyecto" class="search_input" placeholder="Buscar proyectos por nombre, descripción o tecnología...">
-          <button class="search_clear" id="clearSearch" style="display:none;"><i class="fas fa-times"></i></button>
-        </div>
+      <section class="proyectos_destacados">
+        <div class="section_header"><h2 class="section_title">Proyectos Destacados</h2><div class="section_line"></div></div>
+        <div class="destacados_grid" id="destacadosGrid">${[1,2,3].map(() => '<div class="skeleton_card"><div class="skeleton_img shimmer"></div><div class="skeleton_text shimmer"></div><div class="skeleton_text short shimmer"></div></div>').join('')}</div>
       </section>
-
-      <!-- FILTROS -->
-      <section class="filtros_section">
-        <div class="filtros_wrapper">
-          <button class="filtro_btn active" data-categoria="all"><i class="fas fa-layer-group"></i> Todos</button>
-          <button class="filtro_btn" data-categoria="web"><i class="fas fa-globe"></i> Web Apps</button>
-          <button class="filtro_btn" data-categoria="mobile"><i class="fas fa-mobile-alt"></i> Mobile</button>
-          <button class="filtro_btn" data-categoria="windows"><i class="fab fa-windows"></i> Windows</button>
-          <button class="filtro_btn" data-categoria="tools"><i class="fas fa-tools"></i> Herramientas</button>
+      <section class="todos_proyectos_section">
+        <div class="section_header">
+          <h2 class="section_title h1pro">Todos mis Proyectos</h2><div class="section_line"></div>
+          <p class="section_descripcion">Cada proyecto representa un desafío superado, una tecnología dominada y una solución creada con pasión por el desarrollo</p>
+          <div class="wiauth dpn"><div class="login">Login</div><div class="bt_salir">Salir</div></div>
         </div>
-        <div class="filtros_orden">
-          <select id="ordenarProyectos" class="orden_select">
-            <option value="reciente">Más reciente</option>
-            <option value="antiguo">Más antiguo</option>
-            <option value="nombre">Por nombre</option>
-            <option value="destacado">Destacados primero</option>
-          </select>
+        <div class="search_section">
+          <div class="search_wrapper">
+            <i class="fas fa-search search_icon"></i>
+            <input type="text" id="buscarProyecto" class="search_input" placeholder="Buscar proyectos por nombre, descripción o tecnología...">
+            <button class="search_clear" id="clearSearch" style="display:none;"><i class="fas fa-times"></i></button>
+          </div>
         </div>
-      </section>
-
-      <!-- GRID PROYECTOS -->
-      <section class="proyectos_grid_section">
-        <div class="proyectos_grid" id="proyectosGrid"></div>
-        <div class="no_resultados" style="display:none;">
-          <i class="fas fa-search"></i>
-          <h3>No se encontraron proyectos</h3>
-          <p>Intenta con otros términos de búsqueda</p>
+        <div class="filtros_section">
+          <div class="filtros_wrapper">
+            ${[{cat:'all',ico:'layer-group',txt:'Todos',type:'s'},{cat:'web',ico:'globe',txt:'Web',type:'s'},{cat:'mobile',ico:'mobile-alt',txt:'Mobile',type:'s'},{cat:'windows',ico:'windows',txt:'Windows',type:'b'},{cat:'tools',ico:'tools',txt:'Tools',type:'s'}].map(f => `<button class="filtro_btn ${f.cat==='all'?'active':''}" data-categoria="${f.cat}"><i class="fa${f.type} fa-${f.ico}"></i> ${f.txt}</button>`).join('')}
+          </div>
+          <div class="filtros_orden">
+            <select id="ordenarProyectos" class="orden_select">
+              ${['reciente|Más reciente','antiguo|Más antiguo','nombre|Por nombre','destacado|Destacados'].map(o => {const [val, txt] = o.split('|'); return `<option value="${val}">${txt}</option>`;}).join('')}
+            </select>
+          </div>
         </div>
-      </section>
-
-      <!-- BOTÓN MOSTRAR MÁS -->
-      <section class="load_more_section" id="loadMoreSection" style="display:none;">
-        <button class="btn_load_more" id="btnLoadMore">
-          <i class="fas fa-plus-circle"></i>
-          <span>Mostrar Más Proyectos</span>
-        </button>
-      </section>
-
-      <!-- TECNOLOGÍAS -->
-      <section class="tech_principales">
-        <h2 class="section_title">Tecnologías Principales</h2>
-        <div class="tech_grid">
-          ${techPrincipales.map(t => `<div class="tech_card" style="--tech-color: ${t.color}"><i class="${t.icono}"></i><span>${t.nombre}</span></div>`).join('')}
+        <div class="proyectos_grid" id="proyectosGrid"><div class="loading_grid"><i class="fas fa-spinner fa-spin"></i><p>Cargando proyectos...</p></div></div>
+        <div class="no_resultados" style="display:none;"><i class="fas fa-search"></i><h3>No se encontraron proyectos</h3><p>Intenta con otros términos de búsqueda</p></div>
+        <div class="load_more_section" id="loadMoreSection" style="display:none;">
+          <button class="btn_load_more" id="btnLoadMore"><i class="fas fa-plus-circle"></i><span>Mostrar Más</span></button>
         </div>
       </section>
     </div>
+    <div class="wiModal" id="modalProyecto">
+      <div class="modalBody modal_proyecto_body">
+        <button class="modalX"><i class="fas fa-times"></i></button>
+        <div class="modal_proyecto_header"><h2 class="modal_titulo" id="modalTitulo">Agregar Proyecto</h2></div>
+        <form class="modal_proyecto_form" id="formProyecto">
+          <div class="form_row">
+            <div class="form_group"><label><i class="fas fa-heading"></i> Título</label><input type="text" id="inputTitulo" class="form_input" placeholder="Ej: Mi Proyecto" required></div>
+            <div class="form_group"><label><i class="fas fa-key"></i> ID</label><input type="text" id="inputId" class="form_input" placeholder="ej: mi-proyecto" required></div>
+          </div>
+          <div class="form_group"><label><i class="fas fa-image"></i> Imagen URL</label><input type="url" id="inputImg" class="form_input" placeholder="https://..." required></div>
+          <div class="form_group"><label><i class="fas fa-link"></i> URL Proyecto</label><input type="url" id="inputUrl" class="form_input" placeholder="https://..." required></div>
+          <div class="form_group"><label><i class="fas fa-align-left"></i> Descripción</label><textarea id="inputDescripcion" class="form_textarea" placeholder="Describe..." rows="3" required></textarea></div>
+          <div class="form_row">
+            <div class="form_group">
+              <label><i class="fas fa-folder"></i> Categoría</label>
+              <select id="inputCategoria" class="form_select" required>
+                <option value="">Seleccionar...</option>
+                ${['web|Web Apps','mobile|Mobile','windows|Windows','tools|Herramientas'].map(c => {const [val, txt] = c.split('|'); return `<option value="${val}">${txt}</option>`;}).join('')}
+              </select>
+            </div>
+            <div class="form_group"><label><i class="fas fa-calendar"></i> Fecha</label><input type="date" id="inputFecha" class="form_input" required></div>
+          </div>
+          <div class="form_row">
+            <div class="form_group"><label><i class="fas fa-code"></i> Tecnologías</label><input type="text" id="inputTecnologias" class="form_input" placeholder="JS, React, CSS" required></div>
+            <div class="form_group"><label class="destacado"><span><input type="checkbox" id="inputDestacado"> Destacado <i class="fas fa-star"></i></span></label></div>
+          </div>
+          <div class="modal_acciones">
+            <button type="button" class="btn_modal btn_cancelar" onclick="cerrarModal('modalProyecto')"><i class="fas fa-times"></i> Cancelar</button>
+            <button type="submit" class="btn_modal btn_guardar" id="btnGuardar"><i class="fas fa-save"></i> Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   `);
 
-  const fmt = f => { const d = new Date(f + 'T00:00:00'); return ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][d.getMonth()] + ' ' + d.getFullYear(); };
-
-  const cargarProyectos = (cantidad = inicial, reset = false) => {
-    const grid = $('#proyectosGrid');
-    if (reset) { grid.empty(); mostrados = 0; }
-    if (!filtrados.length) { $('.no_resultados').fadeIn(300); return $('#loadMoreSection').hide(); }
-    $('.no_resultados').hide();
-    
-    const nuevos = filtrados.slice(mostrados, mostrados + cantidad);
-    const hayMas = mostrados + cantidad < filtrados.length;
-    
-    nuevos.forEach((p, i) => {
-      const $card = $(`
-        <a href="${p.url}" target="_blank" class="proyecto_card" data-proyecto="${p.id}" style="opacity: 0; transform: translateY(20px);">
-          <div class="proyecto_imagen">
-            <img src="${p.img}" alt="${p.titulo}" loading="lazy">
-            <div class="proyecto_overlay"><i class="fas fa-external-link-alt"></i></div>
-            ${p.destacado ? '<div class="badge_destacado"><i class="fas fa-star"></i></div>' : ''}
-          </div>
-          <div class="proyecto_info">
-            <h3 class="proyecto_titulo">${p.titulo}</h3>
-            <p class="proyecto_descripcion">${p.descripcion}</p>
-            <div class="proyecto_tecnologias">${p.tecnologias.slice(0, 3).map(t => `<span class="tech_tag">${t}</span>`).join('')}</div>
-            <div class="proyecto_footer">
-              <span class="proyecto_fecha"><i class="fas fa-calendar"></i> ${fmt(p.fecha)}</span>
-              <button class="btn_copy_link" data-copy="${p.url}" title="Copiar enlace"><i class="fas fa-copy"></i></button>
-            </div>
-          </div>
+  // RENDER: Destacados (local)
+  const renderDestacados = () => {
+    setTimeout(() => {
+      $('#destacadosGrid').html(destacados.map((p, i) => `
+        <a href="${p.url}" target="_blank" rel="noopener" class="proyecto_card" style="animation-delay:${i*0.1}s">
+          <div class="project_img"><img src="${p.img}" alt="${p.titulo}" loading="lazy"><div class="project_overlay"><i class="fas fa-external-link-alt"></i></div></div>
+          <div class="project_info"><h3 class="project_title">${p.titulo}</h3><p class="project_desc">${p.descripcion}</p><div class="project_tags">${p.tags.slice(0,3).map(t => `<span class="tag">${t}</span>`).join('')}</div></div>
         </a>
-      `);
-      grid.append($card);
-      setTimeout(() => $card.css({ opacity: 1, transform: 'translateY(0)', transition: `all 0.5s ease ${i * 0.1}s` }), 50);
-    });
-    
-    mostrados += nuevos.length;
-    hayMas ? $('#loadMoreSection').fadeIn(300) : $('#loadMoreSection').fadeOut(300);
-    
-    $('.btn_copy_link').off('click').on('click', function(e) { e.preventDefault(); e.stopPropagation(); wicopy($(this).data('copy'), this, '¡Copiado!'); });
+      `).join(''));
+      setTimeout(() => $('.proyecto_card').addClass('visible'), 50);
+    }, 800);
   };
 
-  let timeout;
+  // RENDER: Todos (Firebase)
+  const renderizar = (cant = inicial, reset = false) => {
+    const grid = $('#proyectosGrid');
+    if (reset) {
+      grid.empty();
+      mostrados = 0;
+      if (autenticado) grid.append(`<div class="proyecto_card card_agregar" id="cardAgregar"><div class="agregar_content"><div class="agregar_icon"><i class="fas fa-plus"></i></div><h3>Agregar</h3><p>Nuevo proyecto</p></div></div>`);
+    }
+    if (!filtrados.length) {
+      $('.no_resultados').fadeIn(200);
+      $('#loadMoreSection').hide();
+      return;
+    }
+    $('.no_resultados').hide();
+    filtrados.slice(mostrados, mostrados + cant).forEach((p, i) => {
+      grid.append(`
+        <div class="proyecto_card" data-id="${p.id}" style="animation-delay:${i*0.05}s">
+          <div class="project_img">
+            <img src="${p.img}" alt="${p.titulo}" loading="lazy">
+            <div class="project_overlay">
+              <a href="${p.url}" target="_blank" rel="noopener" class="btn_overlay" title="Abrir"><i class="fas fa-external-link-alt"></i></a>
+              ${autenticado ? `<button class="btn_overlay btn_editar" data-id="${p.id}" title="Editar"><i class="fas fa-edit"></i></button><button class="btn_overlay btn_eliminar" data-id="${p.id}" title="Eliminar"><i class="fas fa-trash"></i></button>` : ''}
+            </div>
+            ${p.destacado ? '<div class="badge_destacado"><i class="fas fa-star"></i></div>' : ''}
+          </div>
+          <div class="project_info"><h3 class="project_title">${p.titulo}</h3><p class="project_desc">${p.descripcion}</p><div class="project_tags">${(p.tecnologias||[]).slice(0,3).map(t => `<span class="tag">${t}</span>`).join('')}</div></div>
+        </div>
+      `);
+    });
+    setTimeout(() => grid.find('.proyecto_card:not(.visible)').addClass('visible'), 50);
+    mostrados += cant;
+    mostrados < filtrados.length ? $('#loadMoreSection').fadeIn(200) : $('#loadMoreSection').fadeOut(200);
+  };
+
+  // FIREBASE: Traer proyectos
+  const traerProyectos = async (forzar = false) => {
+    if (!forzar) {
+      const cache = (getls(CACHE_KEY) || {}).data || [];
+      if (cache.length) {
+        todos = filtrados = cache;
+        renderizar(inicial, true);
+        return;
+      }
+    }
+    try {
+      const snap = await (async () => {
+        try {
+          return await getDocs(query(collection(db, 'proyectos'), orderBy('creadoEn', 'desc')));
+        } catch {
+          return await getDocs(collection(db, 'proyectos'));
+        }
+      })();
+      todos = filtrados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderizar(inicial, true);
+      savels(CACHE_KEY, { data: todos, ts: Date.now() }, 24);
+      console.log('✅', todos.length, 'proyectos');
+    } catch (e) {
+      if (!todos.length) $('.loading_grid').html('<i class="fas fa-exclamation-triangle"></i><p>Error al cargar</p>');
+      console.error('❌', e);
+    }
+  };
+
+  // EVENTOS: Auth (7 clicks)
+  wiSuma('.h1pro', () => {
+    autenticado = true;
+    $('.wiauth').removeClass('dpn').addClass('dfc');
+    renderizar(inicial, true);
+    Mensaje('¡Dios te Ama!', 'success');
+  }, 7);
+
+  // EVENTOS: Agregar
+  $(document).on('click', '#cardAgregar', () => {
+    $('#formProyecto')[0].reset();
+    $('#formProyecto').removeData('editId');
+    $('#modalTitulo').text('Agregar Nuevo Proyecto');
+    $('#inputFecha').val(new Date().toISOString().split('T')[0]);
+    $('#inputDestacado').prop('checked', false);
+    $('#inputId').prop('readonly', false);
+    abrirModal('modalProyecto');
+  });
+
+  // EVENTOS: Editar
+  $(document).on('click', '.btn_editar', function(e) {
+    e.stopPropagation();
+    const p = todos.find(x => x.id === $(this).data('id'));
+    if (!p) return Notificacion('No encontrado', 'error');
+    $('#modalTitulo').text('Editar Proyecto');
+    $('#inputTitulo').val(p.titulo);
+    $('#inputDescripcion').val(p.descripcion);
+    $('#inputImg').val(p.img);
+    $('#inputUrl').val(p.url);
+    $('#inputCategoria').val(p.categoria);
+    $('#inputFecha').val(fechaInput(p.fechaProyecto || p.creadoEn));
+    $('#inputTecnologias').val((p.tecnologias || []).join(', '));
+    $('#inputId').val(p.id).prop('readonly', true);
+    $('#inputDestacado').prop('checked', !!p.destacado);
+    $('#formProyecto').data('editId', p.id);
+    abrirModal('modalProyecto');
+  });
+
+  // EVENTOS: Guardar (crear/actualizar)
+  $('#formProyecto').on('submit', async function(e) {
+    e.preventDefault();
+    const editId = $(this).data('editId');
+    const btn = $('#btnGuardar');
+    const docId = editId || `${$('#inputId').val().trim().toLowerCase().replace(/\s+/g, '-')}_${Date.now()}`;
+    const datos = {
+      titulo: $('#inputTitulo').val().trim(),
+      descripcion: $('#inputDescripcion').val().trim(),
+      img: $('#inputImg').val().trim(),
+      url: $('#inputUrl').val().trim(),
+      categoria: $('#inputCategoria').val(),
+      tecnologias: buildTechs($('#inputTecnologias').val()),
+      destacado: $('#inputDestacado').is(':checked'),
+      fechaProyecto: fechaSave($('#inputFecha').val())
+    };
+    if (!datos.titulo || !datos.descripcion || !docId) return Notificacion('Completa los campos', 'warning');
+    wiSpin(btn);
+    const now = serverTimestamp();
+    const payload = { ...datos, UpdateEn: now };
+    if (!editId) payload.creadoEn = now;
+    try {
+      await setDoc(doc(db, 'proyectos', docId), payload, { merge: true });
+      Notificacion(editId ? 'Actualizado ✓' : 'Creado ✓', 'success');
+      await traerProyectos(true);
+      cerrarModal('modalProyecto');
+    } catch (er) {
+      console.error('❌', er);
+      Notificacion('Error al guardar', 'error');
+    } finally {
+      wiSpin(btn, false);
+    }
+  });
+
+  // EVENTOS: Eliminar
+  $(document).on('click', '.btn_eliminar', async function(e) {
+    e.stopPropagation();
+    if (!confirm('¿Eliminar este proyecto?')) return;
+    try {
+      await deleteDoc(doc(db, 'proyectos', $(this).data('id')));
+      Notificacion('Eliminado ✓', 'success');
+      await traerProyectos(true);
+    } catch {
+      Notificacion('Error al eliminar', 'error');
+    }
+  });
+
+  // EVENTOS: Buscar
+  let to;
   $('#buscarProyecto').on('input', function() {
-    const term = $(this).val().trim();
-    $('#clearSearch').toggle(term.length > 0);
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      filtrados = term ? proyectosData.filter(p => p.titulo.toLowerCase().includes(term.toLowerCase()) || p.descripcion.toLowerCase().includes(term.toLowerCase()) || p.tecnologias.some(t => t.toLowerCase().includes(term.toLowerCase()))) : [...proyectosData];
-      cargarProyectos(inicial, true);
-    }, 300);
+    const term = normaliza($(this).val().trim());
+    $('#clearSearch').toggle(!!term);
+    clearTimeout(to);
+    to = setTimeout(() => {
+      filtrados = term ? todos.filter(p => [p.titulo, p.descripcion, ...(p.tecnologias||[])].some(x => normaliza(x).includes(term))) : [...todos];
+      renderizar(inicial, true);
+    }, 220);
   });
   $('#clearSearch').on('click', () => $('#buscarProyecto').val('').trigger('input').focus());
 
+  // EVENTOS: Filtro categoría
   $('.filtro_btn').on('click', function() {
     const cat = $(this).data('categoria');
-    $('.filtro_btn').removeClass('active'); $(this).addClass('active');
-    const term = $('#buscarProyecto').val().toLowerCase().trim();
-    filtrados = cat === 'all' ? (term ? proyectosData.filter(p => p.titulo.toLowerCase().includes(term) || p.descripcion.toLowerCase().includes(term) || p.tecnologias.some(t => t.toLowerCase().includes(term))) : [...proyectosData]) : proyectosData.filter(p => p.categoria === cat && (!term || p.titulo.toLowerCase().includes(term) || p.descripcion.toLowerCase().includes(term) || p.tecnologias.some(t => t.toLowerCase().includes(term))));
-    cargarProyectos(inicial, true);
+    const term = normaliza($('#buscarProyecto').val().trim());
+    $('.filtro_btn').removeClass('active');
+    $(this).addClass('active');
+    let f = cat === 'all' ? todos : todos.filter(p => p.categoria === cat);
+    filtrados = term ? f.filter(p => [p.titulo, p.descripcion, ...(p.tecnologias||[])].some(x => normaliza(x).includes(term))) : f;
+    renderizar(inicial, true);
   });
 
+  // EVENTOS: Ordenar
   $('#ordenarProyectos').on('change', function() {
-    const ord = $(this).val();
-    if (ord === 'reciente') filtrados.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-    else if (ord === 'antiguo') filtrados.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-    else if (ord === 'nombre') filtrados.sort((a, b) => a.titulo.localeCompare(b.titulo));
-    else filtrados.sort((a, b) => b.destacado - a.destacado);
-    cargarProyectos(inicial, true);
+    const sorters = {
+      reciente: (a,b) => new Date(b.fechaProyecto?.toDate?.() || b.UpdateEn?.toDate?.() || 0) - new Date(a.fechaProyecto?.toDate?.() || a.UpdateEn?.toDate?.() || 0),
+      antiguo: (a,b) => new Date(a.fechaProyecto?.toDate?.() || a.UpdateEn?.toDate?.() || 0) - new Date(b.fechaProyecto?.toDate?.() || b.UpdateEn?.toDate?.() || 0),
+      nombre: (a,b) => a.titulo.localeCompare(b.titulo),
+      destacado: (a,b) => (b.destacado|0) - (a.destacado|0)
+    };
+    filtrados.sort(sorters[$(this).val()] || (() => 0));
+    renderizar(inicial, true);
   });
 
+  // EVENTOS: Cargar más
   $('#btnLoadMore').on('click', () => {
-    cargarProyectos(porCarga);
-    $('html, body').animate({ scrollTop: $('#proyectosGrid .proyecto_card').last().offset().top - 100 }, 400);
+    renderizar(porCarga);
+    const lastCard = $('#proyectosGrid .proyecto_card').last();
+    if (lastCard.length && lastCard.offset()) $('html, body').animate({ scrollTop: lastCard.offset().top - 100 }, 350);
   });
 
+  // INIT
   wiVista('.proyectos_hero', () => $('.proyectos_hero').addClass('visible'));
-  cargarProyectos(inicial, true);
-  console.log('✅ Proyectos cargados');
+  renderDestacados();
+  traerProyectos();
 };
