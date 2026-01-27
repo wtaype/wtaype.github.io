@@ -46,13 +46,16 @@ export const proyectos = () => {
         <div class="search_section">
           <div class="search_wrapper">
             <i class="fas fa-search search_icon"></i>
-            <input type="text" id="buscarProyecto" class="search_input" placeholder="Buscar proyectos por nombre, descripción o tecnología...">
+            <input type="text" id="buscarProyecto" class="search_input">
             <button class="search_clear" id="clearSearch" style="display:none;"><i class="fas fa-times"></i></button>
           </div>
         </div>
         <div class="filtros_section">
           <div class="filtros_wrapper">
-            ${[{cat:'all',ico:'layer-group',txt:'Todos',type:'s'},{cat:'web',ico:'globe',txt:'Web',type:'s'},{cat:'mobile',ico:'mobile-alt',txt:'Mobile',type:'s'},{cat:'windows',ico:'windows',txt:'Windows',type:'b'},{cat:'tools',ico:'tools',txt:'Tools',type:'s'}].map(f => `<button class="filtro_btn ${f.cat==='all'?'active':''}" data-categoria="${f.cat}"><i class="fa${f.type} fa-${f.ico}"></i> ${f.txt}</button>`).join('')}
+          ${[{cat:'all',ico:'layer-group',txt:'Todos',type:'s'},{cat:'web',ico:'globe',txt:'Web',type:'s'},
+            {cat:'mobile',ico:'mobile-alt',txt:'Mobile',type:'s'},{cat:'windows',ico:'windows',txt:'Windows',type:'b'},
+            {cat:'educacion',ico:'graduation-cap',txt:'Educación',type:'s'}, {cat:'blog',ico:'blog',txt:'Blog',type:'s'},
+            {cat:'tools',ico:'tools',txt:'Tools',type:'s'}].map(f => `<button class="filtro_btn ${f.cat==='all'?'active':''}" data-categoria="${f.cat}"><i class="fa${f.type} fa-${f.ico}"></i> ${f.txt}</button>`).join('')}
           </div>
           <div class="filtros_orden">
             <select id="ordenarProyectos" class="orden_select">
@@ -76,15 +79,15 @@ export const proyectos = () => {
             <div class="form_group"><label><i class="fas fa-heading"></i> Título</label><input type="text" id="inputTitulo" class="form_input" placeholder="Ej: Mi Proyecto" required></div>
             <div class="form_group"><label><i class="fas fa-key"></i> ID</label><input type="text" id="inputId" class="form_input" placeholder="ej: mi-proyecto" required></div>
           </div>
-          <div class="form_group"><label><i class="fas fa-image"></i> Imagen URL</label><input type="url" id="inputImg" class="form_input" placeholder="https://..." required></div>
           <div class="form_group"><label><i class="fas fa-link"></i> URL Proyecto</label><input type="url" id="inputUrl" class="form_input" placeholder="https://..." required></div>
+          <div class="form_group"><label><i class="fas fa-image"></i> Imagen URL</label><input type="url" id="inputImg" class="form_input" placeholder="https://..." required></div>
           <div class="form_group"><label><i class="fas fa-align-left"></i> Descripción</label><textarea id="inputDescripcion" class="form_textarea" placeholder="Describe..." rows="3" required></textarea></div>
           <div class="form_row">
             <div class="form_group">
               <label><i class="fas fa-folder"></i> Categoría</label>
               <select id="inputCategoria" class="form_select" required>
                 <option value="">Seleccionar...</option>
-                ${['web|Web Apps','mobile|Mobile','windows|Windows','tools|Herramientas'].map(c => {const [val, txt] = c.split('|'); return `<option value="${val}">${txt}</option>`;}).join('')}
+                ${['web|Web Apps','mobile|Mobile','windows|Windows','tools|Herramientas','educacion|Educación','blog|Blog'].map(c => {const [val, txt] = c.split('|'); return `<option value="${val}">${txt}</option>`;}).join('')}
               </select>
             </div>
             <div class="form_group"><label><i class="fas fa-calendar"></i> Fecha</label><input type="date" id="inputFecha" class="form_input" required></div>
@@ -170,6 +173,7 @@ export const proyectos = () => {
       todos = filtrados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderizar(inicial, true);
       savels(CACHE_KEY, { data: todos, ts: Date.now() }, 24);
+      $('#buscarProyecto').attr('placeholder', `Buscar en ${todos.length} proyectos...`);
     } catch (e) {
       if (!todos.length) $('.loading_grid').html('<i class="fas fa-exclamation-triangle"></i><p>Error al cargar</p>');
       console.error('❌', e);
@@ -311,6 +315,6 @@ export const proyectos = () => {
     filtrados.sort((a,b) => (b.destacado|0) - (a.destacado|0));
     renderizar(inicial, true);
   });
-  
+
   console.log('✅ Proyectos completado');
 };
