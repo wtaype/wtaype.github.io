@@ -124,5 +124,5 @@ export const logros = () => {
   wiVista('.stats_anuales', () => $('.stat_bar_fill').each((i, el) => setTimeout(() => $(el).addClass('animate'), i * 200)));
 
   cargar();
-  console.log('✅ Logros cargados');
+  console.log('✅ Logros completado');
 };

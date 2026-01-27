@@ -277,5 +277,5 @@ export const contacto = () => {
     });
   });
 
-  console.log('✅ Contacto cargado');
+  console.log('✅ Contacto completado');
 };

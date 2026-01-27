@@ -184,5 +184,5 @@ export const inicio = () => {
     });
   });
 
-  console.log('✅ Inicio cargado');
+  console.log('✅ Inicio completado');
 };

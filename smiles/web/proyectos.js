@@ -170,7 +170,6 @@ export const proyectos = () => {
       todos = filtrados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderizar(inicial, true);
       savels(CACHE_KEY, { data: todos, ts: Date.now() }, 24);
-      console.log('✅', todos.length, 'proyectos');
     } catch (e) {
       if (!todos.length) $('.loading_grid').html('<i class="fas fa-exclamation-triangle"></i><p>Error al cargar</p>');
       console.error('❌', e);
@@ -309,4 +308,5 @@ export const proyectos = () => {
   wiVista('.proyectos_hero', () => $('.proyectos_hero').addClass('visible'));
   renderDestacados();
   traerProyectos();
+  console.log('✅ Proyectos completado');
 };
