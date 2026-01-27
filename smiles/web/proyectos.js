@@ -56,7 +56,7 @@ export const proyectos = () => {
           </div>
           <div class="filtros_orden">
             <select id="ordenarProyectos" class="orden_select">
-              ${['reciente|Más reciente','antiguo|Más antiguo','nombre|Por nombre','destacado|Destacados'].map(o => {const [val, txt] = o.split('|'); return `<option value="${val}">${txt}</option>`;}).join('')}
+              ${['destacado|Destacados','reciente|Más reciente','antiguo|Más antiguo','nombre|Por nombre'].map(o => {const [val, txt] = o.split('|'); return `<option value="${val}">${txt}</option>`;}).join('')}
             </select>
           </div>
         </div>
@@ -307,6 +307,10 @@ export const proyectos = () => {
   // INIT
   wiVista('.proyectos_hero', () => $('.proyectos_hero').addClass('visible'));
   renderDestacados();
-  traerProyectos();
+  traerProyectos().then(() => {
+    filtrados.sort((a,b) => (b.destacado|0) - (a.destacado|0));
+    renderizar(inicial, true);
+  });
+  
   console.log('✅ Proyectos completado');
 };
