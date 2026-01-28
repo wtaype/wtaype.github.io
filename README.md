@@ -18,7 +18,7 @@ Incluye una sección de proyectos destacados, buscador inteligente, filtros por 
 
 ## Autor
 
-Desarrollado por Wilmer Taype  
+Desarrollado por Wilder Taype  
 [wtaype.github.io](https://wtaype.github.io)
 
 ---
