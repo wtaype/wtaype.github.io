@@ -5,28 +5,28 @@ import { wiVista } from '../widev.js';
 const skillsData = [
   { id: 1, nombre: 'HTML5', porcentaje: 99, categoria: 'frontend', icono: 'html5/html5-original.svg', color: '#E34F26', experiencia: '5 años', proyectos: 50 },
   { id: 2, nombre: 'CSS3', porcentaje: 99, categoria: 'frontend', icono: 'css3/css3-original.svg', color: '#1572B6', experiencia: '5 años', proyectos: 50 },
-  { id: 3, nombre: 'JavaScript', porcentaje: 95, categoria: 'frontend', icono: 'javascript/javascript-original.svg', color: '#F7DF1E', experiencia: '4 años', proyectos: 45 },
-  { id: 4, nombre: 'jQuery', porcentaje: 97, categoria: 'frontend', icono: 'jquery/jquery-original.svg', color: '#0769AD', experiencia: '4 años', proyectos: 40 },
-  { id: 5, nombre: 'React', porcentaje: 93, categoria: 'frontend', icono: 'react/react-original.svg', color: '#61DAFB', experiencia: '3 años', proyectos: 25 },
-  { id: 6, nombre: 'Vue.js', porcentaje: 85, categoria: 'frontend', icono: 'vuejs/vuejs-original.svg', color: '#4FC08D', experiencia: '2 años', proyectos: 15 },
-  { id: 7, nombre: 'Angular', porcentaje: 88, categoria: 'frontend', icono: 'angular/angular-original.svg', color: '#DD0031', experiencia: '3 años', proyectos: 18 },
+  { id: 4, nombre: 'jQuery', porcentaje: 98, categoria: 'frontend', icono: 'jquery/jquery-original.svg', color: '#0769AD', experiencia: '4 años', proyectos: 40 },
+  { id: 3, nombre: 'JavaScript', porcentaje: 96, categoria: 'frontend', icono: 'javascript/javascript-original.svg', color: '#F7DF1E', experiencia: '4 años', proyectos: 45 },
+  { id: 13, nombre: 'Firebase', porcentaje: 95, categoria: 'backend', icono: 'firebase/firebase-original.svg', color: '#FFCA28', experiencia: '3 años', proyectos: 28 },
+  { id: 10, nombre: 'Node.js', porcentaje: 90, categoria: 'backend', icono: 'nodejs/nodejs-original.svg', color: '#339933', experiencia: '3 años', proyectos: 22 },
+  { id: 15, nombre: 'Git', porcentaje: 95, categoria: 'tools', icono: 'git/git-original.svg', color: '#F05032', experiencia: '4 años', proyectos: 50 },
+  { id: 18, nombre: 'Flutter', porcentaje: 95, categoria: 'mobile', icono: 'flutter/flutter-original.svg', color: '#02569B', experiencia: '2 años', proyectos: 10 },
+  { id: 16, nombre: 'GitHub', porcentaje: 96, categoria: 'tools', icono: 'github/github-original.svg', color: '#181717', experiencia: '4 años', proyectos: 50 },
+  { id: 17, nombre: 'VS Code', porcentaje: 98, categoria: 'tools', icono: 'vscode/vscode-original.svg', color: '#007ACC', experiencia: '5 años', proyectos: 50 },
+  { id: 20, nombre: 'Kotlin', porcentaje: 85, categoria: 'mobile', icono: 'kotlin/kotlin-original.svg', color: '#7F52FF', experiencia: '2 años', proyectos: 10 },
+  { id: 5, nombre: 'React', porcentaje: 80, categoria: 'frontend', icono: 'react/react-original.svg', color: '#61DAFB', experiencia: '3 años', proyectos: 25 },
+  { id: 6, nombre: 'Vue.js', porcentaje: 60, categoria: 'frontend', icono: 'vuejs/vuejs-original.svg', color: '#4FC08D', experiencia: '2 años', proyectos: 15 },
+  { id: 7, nombre: 'Angular', porcentaje: 50, categoria: 'frontend', icono: 'angular/angular-original.svg', color: '#DD0031', experiencia: '3 años', proyectos: 18 },
   { id: 8, nombre: 'Tailwind CSS', porcentaje: 92, categoria: 'frontend', icono: 'tailwindcss/tailwindcss-original.svg', color: '#06B6D4', experiencia: '2 años', proyectos: 20 },
-  { id: 9, nombre: 'Bootstrap', porcentaje: 90, categoria: 'frontend', icono: 'bootstrap/bootstrap-original.svg', color: '#7952B3', experiencia: '4 años', proyectos: 35 },
-  { id: 10, nombre: 'Node.js', porcentaje: 88, categoria: 'backend', icono: 'nodejs/nodejs-original.svg', color: '#339933', experiencia: '3 años', proyectos: 22 },
+  { id: 9, nombre: 'Bootstrap', porcentaje: 85, categoria: 'frontend', icono: 'bootstrap/bootstrap-original.svg', color: '#7952B3', experiencia: '4 años', proyectos: 35 },
   { id: 11, nombre: 'PHP', porcentaje: 82, categoria: 'backend', icono: 'php/php-original.svg', color: '#777BB4', experiencia: '3 años', proyectos: 20 },
   { id: 12, nombre: 'Python', porcentaje: 75, categoria: 'backend', icono: 'python/python-original.svg', color: '#3776AB', experiencia: '2 años', proyectos: 12 },
-  { id: 13, nombre: 'Firebase', porcentaje: 90, categoria: 'backend', icono: 'firebase/firebase-original.svg', color: '#FFCA28', experiencia: '3 años', proyectos: 28 },
   { id: 14, nombre: 'MySQL', porcentaje: 85, categoria: 'backend', icono: 'mysql/mysql-original.svg', color: '#4479A1', experiencia: '4 años', proyectos: 25 },
-  { id: 15, nombre: 'Git', porcentaje: 92, categoria: 'tools', icono: 'git/git-original.svg', color: '#F05032', experiencia: '4 años', proyectos: 50 },
-  { id: 16, nombre: 'GitHub', porcentaje: 94, categoria: 'tools', icono: 'github/github-original.svg', color: '#181717', experiencia: '4 años', proyectos: 50 },
-  { id: 17, nombre: 'VS Code', porcentaje: 98, categoria: 'tools', icono: 'vscode/vscode-original.svg', color: '#007ACC', experiencia: '5 años', proyectos: 50 },
-  { id: 18, nombre: 'Flutter', porcentaje: 80, categoria: 'mobile', icono: 'flutter/flutter-original.svg', color: '#02569B', experiencia: '2 años', proyectos: 10 },
   { id: 19, nombre: 'Android Studio', porcentaje: 85, categoria: 'mobile', icono: 'androidstudio/androidstudio-original.svg', color: '#3DDC84', experiencia: '2 años', proyectos: 12 },
-  { id: 20, nombre: 'Kotlin', porcentaje: 78, categoria: 'mobile', icono: 'kotlin/kotlin-original.svg', color: '#7F52FF', experiencia: '2 años', proyectos: 10 },
   { id: 21, nombre: 'Photoshop', porcentaje: 95, categoria: 'design', icono: 'photoshop/photoshop-original.svg', color: '#31A8FF', experiencia: '5 años', proyectos: 40 },
   { id: 22, nombre: 'Premiere Pro', porcentaje: 90, categoria: 'design', icono: 'premierepro/premierepro-original.svg', color: '#9999FF', experiencia: '3 años', proyectos: 20 },
   { id: 23, nombre: 'Canva', porcentaje: 96, categoria: 'design', icono: 'canva/canva-original.svg', color: '#00C4CC', experiencia: '4 años', proyectos: 45 },
-  { id: 24, nombre: 'WordPress', porcentaje: 88, categoria: 'cms', icono: 'wordpress/wordpress-original.svg', color: '#21759B', experiencia: '4 años', proyectos: 30 }
+  { id: 24, nombre: 'WordPress', porcentaje: 90, categoria: 'cms', icono: 'wordpress/wordpress-original.svg', color: '#21759B', experiencia: '4 años', proyectos: 30 }
 ];
 
 const techPrincipales = [
@@ -75,10 +75,10 @@ export const skills = () => {
       <section class="experiencia_section">
         <h2 class="section_title">Experiencia en Proyectos</h2>
         <div class="experiencia_grid">
-          <div class="experiencia_card"><i class="fas fa-laptop-code"></i><h3>Frontend Development</h3><p class="exp_numero">${skillsData.filter(s => s.categoria === 'frontend').reduce((a,b) => a + b.proyectos, 0)}+</p><p class="exp_label">Proyectos completados</p></div>
-          <div class="experiencia_card"><i class="fas fa-database"></i><h3>Backend & Databases</h3><p class="exp_numero">${skillsData.filter(s => s.categoria === 'backend').reduce((a,b) => a + b.proyectos, 0)}+</p><p class="exp_label">Proyectos completados</p></div>
-          <div class="experiencia_card"><i class="fas fa-mobile-screen"></i><h3>Mobile Apps</h3><p class="exp_numero">${skillsData.filter(s => s.categoria === 'mobile').reduce((a,b) => a + b.proyectos, 0)}+</p><p class="exp_label">Proyectos completados</p></div>
-          <div class="experiencia_card"><i class="fas fa-paintbrush"></i><h3>Diseño & Creatividad</h3><p class="exp_numero">${skillsData.filter(s => s.categoria === 'design').reduce((a,b) => a + b.proyectos, 0)}+</p><p class="exp_label">Proyectos completados</p></div>
+          <div class="experiencia_card"><i class="fas fa-laptop-code"></i><h3>Frontend Development</h3><p class="exp_numero">+70</p><p class="exp_label">Proyectos completados</p></div>
+          <div class="experiencia_card"><i class="fas fa-database"></i><h3>Backend & Databases</h3><p class="exp_numero">+20</p><p class="exp_label">Proyectos completados</p></div>
+          <div class="experiencia_card"><i class="fas fa-mobile-screen"></i><h3>Mobile Apps</h3><p class="exp_numero">+3</p><p class="exp_label">Proyectos completados</p></div>
+          <div class="experiencia_card"><i class="fas fa-paintbrush"></i><h3>Diseño & Creatividad</h3><p class="exp_numero">+30</p><p class="exp_label">Proyectos completados</p></div>
         </div>
       </section>
       <section class="tech_principales">

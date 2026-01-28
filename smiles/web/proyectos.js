@@ -52,10 +52,16 @@ export const proyectos = () => {
         </div>
         <div class="filtros_section">
           <div class="filtros_wrapper">
-          ${[{cat:'all',ico:'layer-group',txt:'Todos',type:'s'},{cat:'web',ico:'globe',txt:'Web',type:'s'},
-            {cat:'mobile',ico:'mobile-alt',txt:'Mobile',type:'s'},{cat:'windows',ico:'windows',txt:'Windows',type:'b'},
-            {cat:'educacion',ico:'graduation-cap',txt:'Educación',type:'s'}, {cat:'blog',ico:'blog',txt:'Blog',type:'s'},
-            {cat:'tools',ico:'tools',txt:'Tools',type:'s'}].map(f => `<button class="filtro_btn ${f.cat==='all'?'active':''}" data-categoria="${f.cat}"><i class="fa${f.type} fa-${f.ico}"></i> ${f.txt}</button>`).join('')}
+        ${[{cat:'all',ico:'layer-group',txt:'Todos los Proyectos',type:'s'},
+          {cat:'web',ico:'globe',txt:'Web Apps',type:'s'},
+          {cat:'mobile',ico:'mobile-alt',txt:'Mobile',type:'s'},
+          {cat:'windows',ico:'windows',txt:'Windows',type:'b'},
+          {cat:'educacion',ico:'graduation-cap',txt:'Educación',type:'s'},
+          {cat:'diseno',ico:'palette',txt:'Diseño',type:'s'},
+          {cat:'devs',ico:'user-astronaut',txt:'Devs',type:'s'},
+          {cat:'tools',ico:'tools',txt:'Herramientas',type:'s'},
+          {cat:'camino',ico:'hourglass-half',txt:'Camino',type:'s'},
+        ].map(f => `<button class="filtro_btn ${f.cat==='all'?'active':''}" data-categoria="${f.cat}"><i class="fa${f.type} fa-${f.ico}"></i> ${f.txt}</button>`).join('')}
           </div>
           <div class="filtros_orden">
             <select id="ordenarProyectos" class="orden_select">
@@ -83,21 +89,28 @@ export const proyectos = () => {
           <div class="form_group"><label><i class="fas fa-image"></i> Imagen URL</label><input type="url" id="inputImg" class="form_input" placeholder="https://..." required></div>
           <div class="form_group"><label><i class="fas fa-align-left"></i> Descripción</label><textarea id="inputDescripcion" class="form_textarea" placeholder="Describe..." rows="3" required></textarea></div>
           <div class="form_row">
+            <div class="form_group"><label><i class="fas fa-code"></i> Tecnologías</label><input type="text" id="inputTecnologias" class="form_input" placeholder="JS, React, CSS" required></div>
+            <div class="form_group"><label><i class="fas fa-calendar"></i> Fecha</label><input type="date" id="inputFecha" class="form_input" required></div>
+          </div>
+          <div class="form_row">
             <div class="form_group">
               <label><i class="fas fa-folder"></i> Categoría</label>
               <select id="inputCategoria" class="form_select" required>
                 <option value="">Seleccionar...</option>
-                ${['web|Web Apps','mobile|Mobile','windows|Windows','tools|Herramientas','educacion|Educación','blog|Blog'].map(c => {const [val, txt] = c.split('|'); return `<option value="${val}">${txt}</option>`;}).join('')}
+                  ${['web|Web Apps',
+                    'mobile|Mobile',
+                    'windows|Windows',
+                    'educacion|Educación',
+                    'diseno|Diseño',
+                    'devs|Devs',
+                    'tools|Herramientas',
+                    'camino|Camino',
+                  ].map(c => {const [val, txt] = c.split('|'); return `<option value="${val}">${txt}</option>`;}).join('')}
               </select>
             </div>
-            <div class="form_group"><label><i class="fas fa-calendar"></i> Fecha</label><input type="date" id="inputFecha" class="form_input" required></div>
-          </div>
-          <div class="form_row">
-            <div class="form_group"><label><i class="fas fa-code"></i> Tecnologías</label><input type="text" id="inputTecnologias" class="form_input" placeholder="JS, React, CSS" required></div>
             <div class="form_group"><label class="destacado"><span><input type="checkbox" id="inputDestacado"> Destacado <i class="fas fa-star"></i></span></label></div>
           </div>
           <div class="modal_acciones">
-            <button type="button" class="btn_modal btn_cancelar" onclick="cerrarModal('modalProyecto')"><i class="fas fa-times"></i> Cancelar</button>
             <button type="submit" class="btn_modal btn_guardar" id="btnGuardar"><i class="fas fa-save"></i> Guardar</button>
           </div>
         </form>
