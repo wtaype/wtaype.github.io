@@ -7,7 +7,7 @@ export const wiLoad = (() => {
     const sel = id[0] === '#' ? id : `#${id}`; if (!$(sel).length) $('#wimain').append(`<div id="${id.replace('#','')}" style="min-height:86vh"></div>`);
     const el = $(sel)[0];
     el && new IntersectionObserver(([x]) => x.isIntersecting && (history.replaceState(null,'',sel), 
-    import('./wii.js').then(({ titulo }) => document.title = `${sel.slice(1).charAt(0).toUpperCase() + sel.slice(2)} - ${titulo}`), carga.has(sel) 
+    import('./wii.js').then(({ app }) => document.title = `${sel.slice(1).charAt(0).toUpperCase() + sel.slice(2)} - ${app}`), carga.has(sel) 
     || (carga.add(sel), fn())), opt).observe(el);
   };
 })();
