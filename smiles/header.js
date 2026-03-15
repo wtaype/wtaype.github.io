@@ -1,4 +1,3 @@
-import './auth/wiauth.js';
 import { $, getls, removels, Mensaje } from './widev.js';
 
 export function personal(wi) {
@@ -31,7 +30,13 @@ export const header = (() => {
   }
 
   window.addEventListener('wiFresh', (e) => cargandoPersonal(e.detail));
-//CERRAR SESSIÓN
+
+  // Login/Registrar → carga wiauth lazy
+  $(document).on('click', '.login,.registrar', async function(e) {
+    e.preventDefault();
+    await import('./auth/wiauth.js');
+  });
+
   $(document).on('click', '.bt_salir', async () => {
     const { auth, signOut } = await import('./auth/wiauth.js');
     await signOut(auth);

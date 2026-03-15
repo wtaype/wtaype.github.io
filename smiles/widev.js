@@ -19,6 +19,7 @@ class wi$ {
   addClass(c) { return this.each(el => el.classList.add(...c.split(' '))); }
   removeClass(c) { return this.each(el => el.classList.remove(...c.split(' '))); }
   hasClass(c) { return this.els[0]?.classList.contains(c) ?? false; }
+  is(s) { return this.els[0]?.matches(s) ?? false; }
   toggleClass(c) { return this.each(el => c.split(' ').forEach(cl => el.classList.toggle(cl))); }
   attr(k, v) { if (v === undefined) return this.els[0]?.getAttribute(k); return this.each(el => el.setAttribute(k, v)); }
   data(k, v) { if (v === undefined) return this.els[0]?.dataset[k]; return this.each(el => el.dataset[k] = v); }

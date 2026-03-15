@@ -11,6 +11,7 @@ export { auth, onAuthStateChanged, signOut };
 // ==================== CONFIG ====================
 const cfg = { db: 'smiles', rol: 'smile' };
 let modal = 'si', link = 'no', restablecer = 'no', login = 'si', registrar = 'no';
+let pagina = 'actual'; // 'actual' = quedarse, '/proyectos', '/smile', '/'
 let registrando = false;
 
 const err = {
@@ -129,10 +130,12 @@ const tema = t => {
   $('meta[name="theme-color"]').attr('content', c);
   $('.tema').removeClass('mtha').filter(`[data-ths="${t}"]`).addClass('mtha');
 };
+const redir = () => pagina === 'actual' ? null : rutas.navigate(pagina);
 const entrar = wi => {
   wiAuth.login(wi, 7);
   if (wi?.tema) { localStorage.wiTema = wi.tema; tema(wi.tema); }
   if (esModal()) cerrarTodos();
+  redir();
 };
 
 // ==================== EVENTOS ====================
@@ -173,8 +176,7 @@ $(document)
     await accion(this, 'Iniciando', async () => {
       await signInWithEmailAndPassword(auth, await correo(val('email')), val('password'));
       const wi = (await getDoc(doc(db, cfg.db, auth.currentUser.displayName || val('email')))).data();
-      entrar(wi); 
-      // rutas.navigate('/smile') se maneja en onAuthStateChanged para evitar problemas con el modal y asegurar que el estado de autenticación esté actualizado antes de navegar.;
+      entrar(wi);
     });
   })
   .on('click.wi', '#Registrar', async function () {
@@ -193,7 +195,7 @@ $(document)
       await Promise.all([updateProfile(user, { displayName: d.usuario }), sendEmailVerification(user)]);
       const wi = { usuario: d.usuario, email: d.email, nombre: d.nombre, apellidos: d.apellidos, rol: cfg.rol, uid: user.uid, terminos: true, tema: localStorage.wiTema };
       await setDoc(doc(db, cfg.db, d.usuario), { ...wi, creado: serverTimestamp() });
-      entrar(wi); Mensaje('<i class="fa-solid fa-check-circle"></i> Cuenta creada. Verifica tu email', 'success'); rutas.navigate('/smile');
+      entrar(wi); Mensaje('<i class="fa-solid fa-check-circle"></i> Cuenta creada. Verifica tu email', 'success');
     });
     registrando = false;
   })
