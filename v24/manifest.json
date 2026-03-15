@@ -1,0 +1,24 @@
+{
+  "name": "Wilder Taype — Desarrollador Full Stack",
+  "short_name": "Wilder Taype",
+  "description": "Portafolio de Wilder Taype — Desarrollador Full Stack especializado en JavaScript, Firebase y apps web modernas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ccffce",
+  "theme_color": "#29C72E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/smile.avif",
+      "sizes": "192x192",
+      "type": "image/avif"
+    },
+    {
+      "src": "/poster.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ],
+  "categories": ["portfolio", "technology"],
+  "lang": "es"
+}
