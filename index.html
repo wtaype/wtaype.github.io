@@ -10,8 +10,6 @@
   <link rel="alternate" hreflang="es" href="https://wtaype.me/" />
   <link rel="canonical" href="https://wtaype.me/" />
   <link rel="icon" type="image/avif" href="/smile.avif" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="image" type="image/webp" href="/poster.webp" />
   <meta property="og:image" content="https://wtaype.me/poster.webp" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -23,7 +21,6 @@
   <meta property="og:description" content="Desarrollador Full Stack especializado en JavaScript, Firebase y apps web modernas. +60 proyectos, 6 años de experiencia. Creando soluciones rápidas, intuitivas y escalables." />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#29C72E" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Wilder Taype" />
   <link rel="apple-touch-icon" href="/smile.avif" />
@@ -209,7 +206,7 @@ input[type="checkbox"],input[type="radio"]{width:auto;margin-right:0.5vh;accent-
 select{cursor:pointer;background-repeat:no-repeat;background-position:right 1vh center;padding-right:3vh}
 select option{background:var(--wb);color:var(--tx)}
 textarea{resize:vertical;min-height:8vh;font-family:var(--ff_P)}
-button{padding:.3vh 1vh;background:var(--mco);color:var(--txa);border:none;border-radius:0.6vh;font-size:var(--fz_m2);font-weight:500;cursor:pointer;transition:all var(--tr_f)}
+button{padding:.3vh 1vh;background:none;color:var(--txa);border:none;border-radius:0.6vh;font-size:var(--fz_m2);font-weight:500;cursor:pointer;transition:all var(--tr_f)}
 button:hover{transform:translateY(-0.2vh);}
 button:disabled{opacity:0.5;cursor:not-allowed;transform:none}
 ul,ol{margin-left:2.5vh;margin-bottom:1.5vh;color:var(--tx)}
@@ -222,12 +219,10 @@ blockquote{padding:1.5vh 2vh;margin:2vh 0;background:var(--bg4);border-left:4px 
 
 /* ==================== UTILIDADES ==================== */
 .txc{text-align:center}
-.dpn, .movil .wilogo{display:none}
+.dpn{display:none}
 .dpc{display:flex;justify-content:center;align-items:center}
 .dpw{display:flex;justify-content:space-between;align-items:center}
 .dpr{display:flex;flex-direction: row; flex-wrap: wrap;}
-.movil *{justify-content: center;}
-.movil .winav,.movil .wiauth{display: flex; flex-direction: column;}
 .dpvc{display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center}
 
 /* ==================== TEMAS ==================== */
@@ -284,6 +279,24 @@ blockquote{padding:1.5vh 2vh;margin:2vh 0;background:var(--bg4);border-left:4px 
 .wi_visible{opacity:1!important;transform:none!important}
 
 .nv_item:focus-visible,.tema:focus-visible,.wibtn_auth:focus-visible,.bt_salir:focus-visible,.wimenu:focus-visible,.btn_primary:focus-visible,.btn_secondary:focus-visible,button:focus-visible{outline:2px solid var(--mco);outline-offset:2px;border-radius:0.6vh}
+
+/* ==================== MOBILE DRAWER ==================== */
+.movil_overlay{position:fixed;inset:0;background:rgba(0,0,0,.12);backdrop-filter:blur(.3vw);z-index:200;opacity:0;pointer-events:none;transition:opacity var(--tr_m)}
+.movil_drawer{position:fixed;top:0;right:0;width:80vw;height:100dvh;background:var(--bg);z-index:201;transform:translateX(100%);transition:transform var(--tr_m);display:flex;flex-direction:column;padding:2vh 0;overflow-y:auto;box-shadow:-1vh 0 3vh rgba(0,0,0,.08)}
+body.movil_open{overflow:hidden}
+body.movil_open .movil_overlay{opacity:1;pointer-events:auto}
+body.movil_open .movil_drawer{transform:translateX(0)}
+.movil_close{color: var(--mco);position:absolute;top:1px;right:2px;font-size:var(--fz_m4);padding:.8vh 1.2vh;background:none;border:none;cursor:pointer}
+.movil_close:hover{color:var(--mco)}
+.movil_logo{text-align:center;padding:3vh 2vh 1vh;font-size:var(--fz_m5);font-weight:700;color:var(--bg2)}
+.movil_logo i{margin-right:.5vh}
+.movil_nav{display:flex;flex-direction:column;margin-top:1vh;padding:0 1vh;text-align:left}
+.movil_nav .nv_item{display:flex;align-items:center;justify-content:flex-start;gap:2.5vh;padding:2.5vh 2.5vh;color:var(--tx);font-size:var(--fz_m2);font-weight:500;border-bottom:1px solid var(--brd);background:none;border-radius:0;box-shadow:none}
+.movil_nav .nv_item:last-child{border-bottom:none}
+.movil_nav .nv_item i{font-size:var(--fz_l1);color:var(--mco);min-width:3vh}
+.movil_nav .nv_item span{font-size:var(--fz_m2)}
+.movil_nav .nv_item.active{color:var(--mco);font-weight:700;background:var(--bg4);border-radius:.6vh}
+.movil_nav .nv_item.active i{color:var(--mco)}
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width:768px){

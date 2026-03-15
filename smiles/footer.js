@@ -14,6 +14,18 @@ function footer(){
   `;
 }; $('body').append(footer());  //Actualizar 
 
-const mstyles = `
-:root{--bgim:url("${import.meta.env.BASE_URL}wpuntos.svg")}.wicontainer{background: var(--bgim),linear-gradient(to bottom,var(--bg),var(--wb));}
-`;$('head').append(`<style>${mstyles}</style> `);
+$("head").append(`<style>:root{--bgim:url("${import.meta.env.BASE_URL}wpuntos.svg")}body{background: var(--bgim), var(--bg)}</style>`)
+
+// MOBILE DRAWER v1.0
+$('body').append(`
+  <div class="movil_overlay"></div>
+  <nav class="movil_drawer" role="navigation" aria-label="Menú móvil">
+    <button class="movil_close" aria-label="Cerrar menú"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <div class="movil_logo"><i class="fas fa-code" aria-hidden="true"></i> Wilder Taype</div>
+    <div class="movil_nav">${$('.winav').html()}</div>
+  </nav>
+`);
+const cerrarMovil = () => $('body').removeClass('movil_open');
+$('.wimenu').on('click', () => $('body').addClass('movil_open'));
+$('.movil_close, .movil_overlay').on('click', cerrarMovil);
+$(document).on('click', '.movil_nav .nv_item', cerrarMovil);
