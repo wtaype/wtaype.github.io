@@ -52,7 +52,7 @@ export const render = () => `
       <div class="profile_container">
         <div class="profile_ring"></div>
         <div class="profile_ring ring2"></div>
-        <img src="${import.meta.env.BASE_URL}wilder.webp" alt="Wilder Taype" class="profile_img" loading="lazy">
+        <span class="profile_img"></span>
         <div class="profile_badge"><i class="fas fa-circle"></i><span>Disponible</span></div>
       </div>
       ${TECHS.map(([t, i], x) => `<div class="floating_tech tech${x + 1}" ${wiTip(t)}><i class="${i}"></i></div>`).join('')}

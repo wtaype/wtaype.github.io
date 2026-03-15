@@ -698,3 +698,13 @@
   .filtro_btn { font-size: var(--fz_s4); padding: 1.2vh 4vw; }
   .project_info { padding: 2.5vh 4vw; }
 }
+
+.sesion {
+    display: flex;
+    justify-content:center;
+    gap: 1vh;
+    
+}
+.sesion img{
+    width: 3vh
+}
