@@ -2,6 +2,8 @@
 const qsa = (s, ctx = document) => [...ctx.querySelectorAll(s)];
 const toEl = x => x instanceof wi$ ? x[0] : x?.nodeType ? x : typeof x === 'string' ? document.querySelector(x) : null;
 const _each = (els, fn) => { els.forEach(fn); }; // internal iterator (el, i)
+const _noPx = new Set('animationIterationCount,columnCount,fillOpacity,flexGrow,flexShrink,fontWeight,lineHeight,opacity,order,orphans,widows,zIndex,zoom'.split(','));
+const _px = (k, v) => typeof v === 'number' && !_noPx.has(k) ? v + 'px' : v;
 
 class wi$ {
   constructor(els) { this.els = els; this.length = els.length; els.forEach((el, i) => this[i] = el); }
@@ -55,9 +57,9 @@ class wi$ {
 
   // STYLES
   css(k, v) {
-    if (typeof k === 'object') { _each(this.els, el => Object.assign(el.style, k)); return this; }
+    if (typeof k === 'object') { _each(this.els, el => { for (const p in k) el.style[p] = _px(p, k[p]); }); return this; }
     if (v === undefined) return getComputedStyle(this.els[0])?.[k];
-    _each(this.els, el => el.style[k] = v); return this;
+    _each(this.els, el => el.style[k] = _px(k, v)); return this;
   }
 
   // DOM MANIPULATION
@@ -100,7 +102,8 @@ class wi$ {
           : evt => handler.call(el, evt);
         const key = ns ? `${type}.${ns}` : type;
         (el._wi[key] = el._wi[key] || []).push(wrap);
-        el.addEventListener(type, wrap);
+        const cap = type === 'mouseenter' || type === 'mouseleave';
+        el.addEventListener(type, wrap, cap);
       });
     });
     return this;
@@ -110,9 +113,10 @@ class wi$ {
     _each(this.els, el => {
       ev.split(' ').forEach(e => {
         const [type] = e.split('.');
+        const cap = type === 'mouseenter' || type === 'mouseleave';
         if (deleg) {
-          const w = evt => { const t = evt.target.closest?.(selOrFn); if (t && el.contains(t)) { el.removeEventListener(type, w); handler.call(t, evt); } };
-          el.addEventListener(type, w);
+          const w = evt => { const t = evt.target.closest?.(selOrFn); if (t && el.contains(t)) { el.removeEventListener(type, w, cap); handler.call(t, evt); } };
+          el.addEventListener(type, w, cap);
         } else el.addEventListener(type, evt => handler.call(el, evt), { once: true, passive: true });
       });
     });
@@ -125,7 +129,7 @@ class wi$ {
         const [type, ns] = e.split('.');
         const key = ns ? `${type}.${ns}` : type;
         const keys = ns ? [key] : Object.keys(el._wi).filter(k => k === type || k.startsWith(type + '.'));
-        keys.forEach(k => { (el._wi[k] || []).forEach(fn => el.removeEventListener(k.split('.')[0], fn)); delete el._wi[k]; });
+        keys.forEach(k => { const tp = k.split('.')[0]; (el._wi[k] || []).forEach(fn => el.removeEventListener(tp, fn, tp === 'mouseenter' || tp === 'mouseleave')); delete el._wi[k]; });
       });
     });
     return this;

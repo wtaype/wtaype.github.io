@@ -289,25 +289,7 @@
   box-shadow: 0 12px 32px rgba(0,0,0,0.25);
 }
 
-.floating_tech:hover::after {
-  content: attr(title);
-  position: absolute;
-  top: -35px;
-  background: var(--mco);
-  color: var(--txa);
-  padding: 0.5vh 1vw;
-  border-radius: 6px;
-  font-size: var(--fz_s3);
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  animation: tooltipIn 0.2s ease;
-}
 
-@keyframes tooltipIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 .floating_tech i {
   color: var(--mco);
