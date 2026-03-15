@@ -2,7 +2,7 @@
 // Helpers internos
 const qs = (s, ctx = document) => ctx.querySelector(s);
 const qsa = (s, ctx = document) => [...ctx.querySelectorAll(s)];
-const toEl = x => x?.jquery ? x[0] : typeof x === 'string' ? qs(x) : x;
+const toEl = x => x instanceof wi$ ? x[0] : x?.jquery ? x[0] : typeof x === 'string' ? qs(x) : x;
 
 // === Mini $() — jQuery-compatible API (~1KB) ===
 class wi$ {
