@@ -1,6 +1,5 @@
 import './contacto.css';
-import $ from 'jquery';
-import { wiSpin, Notificacion, wiVista, wicopy } from '../widev.js';
+import { $, wiSpin, Notificacion, wiVista, wicopy } from '../widev.js';
 
 // ── Datos ─────────────────────────────────────────────────────────────────────
 const INFO = {

@@ -1,6 +1,5 @@
-import $ from 'jquery';
 import { app } from '../wii.js';
-import { Notificacion } from '../widev.js';
+import { $, Notificacion } from '../widev.js';
 import { wiPath, wiFade } from './rutadev.js';
 
 class WiRutas {

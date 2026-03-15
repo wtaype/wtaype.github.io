@@ -1,5 +1,4 @@
-import $ from 'jquery';
-
+import { $ } from '../widev.js';
 // === RUTA LIMPIA V11 ===
 export const wiPath = {
   limpiar(ruta) {

@@ -1,6 +1,5 @@
 import './skills.css';
-import $ from 'jquery';
-import { wiVista } from '../widev.js';
+import { $, wiVista } from '../widev.js';
 
 // ── Datos ─────────────────────────────────────────────────────────────────────
 const SKILLS = [

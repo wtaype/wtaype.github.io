@@ -1,6 +1,5 @@
 import './inicio.css';
-import $ from 'jquery';
-import { wiVista, Saludar, wiTip, year } from '../widev.js';
+import { $, wiVista, Saludar, wiTip, year } from '../widev.js';
 
 // ── Datos ────────────────────────────────────────────────────────────────────
 const ROLES     = ['Desarrollador Full Stack', 'Ingeniero de Sistemas', 'Creador de Soluciones'];

@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import { $ } from './widev.js';
 import {app, lanzamiento, autor, link, version} from './wii.js';
 
 export { footer };

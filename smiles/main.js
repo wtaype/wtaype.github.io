@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { rutas } from './rutas/ruta.js';
 import { getls, wiSmart} from './widev.js';
 
@@ -9,7 +8,6 @@ wiSmart({
 css: [
     'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap',
     'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css',
 ],
-js: [() => import('./footer.js')]
+js: [() => import('https://kit.fontawesome.com/a8c6571af4.js'), () => import('./footer.js')]
 });

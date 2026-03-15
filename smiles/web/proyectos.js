@@ -1,13 +1,12 @@
 import './proyectos.css';
-import $ from 'jquery';
 import { db } from '../smile/firebase.js';
 import { collection, doc, setDoc, getDocs, deleteDoc, serverTimestamp, Timestamp, query, orderBy } from 'firebase/firestore';
-import { Mensaje, wiSuma, wiVista, getls, savels, wiSpin, Notificacion, abrirModal, cerrarModal, wiDate } from '../widev.js';
+import { $, Mensaje, wiSuma, wiVista, getls, savels, wiSpin, Notificacion, abrirModal, cerrarModal, wiDate } from '../widev.js';
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 const CACHE_KEY = 'proyectos';
 const POR_CARGA = 4, INICIAL = 8;
-const CATS = ['web|Web Apps|globe','mobile|Mobile|mobile-alt','windows|Windows|windows','educacion|Educación|graduation-cap','diseno|Diseño|palette','devs|Devs|user-astronaut','tools|Herramientas|tools','camino|Camino|hourglass-half'];
+const CATS = ['web|Web Apps|globe','mobile|Mobile|mobile-alt','windows|Windows|tools','educacion|Educación|graduation-cap','diseno|Diseño|palette','devs|Devs|user-astronaut','tools|Herramientas|tools','camino|Camino|hourglass-half'];
 const ORDEN = ['destacado|Destacados','reciente|Más reciente','antiguo|Más antiguo','nombre|Por nombre'];
 const DESTACADOS = [
   { titulo: 'DSCTO - Calculadora Móvil',      img: 'https://i.postimg.cc/dq8nVhCx/Dscto.png',    descripcion: 'App para cálculos rápidos de descuentos y ajustes',  url: 'https://dscto.blogspot.com/',    tags: ['JavaScript','PWA','Firebase'] },

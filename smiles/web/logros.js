@@ -1,6 +1,5 @@
 import './logros.css';
-import $ from 'jquery';
-import { wiVista, abrirModal, wicopy } from '../widev.js';
+import { $, wiVista, abrirModal, wicopy } from '../widev.js';
 
 // ── Datos ─────────────────────────────────────────────────────────────────────
 const LOGROS = [

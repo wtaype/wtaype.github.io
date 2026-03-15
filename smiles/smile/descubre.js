@@ -1,7 +1,6 @@
 import './descubre.css';
-import $ from 'jquery';
 import { app, version } from '../wii.js';
-import { abrirModal, cerrarModal } from '../widev.js';
+import { $, abrirModal, cerrarModal } from '../widev.js';
 
 export const render = () => `
   <div class="descubre_container">
