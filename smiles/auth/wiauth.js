@@ -219,7 +219,7 @@ $(document)
   });
 
 // ==================== AUTH MODAL ====================
-const abrirLogin = (tipo = 'login') => {
+export const abrirLogin = (tipo = 'login') => {
   if (modal === 'si') {
     const vista = tipo === 'registrar' && registrar === 'si' ? 'registrar' : 'login';
     inyectarModal(vista);
@@ -232,9 +232,5 @@ export const salir = async (keep = []) => {
   try { await signOut(auth); } catch(e) { console.error('signOut:', e); }
   wiAuth.logout(keep);
 };
-
-$(document).on('click.hdr', '.login,.registrar', function (e) {
-  e.preventDefault(); abrirLogin($(this).hasClass('registrar') ? 'registrar' : 'login');
-});
 
 export const cleanup = () => { $(document).off('.wi'); };

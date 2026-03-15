@@ -31,16 +31,17 @@ export const header = (() => {
 
   window.addEventListener('wiFresh', (e) => cargandoPersonal(e.detail));
 
-  // Login/Registrar → carga wiauth lazy
+  // Login/Registrar → carga wiauth lazy y abre modal
   $(document).on('click', '.login,.registrar', async function(e) {
     e.preventDefault();
-    await import('./auth/wiauth.js');
+    const tipo = $(this).hasClass('registrar') ? 'registrar' : 'login';
+    const { abrirLogin } = await import('./auth/wiauth.js');
+    abrirLogin(tipo);
   });
 
   $(document).on('click', '.bt_salir', async () => {
-    const { auth, signOut } = await import('./auth/wiauth.js');
-    await signOut(auth);
-    ['wiflash', 'wiTema'].map(k => [k, getls(k)]).concat(localStorage.clear()) && localStorage.setItem('wiflash', JSON.stringify(getls('wiflash'))) && localStorage.setItem('wiTema', JSON.stringify(getls('wiTema')));
+    const { salir } = await import('./auth/wiauth.js');
+    await salir(['wiflash', 'wiTema']);
     location.reload();
   });
 
