@@ -72,6 +72,7 @@ class wi$ {
   // DISPLAY
   show(d = 'block') { _each(this.els, el => el.style.display = d); return this; }
   hide() { _each(this.els, el => el.style.display = 'none'); return this; }
+  toggle(v) { _each(this.els, el => el.style.display = (v !== undefined ? v : el.style.display === 'none' || !el.offsetHeight) ? '' : 'none'); return this; }
   fadeIn(ms = 300) { _each(this.els, el => { el.style.display = 'block'; el.style.opacity = 0; el.style.transition = `opacity ${ms}ms`; requestAnimationFrame(() => el.style.opacity = 1); }); return this; }
   fadeOut(ms = 300, fn) { _each(this.els, el => { el.style.transition = `opacity ${ms}ms`; el.style.opacity = 0; setTimeout(() => { el.style.display = 'none'; fn?.call(el); }, ms); }); return this; }
   slideDown(ms = 300) { _each(this.els, el => { el.style.display = 'block'; el.style.overflow = 'hidden'; const h = el.scrollHeight; el.style.height = '0'; el.style.transition = `height ${ms}ms ease`; requestAnimationFrame(() => { requestAnimationFrame(() => el.style.height = h + 'px'); }); setTimeout(() => { el.style.height = 'auto'; el.style.overflow = ''; el.style.transition = ''; }, ms); }); return this; }

@@ -503,6 +503,17 @@
 }
 
 @media (max-width: 768px) {
+  .hero_roles {
+    display: flex;
+    justify-content: center;
+    height: 3.5vh;
+    margin-bottom: 2vh;
+  }
+
+  .role {
+    font-size: var(--fz_m3);
+  }
+
   .hero_stats {
     grid-template-columns: 1fr;
   }

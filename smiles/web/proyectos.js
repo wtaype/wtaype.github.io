@@ -9,9 +9,9 @@ const POR_CARGA = 4, INICIAL = 8;
 const CATS = ['web|Web Apps|globe','mobile|Mobile|mobile-alt','windows|Windows|tools','educacion|Educación|graduation-cap','diseno|Diseño|palette','devs|Devs|user-astronaut','tools|Herramientas|tools','camino|Camino|hourglass-half'];
 const ORDEN = ['destacado|Destacados','reciente|Más reciente','antiguo|Más antiguo','nombre|Por nombre'];
 const DESTACADOS = [
-  { titulo: 'DSCTO - Calculadora Móvil',      img: 'https://i.postimg.cc/dq8nVhCx/Dscto.png',    descripcion: 'App para cálculos rápidos de descuentos y ajustes',  url: 'https://dscto.blogspot.com/',    tags: ['JavaScript','PWA','Firebase'] },
-  { titulo: 'CODEWIL - Optimizador de Código', img: 'https://i.postimg.cc/CSQcPTYm/Codewil.png',  descripcion: 'Herramienta para optimizar y embellecer código',         url: 'https://codewil.blogspot.com/',  tags: ['React','Node.js','API'] },
-  { titulo: 'WICOLORS - Paleta de Colores',    img: 'https://i.postimg.cc/FhkDwWHm/Wiicolors.png',descripcion: 'Generador inteligente de paletas de colores',             url: 'https://wicolors.blogspot.com/', tags: ['Vue.js','Design','CSS'] },
+  { titulo: 'Lovewi — Mensajes de Amor',       img: 'https://lovewi.web.app/poster.webp',   descripcion: 'Crea mensajes de amor únicos y personalizados para San Valentín y fechas especiales',  url: 'https://lovewi.web.app/',   tags: ['Canvas','JavaScript','CSS3'] },
+  { titulo: 'Love Eye — Cuida tus Ojitos',      img: 'https://loveye.web.app/poster.webp',   descripcion: 'Guía completa para el cuidado de la visión. Prevención, diagnóstico y ejercicios',     url: 'https://loveye.web.app/',   tags: ['jQuery','JS','CSS3'] },
+  { titulo: 'WiiHope — Confía en Dios',         img: 'https://wiihope.web.app/poster.webp',  descripcion: 'Plataforma cristiana para orar, leer frases bíblicas y escuchar la Biblia en audio',   url: 'https://wiihope.web.app/',  tags: ['Web','jQuery','HTML'] },
 ];
 
 // ── Estado del módulo ─────────────────────────────────────────────────────────
