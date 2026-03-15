@@ -559,7 +559,7 @@
 .no_resultados p { font-size: var(--fz_m4); color: var(--txe); font-weight: 500; }
 
 /* ==================== BOTÓN MOSTRAR MÁS ==================== */
-.load_more_section { display: flex; justify-content: center; margin-bottom: 7vh; }
+.load_more_section { display: flex!important; justify-content: center; margin-bottom: 7vh; }
 .btn_load_more {
   display: flex;
   align-items: center;

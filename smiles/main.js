@@ -13,3 +13,5 @@ wiSmart({
     '.profile_img': `<img src="${import.meta.env.BASE_URL}wilder.webp" alt="Wilder Taype" class="profile_img">`,
   }
 });
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {}); // Service Worker

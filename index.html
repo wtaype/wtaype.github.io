@@ -10,6 +10,8 @@
   <link rel="alternate" hreflang="es" href="https://wtaype.me/" />
   <link rel="canonical" href="https://wtaype.me/" />
   <link rel="icon" type="image/avif" href="/smile.avif" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="image" type="image/webp" href="/poster.webp" />
   <meta property="og:image" content="https://wtaype.me/poster.webp" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -263,6 +265,16 @@ blockquote{padding:1.5vh 2vh;margin:2vh 0;background:var(--bg4);border-left:4px 
 .foo{width:100%;text-align:center;padding-block:1.5vh 1vh;background:var(--wb);border-radius:1vh 1vh 0 0}
 .foo *{font-size:var(--fz_s2);margin-inline:.3vh;color:var(--tx);}
 
+/* ==================== UTILIDADES ==================== */
+.txc{text-align:center}
+.df{display:flex}
+.dpn{display:none}
+.dfc{display:flex;justify-content:center;align-items:center}
+.dfw{display:flex;justify-content:space-between;align-items:center}
+.dfcc{display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center}
+.mwb{max-width:87vw;margin:auto;width:100%}
+.wib{width:100%}
+
 /* ==================== WIANIMA GLOBAL v12 ==================== */
 .wi_fadeUp,.wi_fadeLeft,.wi_fadeRight,.wi_fadeIn,.wi_scale{opacity:0;transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1)}
 .wi_fadeUp{transform:translateY(5vh)}
@@ -270,6 +282,8 @@ blockquote{padding:1.5vh 2vh;margin:2vh 0;background:var(--bg4);border-left:4px 
 .wi_fadeRight{transform:translateX(5vh)}
 .wi_scale{transform:scale(.95)}
 .wi_visible{opacity:1!important;transform:none!important}
+
+.nv_item:focus-visible,.tema:focus-visible,.wibtn_auth:focus-visible,.bt_salir:focus-visible,.wimenu:focus-visible,.btn_primary:focus-visible,.btn_secondary:focus-visible,button:focus-visible{outline:2px solid var(--mco);outline-offset:2px;border-radius:0.6vh}
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width:768px){
