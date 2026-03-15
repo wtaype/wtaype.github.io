@@ -1,7 +1,7 @@
 import './proyectos.css';
 import { db } from '../smile/firebase.js';
 import { collection, doc, setDoc, getDocs, deleteDoc, serverTimestamp, Timestamp, query, orderBy } from 'firebase/firestore';
-import { $, Mensaje, wiSuma, wiVista, getls, savels, wiSpin, Notificacion, abrirModal, cerrarModal, wiDate } from '../widev.js';
+import { $, Mensaje, wiSuma, wiVista, getls, savels, wiSpin, Notificacion, abrirModal, cerrarModal, wiDate, wiAuth } from '../widev.js';
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 const CACHE_KEY = 'proyectos';
@@ -55,7 +55,7 @@ export const render = () => `
       <h2 class="section_title h1pro">Todos mis Proyectos</h2>
       <div class="section_line"></div>
       <p class="section_descripcion">Cada proyecto representa un desafío superado, una tecnología dominada y una solución creada con pasión por el desarrollo</p>
-      <div class="wiauth dpn"><div class="login">Login</div><div class="bt_salir">Salir</div></div>
+      <div class="wiauth dpn"></div>
     </div>
 
     <div class="search_section">
@@ -128,6 +128,14 @@ export const render = () => `
 // ── init() — lógica, eventos y carga de datos ─────────────────────────────────
 export const init = () => {
   todos = []; filtrados = []; mostrados = 0; autenticado = !!getls('wiSmile');
+
+  // Poblar auth según estado actual (header.js llenará en login/logout futuro)
+  const wi = getls('wiSmile');
+  const $auth = $('.todos_proyectos_section .wiauth');
+  $auth.html(wi
+    ? `<div class="sesion"><img src="${wi.imagen||'./smile.avif'}" alt="${wi.nombre}"><span>${wi.nombre}</span></div><button class="bt_salir"><i class="fas fa-sign-out-alt"></i> Salir</button>`
+    : `<button class="wibtn_auth login"><i class="fas fa-sign-in-alt"></i><span>Login</span></button>`
+  );
 
   // Destacados: skeleton → real
   setTimeout(() => {

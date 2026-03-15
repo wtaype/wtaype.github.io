@@ -178,7 +178,7 @@ export const init = () => {
     Notificacion('Formulario limpiado', 'info', 2000);
   });
 
-  // Envío del formulario
+  // Envío del formulario → Firestore
   $(document).on('submit.contacto', '#contactoForm', async function (e) {
     e.preventDefault();
     const datos = {
@@ -187,16 +187,18 @@ export const init = () => {
       telefono: $('#telefono').val().trim(),
       asunto:   $('#asunto').val(),
       mensaje:  $('#mensaje').val().trim(),
-      fecha:    new Date().toISOString(),
     };
     if (datos.nombre.length < 3)                                  return Notificacion('El nombre debe tener al menos 3 caracteres', 'error');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(datos.email))         return Notificacion('Ingresa un email válido', 'error');
+    if (!datos.asunto)                                            return Notificacion('Selecciona un asunto', 'error');
     if (datos.mensaje.length < 10)                                return Notificacion('El mensaje debe tener al menos 10 caracteres', 'error');
 
     const $btn = $('.btn_submit');
     wiSpin($btn, true, 'Enviando...');
     try {
-      await new Promise(r => setTimeout(r, 2000));
+      const { db } = await import('../smile/firebase.js');
+      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+      await addDoc(collection(db, 'mensajes'), { ...datos, creadoEn: serverTimestamp(), leido: false });
       Notificacion('¡Mensaje enviado con éxito! Te responderé pronto.', 'success', 4000);
       this.reset(); $('#charCount').text('0');
     } catch (err) {

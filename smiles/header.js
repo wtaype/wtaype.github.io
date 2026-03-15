@@ -15,8 +15,8 @@ export const personal = wi => {
 // VISTA PUBLICA_________________________________
 const publico = () => {
     $('.wiauth').html(`
-      <button class="wibtn_auth registrar"><i class="fas fa-user-plus"></i><span>Registrar</span></button>
-      <button class="wibtn_auth login"><i class="fas fa-sign-in-alt"></i><span>Login</span></button>
+      <button class="wibtn_auth registrar" aria-label="Crear cuenta"><i class="fas fa-user-plus" aria-hidden="true"></i><span>Registrar</span></button>
+      <button class="wibtn_auth login" aria-label="Iniciar sesión"><i class="fas fa-sign-in-alt" aria-hidden="true"></i><span>Login</span></button>
   `);
 };
 
@@ -32,7 +32,7 @@ $(document).on('click', '.bt_salir', async () => {
 });
 
 // LOGIN / REGISTRAR — Firebase se carga solo al hacer click
-$(document).on('click', '.login', async function () {
+$(document).on('click', '.wibtn_auth', async function () {
   const { abrirLogin } = await import('./smile/login.js');
   abrirLogin($(this).hasClass('registrar') ? 'registrar' : 'login');
 });

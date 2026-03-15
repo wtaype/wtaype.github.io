@@ -6,15 +6,25 @@
   <meta content='6UPsSBN_UZrO2Y7Z68Q8hb2QxJ34tSSX4ZWrPqzucAc' name='google-site-verification'/>
   <meta name="author" content="Wilder Taype" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://wtaype.github.io/" />
-  <link rel="alternate" hreflang="es" href="https://wtaype.github.io/" />
-  <link rel="canonical" href="https://wtaype.github.io/" />
+  <meta property="og:url" content="https://wtaype.me/" />
+  <link rel="alternate" hreflang="es" href="https://wtaype.me/" />
+  <link rel="canonical" href="https://wtaype.me/" />
   <link rel="icon" type="image/avif" href="/smile.avif" />
   <link rel="image" type="image/webp" href="/poster.webp" />
-  <meta property="og:image" content="/poster.webp" />
+  <meta property="og:image" content="https://wtaype.me/poster.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Wilder Taype | Desarrollador Full Stack 🚀" />
+  <meta name="twitter:description" content="Desarrollador Full Stack especializado en JavaScript, Firebase y apps web modernas. +60 proyectos." />
+  <meta name="twitter:image" content="https://wtaype.me/poster.webp" />
   <meta name="description" content="Wilder Taype — Desarrollador Full Stack con 6+ años de experiencia. Especialista en Firebase, JavaScript, apps web rápidas y escalables. +60 proyectos reales. Disponible para trabajar." />
   <meta property="og:title" content="Wilder Taype | Desarrollador Full Stack 🚀" />
   <meta property="og:description" content="Desarrollador Full Stack especializado en JavaScript, Firebase y apps web modernas. +60 proyectos, 6 años de experiencia. Creando soluciones rápidas, intuitivas y escalables." />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#29C72E" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Wilder Taype" />
+  <link rel="apple-touch-icon" href="/smile.avif" />
   <title>Wilder Taype | Desarrollador Full Stack — JavaScript, Firebase, Web Apps</title>
 <style>
 /* ==================== VARIABLES GLOBALES ==================== */
@@ -223,6 +233,7 @@ blockquote{padding:1.5vh 2vh;margin:2vh 0;background:var(--bg4);border-left:4px 
 .tema{width:var(--fz_l1);height:var(--fz_l1);border-radius:50%;cursor:pointer;transition:all var(--tr_f);border:2px solid transparent;position:relative}
 .tema:hover{transform:scale(1.01);box-shadow:0 0 1vh rgba(0,0,0,0.3)}
 .tema.mtha{border-color:var(--F);box-shadow:0 0 1.5vh rgba(255,255,255,0.6),inset 0 0 0.5vh rgba(255,255,255,0.3);transform:scale(1.01)}
+.skip-link:focus{left:50%;transform:translateX(-50%);top:0}
 .tema[data-ths^="Cielo"]{background:var(--Cielo)}
 .tema[data-ths^="Dulce"]{background:var(--Dulce)}
 .tema[data-ths^="Paz"]{background:var(--Paz)}
@@ -276,45 +287,46 @@ blockquote{padding:1.5vh 2vh;margin:2vh 0;background:var(--bg4);border-left:4px 
 </head>
 <body>
 <!--DIOS ES MI SALVADOR[START]-->
+  <a href="#wimain" class="skip-link" style="position:absolute;left:-9999px;top:0;z-index:9999;padding:1vh 2vh;background:var(--mco);color:var(--txa);font-weight:600;border-radius:0 0 .6vh .6vh;transition:left .2s">Ir al contenido</a>
   <div class="wicontainer">
 
-    <header class="wiheader">
+    <header class="wiheader" role="banner">
       <div class="nv_left">
-        <h1 class="wilogo"><a href="/"><i class="fas fa-code"></i> Wilder Taype</a></h1>
-        <nav class="winav">
+        <h1 class="wilogo"><a href="/" aria-label="Inicio - Wilder Taype"><i class="fas fa-code" aria-hidden="true"></i> Wilder Taype</a></h1>
+        <nav class="winav" role="navigation" aria-label="Navegación principal">
           <a href="/" class="nv_item winav_item" data-page="inicio">
-            <i class="fas fa-house"></i> <span>Bienvenido</span>
+            <i class="fas fa-house" aria-hidden="true"></i> <span>Bienvenido</span>
           </a>
           <a href="/proyectos" class="nv_item winav_item" data-page="proyectos">
-            <i class="fas fa-folder-open"></i> <span>Proyectos</span>
+            <i class="fas fa-folder-open" aria-hidden="true"></i> <span>Proyectos</span>
           </a>
           <a href="/skills" class="nv_item winav_item" data-page="skills">
-            <i class="fas fa-code"></i> <span>Skills</span>
+            <i class="fas fa-code" aria-hidden="true"></i> <span>Skills</span>
           </a>
           <a href="/logros" class="nv_item winav_item" data-page="logros">
-            <i class="fas fa-trophy"></i> <span>Logros</span>
+            <i class="fas fa-trophy" aria-hidden="true"></i> <span>Logros</span>
           </a>
           <a href="/contacto" class="nv_item winav_item" data-page="contacto">
-            <i class="fas fa-envelope"></i> <span>Contacto</span>
+            <i class="fas fa-envelope" aria-hidden="true"></i> <span>Contacto</span>
           </a>
         </nav>
       </div><!--LEFT: Logo+Navegación-->
-      <div class="nv_right"></div><!--RIGHT: Auth+Navegación-->  
-      <div class="wimenu dpn"><i class="fas fa-bars"></i></div>
+      <div class="nv_right" role="group" aria-label="Acciones de usuario"></div><!--RIGHT: Auth+Navegación-->  
+      <button class="wimenu dpn" aria-label="Abrir menú de navegación"><i class="fas fa-bars" aria-hidden="true"></i></button>
     </header>
 
     <main id="wimain"></main>
 
-    <div id="wiTema">
-      <div class="tema mtha" data-ths="Cielo|#0EBEFF"></div>
-      <div class="tema" data-ths="Dulce|#FF5C69"></div>
-      <div class="tema" data-ths="Paz|#29C72E"></div>
-      <div class="tema" data-ths="Mora|#7000FF"></div>
-      <div class="tema" data-ths="Futuro|#21273B"></div>
+    <div id="wiTema" role="group" aria-label="Selector de tema de color">
+      <div class="tema mtha" data-ths="Cielo|#0EBEFF" role="button" tabindex="0" aria-label="Tema Cielo"></div>
+      <div class="tema" data-ths="Dulce|#FF5C69" role="button" tabindex="0" aria-label="Tema Dulce"></div>
+      <div class="tema" data-ths="Paz|#29C72E" role="button" tabindex="0" aria-label="Tema Paz"></div>
+      <div class="tema" data-ths="Mora|#7000FF" role="button" tabindex="0" aria-label="Tema Mora"></div>
+      <div class="tema" data-ths="Futuro|#21273B" role="button" tabindex="0" aria-label="Tema Futuro (oscuro)"></div>
     </div>
   </div>
 </body>
-<script>(()=>{const d=document,h=d.documentElement,w=d.querySelector('#wiTema');if(!w)return;const ts=[...w.querySelectorAll('.tema')],m=d.querySelector('meta[name="theme-color"]')||d.head.appendChild(Object.assign(d.createElement('meta'),{name:'theme-color'})),st=t=>{const[n,c]=t.dataset.ths.split('|');h.dataset.theme=n;m.content=c;localStorage.wiTema=t.dataset.ths;ts.forEach(x=>x.classList.toggle('mtha',x===t))};w.addEventListener('click',e=>e.target.matches('.tema')&&st(e.target),{passive:!0});const i=w.querySelector(`[data-ths="${localStorage.wiTema}"]`)||ts[2];i&&st(i)})();</script>
+<script>(()=>{const d=document,h=d.documentElement,w=d.querySelector('#wiTema');if(!w)return;const ts=[...w.querySelectorAll('.tema')],m=d.querySelector('meta[name="theme-color"]')||d.head.appendChild(Object.assign(d.createElement('meta'),{name:'theme-color'})),st=t=>{const[n,c]=t.dataset.ths.split('|');h.dataset.theme=n;m.content=c;localStorage.wiTema=t.dataset.ths;ts.forEach(x=>x.classList.toggle('mtha',x===t))};w.addEventListener('click',e=>e.target.matches('.tema')&&st(e.target),{passive:!0});w.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.tema')){e.preventDefault();st(e.target)}},{passive:!1});const i=w.querySelector(`[data-ths="${localStorage.wiTema}"]`)||ts[2];i&&st(i)})()</script>
 <script type="module" src="./smiles/main.js" defer></script> 
-<script type="application/ld+json">{"@context": "https://schema.org","@type": "Person","name": "Wilder Taype","jobTitle": "Desarrollador Full Stack","url": "https://wtaype.github.io/","image": "https://i.postimg.cc/gJb8QnJb/Wilder-Taype-Foto1.webp","sameAs": ["https://github.com/wtaype","https://linkedin.com/in/wildertaype","https://www.instagram.com/wilder.taype"],"address": {"@type": "PostalAddress","addressLocality": "Lima","addressCountry": "Perú"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org","@type": "Person","name": "Wilder Taype","jobTitle": "Desarrollador Full Stack","url": "https://wtaype.me/","image": "https://wtaype.me/wilder.webp","sameAs": ["https://github.com/wtaype","https://linkedin.com/in/wildertaype","https://www.instagram.com/wilder.taype"],"address": {"@type": "PostalAddress","addressLocality": "Lima","addressCountry": "Perú"},"knowsAbout":["JavaScript","Firebase","React","Node.js","Full Stack Development"]}</script>
 </html>
