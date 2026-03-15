@@ -216,9 +216,10 @@ export const init = () => {
   $(document).on('click.contacto', '.faq_question', function () {
     const $item = $(this).closest('.faq_item');
     const isOpen = $item.hasClass('active');
-    $('.faq_item').removeClass('active').find('.faq_answer').slideUp(300);
-    $('.faq_toggle').removeClass('rotated');
+    $('.faq_item').not($item[0]).removeClass('active').find('.faq_answer').slideUp(300);
+    $('.faq_item').not($item[0]).find('.faq_toggle').removeClass('rotated');
     if (!isOpen) { $item.addClass('active').find('.faq_answer').slideDown(300); $(this).find('.faq_toggle').addClass('rotated'); }
+    else { $item.removeClass('active').find('.faq_answer').slideUp(300); $(this).find('.faq_toggle').removeClass('rotated'); }
   });
 
   // Animaciones de entrada

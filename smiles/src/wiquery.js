@@ -22,10 +22,11 @@ class wi$ {
     if (s.includes(':last')) els = els.slice(-1);
     return new wi$(els);
   }
+  not(s) { const exclude = typeof s === 'string' ? this.els.filter(el => !el.matches(s)) : s instanceof wi$ ? this.els.filter(el => !s.els.includes(el)) : this.els.filter(el => el !== s); return new wi$(exclude); }
   closest(s) { const el = this.els[0]?.closest(s); return new wi$(el ? [el] : []); }
   parent() { const p = this.els[0]?.parentElement; return new wi$(p ? [p] : []); }
   children(s) { const c = this.els.flatMap(el => [...el.children]); return new wi$(s ? c.filter(el => el.matches(s)) : c); }
-  siblings() { const el = this.els[0]; return new wi$(el ? [...el.parentElement.children].filter(c => c !== el) : []); }
+  siblings(s) { const el = this.els[0]; const sibs = el ? [...el.parentElement.children].filter(c => c !== el) : []; return new wi$(s ? sibs.filter(c => c.matches(s)) : sibs); }
   next() { const n = this.els[0]?.nextElementSibling; return new wi$(n ? [n] : []); }
   prev() { const p = this.els[0]?.previousElementSibling; return new wi$(p ? [p] : []); }
 
@@ -73,6 +74,9 @@ class wi$ {
   hide() { _each(this.els, el => el.style.display = 'none'); return this; }
   fadeIn(ms = 300) { _each(this.els, el => { el.style.display = 'block'; el.style.opacity = 0; el.style.transition = `opacity ${ms}ms`; requestAnimationFrame(() => el.style.opacity = 1); }); return this; }
   fadeOut(ms = 300, fn) { _each(this.els, el => { el.style.transition = `opacity ${ms}ms`; el.style.opacity = 0; setTimeout(() => { el.style.display = 'none'; fn?.call(el); }, ms); }); return this; }
+  slideDown(ms = 300) { _each(this.els, el => { el.style.display = 'block'; el.style.overflow = 'hidden'; const h = el.scrollHeight; el.style.height = '0'; el.style.transition = `height ${ms}ms ease`; requestAnimationFrame(() => { requestAnimationFrame(() => el.style.height = h + 'px'); }); setTimeout(() => { el.style.height = 'auto'; el.style.overflow = ''; el.style.transition = ''; }, ms); }); return this; }
+  slideUp(ms = 300, fn) { _each(this.els, el => { el.style.overflow = 'hidden'; el.style.height = el.scrollHeight + 'px'; el.style.transition = `height ${ms}ms ease`; requestAnimationFrame(() => { requestAnimationFrame(() => el.style.height = '0'); }); setTimeout(() => { el.style.display = 'none'; el.style.height = ''; el.style.overflow = ''; el.style.transition = ''; fn?.call(el); }, ms); }); return this; }
+  slideToggle(ms = 300) { _each(this.els, el => el.style.display === 'none' || !el.offsetHeight ? $(el).slideDown(ms) : $(el).slideUp(ms)); return this; }
 
   // DIMENSIONS
   outerWidth(m) { const el = this.els[0]; if (!el) return 0; const w = el.offsetWidth; if (!m) return w; const s = getComputedStyle(el); return w + parseFloat(s.marginLeft) + parseFloat(s.marginRight); }
@@ -91,7 +95,7 @@ class wi$ {
       ev.split(' ').forEach(e => {
         const [type, ns] = e.split('.');
         const wrap = deleg
-          ? evt => { const t = evt.target.closest?.(selOrFn); if (t && el.contains(t)) { Object.defineProperty(evt, 'currentTarget', { value: t }); handler.call(t, evt); } }
+          ? evt => { const t = evt.target.closest?.(selOrFn); if (t && el.contains(t)) { Object.defineProperty(evt, 'currentTarget', { value: t, configurable: true }); handler.call(t, evt); } }
           : evt => handler.call(el, evt);
         const key = ns ? `${type}.${ns}` : type;
         (el._wi[key] = el._wi[key] || []).push(wrap);
