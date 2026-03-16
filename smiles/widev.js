@@ -75,7 +75,7 @@ export const wiAuth = Object.assign((load, render) => bus.add(async () => { awai
 // CARGA INTELIGENTE v15_________________________________
 export const wiSmart = (() => {
   const ok = new Set(), c = getls('wiSmart'), im = {};
-  const obs = new MutationObserver(() => { for (const s in im) { const e = document.querySelector(s); if (e) { e.outerHTML = im[s]; delete im[s]; } } if (!Object.keys(im).length) obs.disconnect(); });
+  const obs = new MutationObserver(() => { for (const s in im) { const e = document.querySelector(s); if (e) e.outerHTML = im[s]; } });
   const run = o => { Object.entries(o).forEach(([t, v]) => {
     if (t === 'img') { Object.assign(im, v); obs.observe(document.body, { childList: true, subtree: true }); return; }
     [].concat(v).forEach(it => { const k = `${t}:${it}`; if (ok.has(k)) return; ok.add(k);
