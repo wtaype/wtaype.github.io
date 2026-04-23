@@ -93,11 +93,11 @@ export const render = () => `
               <label for="asunto" class="form_label"><i class="fas fa-tag"></i> Asunto</label>
               <select id="asunto" name="asunto" class="form_select" required>
                 <option value="">Selecciona una opción</option>
-                <option value="desarrollo">Desarrollo Web</option>
-                <option value="mobile">Aplicación Móvil</option>
-                <option value="consultoria">Consultoría</option>
-                <option value="optimizacion">Optimización</option>
-                <option value="otro">Otro</option>
+                <option value="Desarrollo Web">Desarrollo Web</option>
+                <option value="Aplicacion Movil">Aplicación Móvil</option>
+                <option value="Consultoria">Consultoría</option>
+                <option value="Optimizacion">Optimización</option>
+                <option value="Otro">Otro</option>
               </select>
             </div>
           </div>
