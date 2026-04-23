@@ -32,7 +32,7 @@ class WiRutas {
       const titulo = `${norm.slice(1).replace(/^(\w)/, c => c.toUpperCase()) || 'Inicio'} - ${app}`;
 
       this.marcarNav(norm); await wiFade(this.main, html);
-
+      window.scrollTo(0, 0);
       document.title = titulo; mod.init?.();
       if (historial) wiPath.poner(norm === `/${this.HOME}` ? '/' : norm, titulo);
       this.actual = norm;

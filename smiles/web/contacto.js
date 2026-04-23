@@ -1,5 +1,8 @@
 import './contacto.css';
-import { $, wiSpin, Notificacion, wiVista, wicopy } from '../widev.js';
+import { $, wiSpin, Notificacion, wiVista, wicopy, wiAuth } from '../widev.js';
+import { app } from '../wii.js';
+import emailjs from '@emailjs/browser';
+
 
 // ── Datos ─────────────────────────────────────────────────────────────────────
 const INFO = {
@@ -159,6 +162,9 @@ export const render = () => `
 
 // ── init() — lógica y eventos ─────────────────────────────────────────────────
 export const init = () => {
+  // Inicializar EmailJS con variables de entorno de Vite
+  emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
+
   // CTA → foco en el campo nombre
   $(document).on('click.contacto', '#ctaIniciar', () => {
     $('#nombre').trigger('focus');
@@ -175,7 +181,6 @@ export const init = () => {
   // Reset → limpiar contador
   $(document).on('reset.contacto', '#contactoForm', () => {
     $('#charCount').text('0');
-    Notificacion('Formulario limpiado', 'info', 2000);
   });
 
   // Envío del formulario → Firestore
@@ -196,9 +201,39 @@ export const init = () => {
     const $btn = $('.btn_submit');
     wiSpin($btn, true, 'Enviando...');
     try {
+      // 1. Guardar en Firestore (buzon con ID personalizado)
       const { db } = await import('../smile/firebase.js');
-      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
-      await addDoc(collection(db, 'mensajes'), { ...datos, creadoEn: serverTimestamp(), leido: false });
+      const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+      
+      const wi = wiAuth.user;
+      const bzId = `bz${Date.now()}`;
+      
+      const buzonDoc = {
+        asunto:  datos.asunto,
+        correo:  datos.email,
+        fecha:   serverTimestamp(),
+        id:      bzId,
+        leido:   false,
+        mensaje: datos.mensaje,
+        telefono:datos.telefono,
+      };
+
+      await setDoc(doc(db, 'buzon', bzId), buzonDoc);
+
+      // 2. Enviar email con EmailJS
+      const sid = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const tid = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      
+      if (tid && tid !== 'template_id_aqui') {
+        await emailjs.send(sid, tid, { 
+          ...datos, 
+          app_name: app,
+          reply_to: datos.email 
+        });
+      } else {
+        console.warn('EmailJS: Template ID no configurado');
+      }
+
       Notificacion('¡Mensaje enviado con éxito! Te responderé pronto.', 'success', 4000);
       this.reset(); $('#charCount').text('0');
     } catch (err) {

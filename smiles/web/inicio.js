@@ -13,6 +13,32 @@ const TL        = [
   ['2017', 'Inicio del camino en la programación'],
 ];
 
+const DESTACADOS = [
+  { titulo: 'Lovewi — Mensajes de Amor',  img: 'https://lovewi.web.app/poster.webp',  descripcion: 'Crea mensajes de amor únicos y personalizados para San Valentín y fechas especiales',  url: 'https://lovewi.web.app/',  tags: ['Canvas','JavaScript','CSS3'] },
+  { titulo: 'Love Eye — Cuida tus Ojitos', img: 'https://loveye.web.app/poster.webp',  descripcion: 'Guía completa para el cuidado de la visión. Prevención, diagnóstico y ejercicios',     url: 'https://loveye.web.app/',  tags: ['jQuery','JS','CSS3'] },
+  { titulo: 'WiiHope — Confía en Dios',    img: 'https://wiihope.web.app/poster.webp', descripcion: 'Plataforma cristiana para orar, leer frases bíblicas y escuchar la Biblia en audio',   url: 'https://wiihope.web.app/', tags: ['Web','jQuery','HTML'] },
+];
+
+const SERVICIOS = [
+  { icon: 'fas fa-globe',          titulo: 'Aplicaciones Web',     desc: 'SPAs modernas con React, Vite y Firebase. Rápidas, accesibles y con diseño premium.' },
+  { icon: 'fas fa-mobile-alt',     titulo: 'Apps Responsivas',     desc: 'Interfaces que se adaptan perfectamente a cualquier dispositivo y tamaño de pantalla.' },
+  { icon: 'fas fa-database',       titulo: 'Backend & APIs',       desc: 'Arquitecturas con Node.js, Firebase y REST APIs escalables para proyectos en crecimiento.' },
+  { icon: 'fas fa-paint-brush',    titulo: 'UI/UX Profesional',    desc: 'Diseños intuitivos y atractivos que convierten visitantes en usuarios comprometidos.' },
+  { icon: 'fas fa-bolt',           titulo: 'Optimización Web',     desc: 'Auditorías Lighthouse, lazy loading y técnicas avanzadas para máxima velocidad.' },
+  { icon: 'fas fa-graduation-cap', titulo: 'Plataformas Edu',      desc: 'Sistemas de aprendizaje interactivos como TypingWii, con gestión de alumnos y progreso.' },
+];
+
+const STACK = [
+  ['React',       'fab fa-react',          '#61DAFB'],
+  ['JavaScript',  'fab fa-js-square',      '#F7DF1E'],
+  ['Node.js',     'fab fa-node-js',        '#68A063'],
+  ['Firebase',    'fas fa-fire',           '#FFA611'],
+  ['HTML5',       'fab fa-html5',          '#E34F26'],
+  ['CSS3',        'fab fa-css3-alt',       '#1572B6'],
+  ['Git',         'fab fa-git-alt',        '#F05032'],
+  ['GitHub',      'fab fa-github',         '#6e40c9'],
+];
+
 // ── Estado interno ────────────────────────────────────────────────────────────
 let _roleTimer = null, _obs = [];
 
@@ -103,6 +129,64 @@ export const render = () => `
     </div>
   </section>
 
+  <!-- ★ PROYECTOS DESTACADOS ──────────────────────────────────────────────── -->
+  <section class="inicio_destacados">
+    <div class="section_header">
+      <h2 class="section_title">Proyectos Destacados</h2>
+      <div class="section_line"></div>
+      <p class="section_desc">Una selección de los trabajos que mejor representan mi manera de crear</p>
+      <a href="/proyectos" class="ver_todos"><span>Ver todos</span><i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="destacados_grid" id="inicioDestacados">
+      ${[1,2,3].map(()=>'<div class="skeleton_card"><div class="skeleton_img shimmer"></div><div class="skeleton_text shimmer"></div><div class="skeleton_text short shimmer"></div></div>').join('')}
+    </div>
+  </section>
+
+  <!-- ★ SERVICIOS ─────────────────────────────────────────────────────────── -->
+  <section class="servicios">
+    <div class="section_header">
+      <h2 class="section_title">¿Qué puedo hacer por ti?</h2>
+      <div class="section_line"></div>
+      <p class="section_desc">Soluciones completas desde la idea hasta el despliegue en producción</p>
+    </div>
+    <div class="servicios_grid">
+      ${SERVICIOS.map((s, i) => `
+      <div class="servicio_card" style="animation-delay:${i * 0.08}s">
+        <div class="servicio_icon"><i class="${s.icon}"></i></div>
+        <h3>${s.titulo}</h3>
+        <p>${s.desc}</p>
+      </div>`).join('')}
+    </div>
+  </section>
+
+  <!-- ★ TECH STACK ────────────────────────────────────────────────────────── -->
+  <section class="stack_section">
+    <div class="section_header">
+      <h2 class="section_title">Mi Stack Tecnológico</h2>
+      <div class="section_line"></div>
+    </div>
+    <div class="stack_grid">
+      ${STACK.map(([nombre, icon, color]) => `
+      <div class="stack_pill" ${wiTip(nombre)} style="--pill-color:${color}">
+        <i class="${icon}" style="color:${color}"></i>
+        <span>${nombre}</span>
+      </div>`).join('')}
+    </div>
+  </section>
+
+  <!-- ★ CTA FINAL ─────────────────────────────────────────────────────────── -->
+  <section class="cta_section">
+    <div class="cta_content">
+      <div class="cta_icon"><i class="fas fa-handshake"></i></div>
+      <h2>¿Tienes un proyecto en mente?</h2>
+      <p>Estoy listo para convertir tu visión en realidad. Hablemos sobre cómo puedo ayudarte.</p>
+      <div class="cta_actions">
+        <a href="/contacto" class="btn_primary"><i class="fas fa-paper-plane"></i><span>Empezar ahora</span></a>
+        <a href="/proyectos" class="btn_secondary"><i class="fas fa-folder-open"></i><span>Ver portafolio</span></a>
+      </div>
+    </div>
+  </section>
+
 </div>`;
 
 // ── init() — lógica y animaciones post-render ─────────────────────────────────
@@ -131,6 +215,32 @@ export const init = () => {
 
   // 👁️ Cards con stagger al entrar en vista
   _obs.push(wiVista('.about_card', (el, i) => setTimeout(() => $(el).addClass('visible'), i * 150)));
+
+  // 🌟 Proyectos destacados — skeleton → real
+  setTimeout(() => {
+    $('#inicioDestacados').html(DESTACADOS.map((p, i) => `
+      <a href="${p.url}" target="_blank" rel="noopener" class="proyecto_card dest_card" style="animation-delay:${i * 0.1}s">
+        <div class="project_img">
+          <img src="${p.img}" alt="${p.titulo}" loading="lazy">
+          <div class="project_overlay"><i class="fas fa-external-link-alt"></i></div>
+        </div>
+        <div class="project_info">
+          <h3 class="project_title">${p.titulo}</h3>
+          <p class="project_desc">${p.descripcion}</p>
+          <div class="project_tags">${p.tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        </div>
+      </a>`).join(''));
+    setTimeout(() => $('.dest_card').addClass('visible'), 50);
+  }, 600);
+
+  // 🛠️ Servicios — stagger al entrar en vista
+  _obs.push(wiVista('.servicio_card', (el, i) => setTimeout(() => $(el).addClass('visible'), i * 100)));
+
+  // 💻 Stack pills — stagger
+  _obs.push(wiVista('.stack_pill', (el, i) => setTimeout(() => $(el).addClass('visible'), i * 60)));
+
+  // ✨ CTA Section
+  _obs.push(wiVista('.cta_section', el => $(el).addClass('visible')));
 };
 
 // ── cleanup() — libera recursos al salir de la ruta ──────────────────────────
