@@ -130,15 +130,15 @@ export const render = () => `
   </section>
 
   <!-- ★ PROYECTOS DESTACADOS ──────────────────────────────────────────────── -->
-  <section class="inicio_destacados">
+  <section class="pdin_section">
     <div class="section_header">
       <h2 class="section_title">Proyectos Destacados</h2>
       <div class="section_line"></div>
       <p class="section_desc">Una selección de los trabajos que mejor representan mi manera de crear</p>
       <a href="/proyectos" class="ver_todos"><span>Ver todos</span><i class="fas fa-arrow-right"></i></a>
     </div>
-    <div class="destacados_grid" id="inicioDestacados">
-      ${[1,2,3].map(()=>'<div class="skeleton_card"><div class="skeleton_img shimmer"></div><div class="skeleton_text shimmer"></div><div class="skeleton_text short shimmer"></div></div>').join('')}
+    <div class="pdin_grid" id="pdin_lista">
+      ${[1,2,3].map(()=>'<div class="pdin_skeleton"><div class="pdin_skeleton_img shimmer"></div><div class="pdin_skeleton_text shimmer"></div><div class="pdin_skeleton_text short shimmer"></div></div>').join('')}
     </div>
   </section>
 
@@ -218,19 +218,19 @@ export const init = () => {
 
   // 🌟 Proyectos destacados — skeleton → real
   setTimeout(() => {
-    $('#inicioDestacados').html(DESTACADOS.map((p, i) => `
-      <a href="${p.url}" target="_blank" rel="noopener" class="proyecto_card dest_card" style="animation-delay:${i * 0.1}s">
-        <div class="project_img">
+    $('#pdin_lista').html(DESTACADOS.map((p, i) => `
+      <a href="${p.url}" target="_blank" rel="noopener" class="pdin_card pdin_item" style="animation-delay:${i * 0.1}s">
+        <div class="pdin_img_box">
           <img src="${p.img}" alt="${p.titulo}" loading="lazy">
-          <div class="project_overlay"><i class="fas fa-external-link-alt"></i></div>
+          <div class="pdin_overlay"><i class="fas fa-external-link-alt"></i></div>
         </div>
-        <div class="project_info">
-          <h3 class="project_title">${p.titulo}</h3>
-          <p class="project_desc">${p.descripcion}</p>
-          <div class="project_tags">${p.tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div class="pdin_info">
+          <h3 class="pdin_title">${p.titulo}</h3>
+          <p class="pdin_desc">${p.descripcion}</p>
+          <div class="pdin_tags">${p.tags.slice(0,3).map(t=>`<span class="pdin_tag">${t}</span>`).join('')}</div>
         </div>
       </a>`).join(''));
-    setTimeout(() => $('.dest_card').addClass('visible'), 50);
+    setTimeout(() => $('.pdin_item').addClass('visible'), 50);
   }, 600);
 
   // 🛠️ Servicios — stagger al entrar en vista
