@@ -6,10 +6,10 @@ import emailjs from '@emailjs/browser';
 
 // ── Datos ─────────────────────────────────────────────────────────────────────
 const INFO = {
-  email:     'wilder.taype16@mail.com',
+  email:     'wilder.taype16@hotmail.com',
   telefono:  '+51 972696775',
   ubicacion: 'Lima, Perú',
-  horario:   'Lun - Vie: 9:00 AM - 6:00 PM',
+  horario:   '24/7 DISPONIBLE',
 };
 
 const REDES = [
