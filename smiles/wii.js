@@ -5,15 +5,18 @@ export let lanzamiento = 2024;
 export let autor = '@wilder.taype';
 export let ipdev = import.meta.env.VITE_DEV;
 export let link = 'https://wtaype.me/';
-export let version = 'v28';
+export let version = 'v29';
 
-/** Actualizar main luego esto, pero si es mucho, solo esto. (1)
-git tag v28 -m "Version v28" ; git push origin v28 
+/** ACTUALIZAR AL TAG POR SEGURIDAD [TAG NUEVO] (1)
+git tag v29 -m "Version v29" ; git push origin v29
 
-//  ACTUALIZACIÓN PRINCIPAL ONE DEV [START] (2)
-git add . ; git commit -m "Actualizacion Principal v28.10.10" ; git push origin main
+ACTUALIZACIÓN AL MAIN PRINCIPAL DEL PROYECTO [MAIN] (2)
+git add . ; git commit -m "Actualizacion Principal v29.10.10" ; git push origin main
 
-// En caso de emergencia, para actualizar el Tag existente. (3)
-git tag -d v28 ; git tag v28 -m "Version v28 actualizada" ; git push origin v28 --force
- ACTUALIZACION TAG[END]  */ 
+// REEMPLAZAR TAG DE SEGURIDAD EXISTENTE [TAG REMPLAZO] (3)
+git tag -d v29 ; git tag v29 -m "Version v29 actualizada" ; git push origin v29 --force
 
+// Actualizar versiones de seguridad [ELIMINAR CARPETA - ARCHIVO ONLINE] (4)
+git rm --cached skills-lock.json ; git commit -m "Archivo Eliminado" ; git push origin main
+git rm -r --cached .claude/ ; git commit -m "Carpeta Eliminada" ; git push origin main
+ ACTUALIZACION TAG[END] */

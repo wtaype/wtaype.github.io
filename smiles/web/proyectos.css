@@ -91,8 +91,8 @@
 }
 .destacados_grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3vw;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+  gap: 2.5rem;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -106,9 +106,10 @@
 
 /* ==================== SKELETON LOADING ==================== */
 .skeleton_card {
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
   background: var(--wb);
+  border: 1px solid var(--bg5);
 }
 .skeleton_img {
   aspect-ratio: 16/10;
@@ -363,24 +364,28 @@
 
 /* ==================== PROYECTO CARD (UNIFICADO) ==================== */
 .proyecto_card {
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
   background: var(--wb);
-  transition: all var(--tr_m);
-  display: block;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  box-shadow: var(--bs_l);
+  border: 1px solid var(--bg5);
   position: relative;
   opacity: 0;
   transform: translateY(20px);
+  backdrop-filter: blur(10px);
 }
 .proyecto_card.visible {
   opacity: 1;
   transform: translateY(0);
 }
 .proyecto_card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px color-mix(in srgb, var(--0) 10%, transparent);
+  border-color: var(--mco);
 }
 
 .project_img {
@@ -502,21 +507,23 @@
 .project_tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5vh;
+  gap: 0.5rem;
+  margin-top: auto;
 }
 .tag {
-  padding: 0.5vh 1vw;
+  padding: 4px 12px;
   background: var(--bg4);
   color: var(--mco);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: var(--fz_s3);
   font-weight: 600;
-  transition: all var(--tr_f);
+  transition: all 0.3s ease;
+  border: 1px solid var(--bg5);
 }
-.tag:hover {
-  background: var(--mco);
+.proyecto_card:hover .tag {
+  background: var(--bg2);
   color: var(--txa);
-  transform: translateY(-2px);
+  border-color: transparent;
 }
 
 /* ==================== LOADING ==================== */
@@ -561,21 +568,23 @@
 /* ==================== BOTÓN MOSTRAR MÁS ==================== */
 .load_more_section { display: flex!important; justify-content: center; margin-bottom: 7vh; }
 .btn_load_more {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 1.8vh;
-  padding: 2.5vh 5vw;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 40px;
   background: linear-gradient(135deg, var(--mco), var(--hv));
   color: var(--txa);
   border: none;
-  border-radius: 18px;
-  font-size: var(--fz_m4);
+  border-radius: 50px;
+  font-size: var(--fz_m3);
   font-weight: 700;
   cursor: pointer;
   transition: all var(--tr_m);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--mco) 30%, transparent);
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 .btn_load_more::before {
   content: '';
@@ -584,9 +593,9 @@
   background: linear-gradient(135deg, var(--hv), var(--mco));
   opacity: 0;
   transition: opacity var(--tr_m);
+  z-index: -1;
 }
 .btn_load_more:hover::before { opacity: 1; }
-.btn_load_more i, .btn_load_more span { position: relative; z-index: 1; }
 .btn_load_more i { font-size: 1.8rem; transition: transform var(--tr_m); }
 .btn_load_more:hover {
   transform: translateY(-4px) scale(1.05);

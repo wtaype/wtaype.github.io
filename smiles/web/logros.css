@@ -53,19 +53,23 @@
 
 .stat_logro {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: 1.5vh;
-  padding: 2.5vh 2vw;
+  padding: 2rem 1.5rem;
   background: var(--wb);
-  border-radius: 16px;
-  border: 2px solid transparent;
+  border-radius: 20px;
+  border: 1px solid var(--bg5);
   transition: all var(--tr_m);
+  backdrop-filter: blur(10px);
 }
 
 .stat_logro:hover {
   border-color: var(--mco);
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px color-mix(in srgb, var(--0) 10%, transparent);
 }
 
 .stat_logro i {
@@ -76,7 +80,7 @@
 .stat_data {
   display: flex;
   flex-direction: column;
-  text-align: left;
+  align-items: center;
 }
 
 .stat_numero {
@@ -105,44 +109,39 @@
 }
 
 .tipo_btn {
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
   align-items: center;
-  gap: 0.8vh;
-  padding: 1.8vh 2.5vw;
+  gap: 0.8rem;
+  padding: 12px 24px;
   background: var(--wb);
   color: var(--tx);
-  border: 2px solid transparent;
-  border-radius: 12px;
+  border: 1px solid var(--bg5);
+  border-radius: 50px;
   font-size: var(--fz_m2);
   font-weight: 600;
   cursor: pointer;
   transition: all var(--tr_m);
-  min-width: 140px;
+  backdrop-filter: blur(10px);
 }
 
 .tipo_btn i {
-  font-size: 1.8rem;
-  color: var(--txe);
+  font-size: 1.2rem;
+  color: var(--mco);
   transition: all var(--tr_f);
 }
 
 .tipo_btn:hover {
   border-color: var(--mco);
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-}
-
-.tipo_btn:hover i {
-  color: var(--mco);
-  transform: scale(1.1);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--0) 8%, transparent);
+  background: var(--bg4);
 }
 
 .tipo_btn.active {
   background: var(--mco);
   color: var(--txa);
   border-color: var(--mco);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--mco) 40%, transparent);
 }
 
 .tipo_btn.active i {
@@ -163,13 +162,16 @@
 .logro_card {
   background: var(--wb);
   border-radius: 20px;
-  padding: 3vh 2.5vw;
-  border: 2px solid transparent;
-  transition: all var(--tr_m);
+  padding: 2rem;
+  border: 1px solid var(--bg5);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
   opacity: 0;
   transform: translateY(20px);
-  animation: cardFadeIn 0.5s ease forwards;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+  height: 100%;
 }
 
 @keyframes cardFadeIn {
@@ -187,7 +189,7 @@
 .logro_card:hover {
   border-color: var(--mco);
   transform: translateY(-10px);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+  box-shadow: 0 20px 40px color-mix(in srgb, var(--0) 10%, transparent);
 }
 
 .logro_icon_wrapper {
@@ -292,24 +294,26 @@
 
 .btn_ver_logro {
   width: 100%;
-  padding: 1.5vh 2vw;
+  padding: 12px 24px;
   background: var(--mco);
   color: var(--txa);
   border: none;
-  border-radius: 10px;
-  font-size: var(--fz_m3);
+  border-radius: 12px;
+  font-size: var(--fz_m2);
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--tr_f);
+  transition: all var(--tr_m);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.8vh;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 25%, transparent);
 }
 
 .btn_ver_logro:hover {
-  transform: scale(1.02);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  background: var(--hv);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--mco) 40%, transparent);
 }
 
 /* ==================== ESTADÍSTICAS ANUALES ==================== */
@@ -336,17 +340,18 @@
 
 .stat_anual_card {
   text-align: center;
-  padding: 4vh 2vw;
-  background: var(--bg);
-  border-radius: 20px;
-  border: 2px solid transparent;
+  padding: 2rem;
+  background: var(--wb);
+  border-radius: 24px;
+  border: 1px solid var(--bg5);
   transition: all var(--tr_m);
+  backdrop-filter: blur(10px);
 }
 
 .stat_anual_card:hover {
   border-color: var(--mco);
   transform: translateY(-8px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+  box-shadow: 0 15px 30px color-mix(in srgb, var(--0) 10%, transparent);
 }
 
 .stat_anual_icon {
@@ -541,12 +546,12 @@
 
 .btn_logro {
   flex: 1;
-  padding: 2vh 2vw;
+  padding: 14px 28px;
   border-radius: 12px;
-  font-size: var(--fz_m3);
+  font-size: var(--fz_m2);
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--tr_f);
+  transition: all var(--tr_m);
   text-decoration: none;
   display: flex;
   justify-content: center;
@@ -558,23 +563,30 @@
 .btn_verificar {
   background: var(--mco);
   color: var(--txa);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 30%, transparent);
 }
 
 .btn_compartir {
-  background: var(--bg);
+  background: var(--bg1);
   color: var(--tx);
   border-color: var(--bg5);
+  backdrop-filter: blur(10px);
 }
 
 .btn_logro:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 25px color-mix(in srgb, var(--0) 15%, transparent);
+}
+
+.btn_verificar:hover {
+  background: var(--hv);
 }
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 1024px) {
   .hero_stats_logros {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
 
   .logros_grid {
@@ -588,7 +600,24 @@
 
 @media (max-width: 768px) {
   .hero_stats_logros {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .stat_logro {
+    padding: 1.5rem 1rem;
+  }
+
+  .stat_logro i {
+    font-size: 1.8rem;
+  }
+
+  .stat_numero {
+    font-size: var(--fz_l2);
+  }
+
+  .stat_texto {
+    font-size: var(--fz_s3);
   }
 
   .logros_grid {

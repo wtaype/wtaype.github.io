@@ -3,38 +3,33 @@ import { $, wiVista, abrirModal, wicopy } from '../widev.js';
 
 // ── Datos ─────────────────────────────────────────────────────────────────────
 const LOGROS = [
-  { id: 1, titulo: 'Certificación Full Stack Developer',  descripcion: 'Certificación completa en desarrollo web moderno con React, Node.js y bases de datos',           tipo: 'certificado',    institucion: 'Platzi',         fecha: '2024-01-15', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://platzi.com/certificado',       destacado: true,  icono: 'fas fa-graduation-cap',      color: '#4CAF50' },
-  { id: 2, titulo: 'Primer Lugar Hackathon 2023',         descripcion: 'Ganador del primer lugar en hackathon nacional con proyecto de IA para educación',                tipo: 'premio',         institucion: 'Tech Summit Peru',fecha: '2023-11-20', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '',                                      destacado: true,  icono: 'fas fa-trophy',              color: '#FFD700' },
-  { id: 3, titulo: '50+ Proyectos Completados',           descripcion: 'Desarrollé y desplegué más de 50 proyectos web profesionales para clientes de todo el mundo',     tipo: 'hito',           institucion: 'Freelance',      fecha: '2023-12-31', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '/proyectos',                            destacado: false, icono: 'fas fa-rocket',              color: '#2196F3' },
-  { id: 4, titulo: 'Curso Avanzado de Firebase',          descripcion: 'Especialización en Firebase: Authentication, Firestore, Cloud Functions y Hosting',               tipo: 'certificado',    institucion: 'Google Cloud',   fecha: '2023-09-10', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://google.com/certificado',        destacado: false, icono: 'fas fa-certificate',         color: '#FF9800' },
-  { id: 5, titulo: 'Contribuidor Open Source',            descripcion: 'Más de 100 contribuciones a proyectos open source en GitHub',                                     tipo: 'hito',           institucion: 'GitHub',         fecha: '2024-03-05', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://github.com/wtaype',             destacado: true,  icono: 'fab fa-github',              color: '#6e5494' },
-  { id: 6, titulo: 'Mentor de Programación',              descripcion: 'Mentoría a más de 30 estudiantes en desarrollo web full stack',                                    tipo: 'reconocimiento', institucion: 'Dev.to Community',fecha: '2023-07-22', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '',                                      destacado: false, icono: 'fas fa-chalkboard-teacher',  color: '#9C27B0' },
-  { id: 7, titulo: 'JavaScript Expert',                   descripcion: 'Certificación avanzada en JavaScript ES6+, TypeScript y frameworks modernos',                      tipo: 'certificado',    institucion: 'freeCodeCamp',   fecha: '2023-05-18', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://freecodecamp.org/certificado',  destacado: false, icono: 'fab fa-js',                  color: '#F7DF1E' },
-  { id: 8, titulo: 'Top 10 Developer del Año',            descripcion: 'Reconocido como uno de los 10 mejores desarrolladores emergentes del país',                        tipo: 'premio',         institucion: 'Dev Awards 2023',fecha: '2023-12-15', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '',                                      destacado: true,  icono: 'fas fa-medal',               color: '#E91E63' },
+  { id: 1, titulo: 'Bachiller en Ingeniería Empresarial y de Sistemas', descripcion: 'Graduado con formación integral en gestión empresarial y desarrollo tecnológico. Especializado en diseño web y programación de aplicaciones.', tipo: 'academico', institucion: 'Universidad San Ignacio de Loyola', fecha: '2025-07-02', imagen: 'https://media.licdn.com/dms/image/v2/D4E2DAQH59UQuEfdISA/profile-treasury-image-shrink_800_800/B4EZjK6S9_HIAc-/0/1755750937389?e=1777770000&v=beta&t=wJ6_Oqgx9ObgCGilnHvPxHwf_hT1tnQjj3dt1hydbCw', url: 'https://www.linkedin.com/in/wildertaype/', destacado: true, icono: 'fas fa-user-graduate', color: '#4CAF50' },
+  { id: 2, titulo: '60+ Proyectos Completados', descripcion: 'Desarrollé y desplegué más de 60 proyectos web y móviles profesionales para diversos clientes y plataformas.', tipo: 'hito', institucion: 'Freelance / Personal', fecha: '2025-12-31', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '/proyectos', destacado: true, icono: 'fas fa-rocket', color: '#2196F3' },
+  { id: 3, titulo: 'Certificación de Udemy', descripcion: 'Certificación que avala conocimientos sólidos y habilidades prácticas en desarrollo.', tipo: 'certificado', institucion: 'Udemy', fecha: '2023-10-15', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://www.udemy.com/certificate/UC-a377f9f2-e979-442a-b0bf-05affc89c734/', destacado: false, icono: 'fas fa-certificate', color: '#FF9800' },
+  { id: 4, titulo: 'Perfil Profesional en GitHub', descripcion: 'Desarrollador activo compartiendo código, proyectos reales y contribuyendo al ecosistema open source.', tipo: 'hito', institucion: 'GitHub', fecha: '2024-05-10', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://github.com/wtaype', destacado: false, icono: 'fab fa-github', color: '#6e5494' }
 ];
 
 const FILTROS = [
   ['all',            'fas fa-layer-group', 'Todos'           ],
+  ['academico',      'fas fa-user-graduate','Académico'      ],
   ['certificado',    'fas fa-certificate', 'Certificados'    ],
-  ['premio',         'fas fa-trophy',      'Premios'         ],
   ['hito',           'fas fa-rocket',      'Hitos'           ],
-  ['reconocimiento', 'fas fa-award',       'Reconocimientos' ],
 ];
 
 // ── Stats calculados una vez ──────────────────────────────────────────────────
 const TOTAL       = LOGROS.length;
-const N_CERTS     = LOGROS.filter(l => l.tipo === 'certificado').length;
-const N_PREMIOS   = LOGROS.filter(l => l.tipo === 'premio').length;
+const N_CERTS     = LOGROS.filter(l => l.tipo === 'certificado' || l.tipo === 'academico').length;
+const N_HITOS     = LOGROS.filter(l => l.tipo === 'hito').length;
 const N_DEST      = LOGROS.filter(l => l.destacado).length;
+const N_2025      = LOGROS.filter(l => l.fecha.startsWith('2025')).length;
 const N_2024      = LOGROS.filter(l => l.fecha.startsWith('2024')).length;
-const N_2023      = LOGROS.filter(l => l.fecha.startsWith('2023')).length;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const MESES_C = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const MESES_L = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const fmt     = f => { const d = new Date(f + 'T00:00:00'); return `${MESES_C[d.getMonth()]} ${d.getFullYear()}`; };
 const fmtFull = f => { const d = new Date(f + 'T00:00:00'); return `${d.getDate()} de ${MESES_L[d.getMonth()]} de ${d.getFullYear()}`; };
-const tipoLabel = t => ({ certificado: 'Certificado', premio: 'Premio', hito: 'Hito', reconocimiento: 'Reconocimiento' }[t] || t);
+const tipoLabel = t => ({ certificado: 'Certificado', academico: 'Académico', hito: 'Hito' }[t] || t);
 
 // ── Estado ────────────────────────────────────────────────────────────────────
 let _obs = [];
@@ -51,7 +46,7 @@ export const render = () => `
       <div class="hero_stats_logros">
         <div class="stat_logro"><i class="fas fa-trophy"></i>    <div class="stat_data"><span class="stat_numero">${TOTAL}</span>    <span class="stat_texto">Logros Totales</span></div></div>
         <div class="stat_logro"><i class="fas fa-certificate"></i><div class="stat_data"><span class="stat_numero">${N_CERTS}</span>  <span class="stat_texto">Certificaciones</span></div></div>
-        <div class="stat_logro"><i class="fas fa-medal"></i>     <div class="stat_data"><span class="stat_numero">${N_PREMIOS}</span> <span class="stat_texto">Premios</span></div></div>
+        <div class="stat_logro"><i class="fas fa-rocket"></i>     <div class="stat_data"><span class="stat_numero">${N_HITOS}</span> <span class="stat_texto">Hitos</span></div></div>
         <div class="stat_logro"><i class="fas fa-star"></i>      <div class="stat_data"><span class="stat_numero">${N_DEST}</span>   <span class="stat_texto">Destacados</span></div></div>
       </div>
     </div>
@@ -73,8 +68,8 @@ export const render = () => `
   <section class="stats_anuales">
     <h2 class="section_title">Progreso Anual</h2>
     <div class="stats_grid">
-      <div class="stat_anual_card"><div class="stat_anual_icon"><i class="fas fa-code"></i></div>      <h3>2024</h3><div class="stat_anual_bar"><div class="stat_bar_fill" style="--width:85%"></div></div> <p class="stat_anual_numero">${N_2024} logros</p></div>
-      <div class="stat_anual_card"><div class="stat_anual_icon"><i class="fas fa-fire"></i></div>      <h3>2023</h3><div class="stat_anual_bar"><div class="stat_bar_fill" style="--width:70%"></div></div> <p class="stat_anual_numero">${N_2023} logros</p></div>
+      <div class="stat_anual_card"><div class="stat_anual_icon"><i class="fas fa-code"></i></div>      <h3>2025</h3><div class="stat_anual_bar"><div class="stat_bar_fill" style="--width:85%"></div></div> <p class="stat_anual_numero">${N_2025} logros</p></div>
+      <div class="stat_anual_card"><div class="stat_anual_icon"><i class="fas fa-fire"></i></div>      <h3>2024</h3><div class="stat_anual_bar"><div class="stat_bar_fill" style="--width:70%"></div></div> <p class="stat_anual_numero">${N_2024} logros</p></div>
       <div class="stat_anual_card"><div class="stat_anual_icon"><i class="fas fa-chart-line"></i></div><h3>Total</h3><div class="stat_anual_bar"><div class="stat_bar_fill" style="--width:100%"></div></div><p class="stat_anual_numero">${TOTAL} logros</p></div>
     </div>
   </section>

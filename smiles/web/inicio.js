@@ -4,7 +4,7 @@ import { $, wiVista, Saludar, wiTip, year } from '../widev.js';
 // ── Datos ────────────────────────────────────────────────────────────────────
 const ROLES     = ['Desarrollador Full Stack', 'Ingeniero de Sistemas', 'Creador de Soluciones'];
 const STATS     = [[6, 'Años de Experiencia'], [60, 'Proyectos Entregados'], [30, 'Tecnologías']];
-const TECHS     = [['React', 'fab fa-react'], ['JavaScript', 'fab fa-js'], ['Node.js', 'fab fa-node'], ['Firebase', 'fas fa-fire']];
+const TECHS     = [['JavaScript', 'fab fa-js'], ['Node.js', 'fab fa-node'], ['Firebase', 'fas fa-fire'], ['React', 'fab fa-react']];
 const FORTALEZAS = ['Desarrollo Full Stack', 'Optimización de Rendimiento', 'UI/UX Intuitivo', 'Soluciones Escalables'];
 const TL        = [
   [year(),  'Creando proyectos innovadores con tecnologías modernas'],
@@ -29,10 +29,15 @@ const SERVICIOS = [
 ];
 
 const STACK = [
-  ['React',       'fab fa-react',          '#61DAFB'],
   ['JavaScript',  'fab fa-js-square',      '#F7DF1E'],
   ['Node.js',     'fab fa-node-js',        '#68A063'],
   ['Firebase',    'fas fa-fire',           '#FFA611'],
+  ['Supabase',    'fas fa-database',       '#3ECF8E'],
+  ['React',       'fab fa-react',          '#61DAFB'],
+  ['Next.js',     'fas fa-bolt',           '#000000'],
+  ['Vite',        'fas fa-bolt',           '#646CFF'],
+  ['Vercel',      'fas fa-bolt',           '#000000'],
+  ['Wordpress',   'fab fa-wordpress',      '#21759b'],
   ['HTML5',       'fab fa-html5',          '#E34F26'],
   ['CSS3',        'fab fa-css3-alt',       '#1572B6'],
   ['Git',         'fab fa-git-alt',        '#F05032'],
