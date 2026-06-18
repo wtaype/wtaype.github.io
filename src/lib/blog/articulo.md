@@ -13,7 +13,6 @@ Para facilitarte la organización, comparemos las cuatro grandes categorías de 
 | :si: **Librerías y Componentes** | Código limpio, modularidad, empaquetado de software. | Alto. Demuestra que sabes escribir herramientas que otros programadores usan. |
 | :si: **Sistemas en la Nube / Serverless** | Despliegue continuo, escalabilidad, infraestructura moderna. | Muy alto. Indica preparación para integrarse a entornos corporativos complejos. |
 
----
 
 ## 1. Cómo elegir proyectos que aporten valor real {#elegir-proyectos}
 
@@ -57,7 +56,6 @@ Este tipo de proyectos es especialmente valorado para roles de ingeniería de fr
 
 ![Documento README de GitHub muy bien redactado con explicaciones claras de arquitectura y cómo instalar localmente](https://i.ibb.co/WNCNthzd/64d7aed22219.webp)
 
----
 
 ## 2. Elementos indispensables de un portafolio de alto impacto {#elementos-portafolio}
 
@@ -73,7 +71,7 @@ Para asegurar que tu perfil actual es altamente competitivo y está alineado con
 
 En este video te explicamos los secretos de diseño y arquitectura técnica para construir un portafolio premium paso a paso de forma sumamente sencilla y directa:
 
-[Cómo estructurar tu portafolio de proyectos de software :fab-youtube:](https://www.youtube.com/watch?v=2GcugJMRdBE)
+[:fab-youtube: Cómo estructurar tu portafolio de proyectos de software](https://www.youtube.com/watch?v=2GcugJMRdBE)
 
 ---
 
@@ -82,8 +80,6 @@ En este video te explicamos los secretos de diseño y arquitectura técnica para
 Construir un portafolio sólido y presentarse a entrevistas de trabajo puede ser un proceso retador que genere desgaste y presión personal. Queremos recordarte que **cada línea de código que escribes es un paso hacia adelante en tu crecimiento profesional**. No te compares con el resto del mercado; concéntrate en mejorar tus habilidades un 1% cada día, documenta tu aprendizaje con honestidad y confía en el valor de tus proyectos reales. ¡La constancia siempre rinde frutos en el mundo tecnológico!
 
 ![Desarrollador web sonriendo frente a su laptop al recibir una oferta de trabajo gracias a su portafolio de proyectos reales](https://i.ibb.co/nNQdgJqq/9e2f1634bad3.webp)
-
----
 
 ## 4. Pasos rápidos para crear tu portafolio hoy mismo {#pasos-preparacion}
 
@@ -94,4 +90,4 @@ Construir un portafolio sólido y presentarse a entrevistas de trabajo puede ser
 ---
 
 ### Sobre el Autor
-**Ing. Wilder Taype** es especialista en desarrollo web premium y reclutamiento técnico, con una sólida trayectoria ayudando a profesionales digitales a optimizar su presencia online, construir portafolios de alto rendimiento y superar con éxito los procesos de contratación técnica más exigentes. Puedes contactarlo a través de su [Perfil de LinkedIn](https://www.linkedin.com/in/wildertaype) para recibir asesoramiento personalizado.
+**Ing. Wilder Taype** es especialista en desarrollo web premium, con una sólida trayectoria ayudando a profesionales digitales a optimizar su presencia online, construir portafolios de alto rendimiento y superar con éxito los procesos de contratación técnica más exigentes. Puedes contactarlo a través de su [Perfil de LinkedIn](https://www.linkedin.com/in/wildertaype) para recibir asesoramiento personalizado.

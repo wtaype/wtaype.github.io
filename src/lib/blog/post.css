@@ -5,22 +5,23 @@
   padding-block: 2vh;
   border-bottom: 1px solid var(--brd);
   color: var(--tx);
-  line-height: 1.95;
-  font-size: var(--fz_m3);
+  line-height: 1.85;
+  font-size: var(--fz_m4);
+  letter-spacing: -0.01em;
 }
 .po_contenido h2 {
   font-size: var(--fz_l1);
   font-weight: 700;
   color: var(--tx1);
-  margin: 3vh 0 1.2vh;
+  margin: 4.5vh 0 2vh;
   padding-bottom: .5vh;
   border-bottom: 2px solid var(--bg5);
 }
-.po_contenido h3 { font-size: var(--fz_m5); font-weight: 700; color: var(--mco); margin: 2.5vh 0 .8vh; }
-.po_contenido p { margin-bottom: 1.8vh; }
+.po_contenido h3 { font-size: var(--fz_m5); font-weight: 700; color: var(--mco); margin: 3.5vh 0 1.5vh; }
+.po_contenido p { margin-bottom: 2.6vh; }
 
 .po_figure {
-  margin: 2.5vh 0;
+  margin: 4vh 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,12 +32,12 @@
   height: auto;
   aspect-ratio: auto 16 / 9;
   object-fit: cover;
-  border-radius: 1.2vh;
+  border-radius: 1.8vh;
   margin: 0;
   box-shadow: 0 4px 12px rgba(0,0,0,.05);
 }
 .po_figcaption {
-  font-size: var(--fz_s3);
+  font-size: var(--fz_m3);
   color: var(--tx3);
   margin-top: 1.2vh;
   text-align: center;
@@ -46,38 +47,45 @@
 }
 
 .po_contenido blockquote {
-  margin: 2.5vh 0; padding: 1.5vh 2vh;
+  margin: 4vh 0; padding: 2vh 2.5vh;
   background: var(--bg4);
-  border-left: 3px solid var(--mco);
-  border-radius: 0 1vh 1vh 0;
+  border-left: 4px solid var(--mco);
+  border-radius: 0 1.2vh 1.2vh 0;
   font-style: italic; color: var(--tx2); font-size: var(--fz_m3);
+  line-height: 1.8;
 }
-.po_contenido a { color: var(--mco); font-weight: 500; text-underline-offset: 2px; }
-.po_contenido a:hover { text-decoration: underline; }
+.po_contenido a:not(.po_yt_link):not([href*="youtube.com"]):not([href*="youtu.be"]) {
+  color: var(--mco);
+  font-weight: 500;
+  text-underline-offset: 2px;
+}
+.po_contenido a:not(.po_yt_link):not([href*="youtube.com"]):not([href*="youtu.be"]):hover {
+  text-decoration: underline;
+}
 
 /* Listas Pro */
 .po_contenido ul { 
   list-style: none; 
   padding: 0; 
-  margin: 2vh 0 2.5vh 0; 
+  margin: 2.5vh 0 3vh 0; 
 }
 .po_contenido ol { 
   list-style: decimal; 
   padding-left: 3.5vh; 
-  margin: 2vh 0 2.5vh 0; 
+  margin: 2.5vh 0 3vh 0; 
 }
 .po_contenido ul li { 
   position: relative;
   padding-left: 3vh;
-  margin-bottom: 1.2vh; 
-  line-height: 1.7;
+  margin-bottom: 1.6vh; 
+  line-height: 1.8;
 }
 .po_contenido ul li:has(> i) {
   padding-left: 0;
 }
 .po_contenido ol li { 
-  margin-bottom: 1.2vh; 
-  line-height: 1.7;
+  margin-bottom: 1.6vh; 
+  line-height: 1.8;
 }
 .po_contenido ul li::before {
   content: '\f004'; /* Font Awesome Heart */
@@ -128,7 +136,7 @@
   border-bottom: 1px solid color-mix(in srgb, var(--mco) 10%, var(--bg5));
   border-right: 1px solid color-mix(in srgb, var(--mco) 10%, var(--bg5));
   color: var(--tx2);
-  font-size: var(--fz_m1);
+  font-size: var(--fz_m4);
   transition: background var(--tr_f);
 }
 .po_table_wrap th:last-child,
@@ -147,21 +155,45 @@
 .po_todo_check {
   margin-right: 0.5vh;
 }
-.po_yt_link {
-  color: var(--mco);
-  font-weight: 600;
-  text-underline-offset: 2px;
-  display: inline-flex;
+.po_yt_link,
+.po_contenido a[href*="youtube.com"],
+.po_contenido a[href*="youtu.be"] {
+  display: flex;
   align-items: center;
-  gap: 0.6vh;
+  gap: 1.2vh;
+  padding: 1.6vh 3vh;
+  margin: 3.5vh auto;
+  background: color-mix(in srgb, var(--warning) 8%, var(--wb));
+  border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent);
+  color: var(--tx1);
+  font-weight: 700;
+  font-size: var(--fz_m2);
+  border-radius: 5vh;
+  text-decoration: none;
+  max-width: 500px;
+  transition: all var(--tr_m);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
 }
-.po_yt_link:hover {
-  text-decoration: underline;
+.po_yt_link:hover,
+.po_contenido a[href*="youtube.com"]:hover,
+.po_contenido a[href*="youtu.be"]:hover {
+  transform: translateY(-3px);
+  background: color-mix(in srgb, var(--warning) 12%, var(--wb));
+  border-color: var(--warning);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--warning) 20%, transparent);
+  text-decoration: none;
 }
-.po_ico_youtube {
-  color: #fe0149;
-  font-size: 1.15em;
-  margin-right: 2px;
+.po_yt_link i,
+.po_contenido a[href*="youtube.com"] i,
+.po_contenido a[href*="youtu.be"] i {
+  color: var(--error);
+  font-size: 1.25em;
+  order: -1;
+}
+.po_yt_link i:not(:first-child),
+.po_contenido a[href*="youtube.com"] i:not(:first-child),
+.po_contenido a[href*="youtu.be"] i:not(:first-child) {
+  display: none !important;
 }
 
 /* Colores de Iconos Personalizados */

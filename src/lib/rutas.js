@@ -84,11 +84,11 @@ export function rutaRoles() {
   // Asegurar accesos correctos por rol
   const allRoles = ['usuario', 'editor', 'gestor', 'admin'];
   roles['/perfil'] = allRoles;
+  roles['/nuevo'] = ['editor', 'editor', 'admin'];
   roles['/notas'] = ['usuario', 'editor', 'admin'];
   roles['/mensajes'] = ['editor', 'gestor', 'admin'];
-  roles['/nuevo'] = ['editor', 'admin'];
-  roles['/aprobar'] = ['gestor', 'admin'];
-
+  
+  roles['/aprobar'] = ['gestor', 'admin']; 
   const require2FA = ['admin', 'usuarios'];
   return { roles, require2FA };
 }

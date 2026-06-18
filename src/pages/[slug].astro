@@ -255,7 +255,7 @@ const keywords = seoMeta.keywords || '';
 .po_header { padding-top: 2.5vh; }
 
 .po_titulo {
-  font-size: var(--fz_x1);
+  font-size: var(--fz_l2);
   font-weight: 800;
   color: var(--tx1);
   line-height: 1.2;
@@ -561,8 +561,8 @@ const keywords = seoMeta.keywords || '';
 
 .po_toc_box {
   background: var(--bg4);
-  padding: 1.5vh 2.5vh 0 1.5vh;
-  margin: 2vh 3vh 0 3vh;
+  padding: 2vh 2.5vh;
+  margin: 2vh 3vh 3.5vh 3vh;
   border-radius: 1vh;
   border-left: 3px solid var(--mco);
 }
@@ -586,7 +586,7 @@ const keywords = seoMeta.keywords || '';
 .po_toc li { margin: 0; }
 .po_toc_link {
   color: var(--tx2);
-  font-size: var(--fz_m1);
+  font-size: var(--fz_m3);
   text-decoration: none;
   transition: color var(--tr_f);
   display: block;
@@ -620,7 +620,7 @@ const keywords = seoMeta.keywords || '';
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2vh;
-  margin-top: 1vh;
+  margin-top: 3vh;
 }
 .po_pn_card {
   display: flex;
@@ -715,7 +715,7 @@ const keywords = seoMeta.keywords || '';
     gap: 1.5vh;
   }
   .po_hero_img { height: 28vh; }
-  .po_titulo   { font-size: var(--fz_l2); }
+  .po_titulo   { font-size: var(--fz_l1); }
   .po_side_card:hover { transform: none; }
 }
 
@@ -755,17 +755,10 @@ const keywords = seoMeta.keywords || '';
   border-radius: 1.5vh;
   overflow: hidden;
   width: 95%;
-  max-width: 800px;
+  max-width: 65vw;
   border: 1px solid rgba(255,255,255,.1);
 }
-#wi_yt_modal .wi_yt_close {
-  color: #fff;
-  text-shadow: 0 0 8px #000;
-  right: 1.5vh;
-  top: 1vh;
-  font-size: 2.2rem;
-  z-index: 10;
-}
+
 #wi_yt_player {
   width: 100%;
   aspect-ratio: 16/9;
@@ -886,7 +879,6 @@ const keywords = seoMeta.keywords || '';
         modal.className = 'wiModal';
         modal.innerHTML = `
           <div class="modalBody">
-            <button class="modalX wi_yt_close">&times;</button>
             <div id="wi_yt_player"></div>
           </div>`;
         document.body.appendChild(modal);
