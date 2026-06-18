@@ -1,0 +1,964 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<style is:global>
+/* =========================================================================
+   USUARIOS.CSS — Consola de Moderación de Usuarios
+   ========================================================================= */
+
+.us_container {
+  display: flex;
+  flex-direction: column;
+  gap: 3vh;
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  padding: 2vh 0; /* Ancho completo con padding lateral adaptativo */
+  animation: smw_entry 0.6s ease-out;
+}
+
+@keyframes smw_entry {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.us_header_section {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  padding: 3vh 4vw;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01);
+}
+
+.us_title_box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.us_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: color-mix(in srgb, var(--mco) 10%, transparent);
+  color: var(--mco);
+  padding: 0.4rem 0.8rem;
+  border-radius: 99px;
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  border: 1px solid color-mix(in srgb, var(--mco) 15%, transparent);
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.us_title {
+  font-size: var(--fz_l1);
+  font-weight: 800;
+  color: var(--tx1);
+  margin-bottom: 0.4rem;
+  letter-spacing: -1px;
+}
+
+.us_subtitle {
+  font-size: var(--fz_m2);
+  color: var(--tx3);
+}
+
+.us_console_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  padding: 3vh;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.01);
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+}
+
+/* Filters & Search */
+.us_filters_bar {
+  display: flex;
+  gap: 2vh;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.us_search_wrapper {
+  flex-grow: 1;
+  position: relative;
+}
+
+.us_search_wrapper i {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--tx3);
+}
+
+.us_search_input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 12px;
+  padding: 0.75rem 1rem 0.75rem 2.8rem;
+  font-size: var(--fz_m1);
+  color: var(--tx);
+  outline: none;
+  transition: 0.3s;
+}
+
+.us_search_input:focus {
+  border-color: var(--mco);
+  background: var(--wb);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mco) 15%, transparent);
+}
+
+.us_role_filters {
+  display: flex;
+  gap: 0.8vh;
+  flex-wrap: wrap;
+}
+
+.us_filter_btn {
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  color: var(--tx2);
+  padding: 0.5rem 1.1rem;
+  border-radius: 99px;
+  font-size: var(--fz_s3);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.us_filter_btn:hover {
+  background: var(--bg4);
+  color: var(--tx1);
+}
+
+.us_filter_btn.active {
+  background: var(--mco);
+  color: var(--txa);
+  border-color: var(--mco);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--mco) 15%, transparent);
+}
+
+/* User List Table */
+.us_table_wrapper {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid var(--brd);
+}
+
+.us_table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.us_table th {
+  background: var(--bg4);
+  color: var(--tx2);
+  font-weight: 700;
+  font-size: var(--fz_s2);
+  padding: 1.5rem 1.2rem;
+  border-bottom: 1px solid var(--brd);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.us_table td {
+  padding: 1.2rem;
+  border-bottom: 1px solid var(--brd);
+  vertical-align: middle;
+  font-size: var(--fz_m1);
+  color: var(--tx1);
+}
+
+.us_table tr:last-child td {
+  border-bottom: none;
+}
+
+.us_table tr:hover td {
+  background: var(--bg5);
+}
+
+.us_profile_cell {
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+}
+
+.us_avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--brd);
+  flex-shrink: 0;
+}
+
+.us_user_meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.us_name {
+  font-weight: 700;
+  color: var(--tx1);
+}
+
+.us_sub {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  font-weight: 500;
+}
+
+.us_badge_tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 99px;
+  border: 1px solid transparent;
+}
+
+.us_badge_tag.admin {
+  background: color-mix(in srgb, var(--error) 10%, transparent);
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 15%, transparent);
+}
+.us_badge_tag.gestor {
+  background: color-mix(in srgb, var(--warning) 10%, transparent);
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 15%, transparent);
+}
+.us_badge_tag.editor {
+  background: color-mix(in srgb, var(--info) 10%, transparent);
+  color: var(--info);
+  border-color: color-mix(in srgb, var(--info) 15%, transparent);
+}
+.us_badge_tag.usuario {
+  background: color-mix(in srgb, var(--offline) 20%, transparent);
+  color: var(--tx2);
+  border-color: color-mix(in srgb, var(--offline) 30%, transparent);
+}
+
+.us_status_dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+
+.us_dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.us_dot.activo { background: var(--success); }
+.us_dot.bloqueado { background: var(--error); }
+
+.us_actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.us_btn_action {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--brd);
+  background: var(--wb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_s2);
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.us_btn_action.btn_edit {
+  color: var(--mco);
+  border-color: color-mix(in srgb, var(--mco) 25%, transparent);
+}
+.us_btn_action.btn_edit:hover {
+  background: var(--mco);
+  color: var(--txa);
+}
+
+.us_btn_action.btn_delete {
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 25%, transparent);
+}
+.us_btn_action.btn_delete:hover {
+  background: var(--error);
+  color: var(--wb);
+}
+
+/* Mobile responsive lists */
+.us_mobile_list {
+  display: none;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+@media (max-width: 768px) {
+  .us_desktop_only { display: none !important; }
+  .us_mobile_list { display: flex; }
+}
+
+.us_card_item {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 16px;
+  padding: 2.5vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+}
+
+.us_card_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Modal Styling */
+.us_modal_overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.us_modal_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  width: 90%;
+  max-width: 440px;
+  padding: 4vh 3.5vw;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+  animation: smw_fall 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes smw_fall {
+  from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.us_modal_title {
+  font-size: var(--fz_m3);
+  font-weight: 800;
+  color: var(--tx1);
+  letter-spacing: -0.5px;
+}
+
+.us_modal_field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vh;
+}
+
+.us_modal_label {
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  color: var(--tx2);
+  text-transform: uppercase;
+}
+
+.us_modal_select {
+  width: 100%;
+  padding: 1.25vh 1.5vh;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 10px;
+  color: var(--tx1);
+  font-size: var(--fz_m1);
+}
+
+.us_modal_actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5vh;
+}
+
+.us_btn_secondary {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  color: var(--tx2);
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+}
+.us_btn_secondary:hover {
+  background: var(--bg4);
+  color: var(--tx1);
+}
+
+.us_btn_submit {
+  background: var(--mco);
+  color: var(--txa);
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 15%, transparent);
+}
+.us_btn_submit:hover {
+  box-shadow: 0 6px 15px color-mix(in srgb, var(--mco) 25%, transparent);
+}
+
+/* Estado Vacío */
+.us_empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8vh 2vw;
+  gap: 2vh;
+  color: var(--tx3);
+  text-align: center;
+}
+.us_empty i {
+  font-size: 6vh;
+  color: var(--mco);
+  opacity: 0.5;
+}
+.us_empty h3 {
+  font-size: var(--fz_m3);
+  font-weight: 800;
+  color: var(--tx1);
+  margin: 0;
+}
+.us_empty p {
+  font-size: var(--fz_m1);
+  margin: 0;
+}
+
+.dpn { display: none !important; }
+</style>
+
+<!-- Guardia de Renderizado Inicial: Redirigir de inmediato si no hay token local para evitar parpadeos -->
+<script is:inline>
+  if (!localStorage.getItem('wiSmile')) {
+    window.location.replace('/');
+  }
+</script>
+
+<Layout title="Moderación de Usuarios" robots="noindex, nofollow">
+  <div class="us_container">
+    
+    <!-- Loader inicial de Firestore -->
+    <div id="us_loader" style="text-align: center; display: flex; flex-direction: column; gap: 1rem; align-items: center; margin: 8vh auto;">
+      <i class="fas fa-circle-notch fa-spin" style="font-size: 3rem; color: var(--mco);"></i>
+      <h3 style="color: var(--tx3); font-weight: 600;">Cargando base de datos de usuarios...</h3>
+    </div>
+
+    <div id="us_card" style="display: none; flex-direction: column; gap: 3vh;">
+      
+      <!-- ══ ENCABEZADO ══ -->
+      <header class="us_header_section">
+        <div class="us_title_box">
+          <div>
+            <div class="us_badge">
+              <i class="fas fa-users-cog"></i> Gestión de Cuentas
+            </div>
+            <h1 class="us_title">Moderación de la Comunidad</h1>
+            <p class="us_subtitle">Supervisa los roles, suspende cuentas de prueba y administra el acceso general del sitio.</p>
+          </div>
+          <a href="/admin" class="us_btn_secondary" style="display:flex;align-items:center;gap:0.4rem;">
+            <i class="fas fa-arrow-left"></i> Volver a Panel
+          </a>
+        </div>
+      </header>
+
+      <!-- ══ CONSOLA PRINCIPAL ══ -->
+      <div class="us_console_card">
+        
+        <!-- Filtros y Buscador -->
+        <div class="us_filters_bar">
+          <div class="us_search_wrapper">
+            <i class="fas fa-search"></i>
+            <input 
+              type="text" 
+              id="us_search" 
+              class="us_search_input" 
+              placeholder="Buscar por nombre, @usuario o email..." 
+              autocomplete="off"
+            />
+          </div>
+          
+          <div class="us_role_filters">
+            <button class="us_filter_btn active" data-role="todos">Todos</button>
+            <button class="us_filter_btn" data-role="usuario">Usuario</button>
+            <button class="us_filter_btn" data-role="editor">Editor</button>
+            <button class="us_filter_btn" data-role="gestor">Gestor</button>
+            <button class="us_filter_btn" data-role="admin">Admin</button>
+          </div>
+        </div>
+
+        <!-- LISTADOS (Desktop & Mobile) -->
+        <div id="us_lists_container">
+          
+          <!-- Vista Desktop -->
+          <div class="us_table_wrapper us_desktop_only">
+            <table class="us_table">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Rol</th>
+                  <th>Estado</th>
+                  <th>Última Actividad</th>
+                  <th style="width: 120px;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="us_table_body">
+                <!-- Inyectado por JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Vista Móvil -->
+          <div class="us_mobile_list" id="us_mobile_list">
+            <!-- Inyectado por JS -->
+          </div>
+
+          <!-- Estado Vacío -->
+          <div class="us_empty dpn" id="us_empty">
+            <i class="fas fa-search"></i>
+            <h3>No se encontraron usuarios</h3>
+            <p>Intenta con otros términos o filtros.</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ══ MODAL DE EDICIÓN DE USUARIO ══ -->
+  <div class="us_modal_overlay dpn" id="edit_modal">
+    <div class="us_modal_card">
+      <h3 class="us_modal_title">Modificar Cuenta: @<span id="modal_username">user</span></h3>
+      
+      <!-- Selector de Rol -->
+      <div class="us_modal_field">
+        <span class="us_modal_label">Rol del Usuario</span>
+        <select id="modal_select_role" class="us_modal_select">
+          <option value="usuario">Usuario (Lector)</option>
+          <option value="editor">Editor (Creador de Post)</option>
+          <option value="gestor">Gestor (Evaluador)</option>
+          <option value="admin">Administrador (Maestro)</option>
+        </select>
+      </div>
+
+      <!-- Selector de Estado -->
+      <div class="us_modal_field">
+        <span class="us_modal_label">Estado Operativo</span>
+        <select id="modal_select_status" class="us_modal_select">
+          <option value="activo">Activo (Acceso permitido)</option>
+          <option value="bloqueado">Bloqueado (Acceso revocado)</option>
+        </select>
+      </div>
+
+      <div class="us_modal_actions">
+        <button class="us_btn_secondary" id="modal_btn_cancel">Cancelar</button>
+        <button class="us_btn_submit" id="modal_btn_save">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL DE CONFIRMACIÓN DE ELIMINACIÓN ══ -->
+  <div class="us_modal_overlay dpn" id="delete_modal">
+    <div class="us_modal_card">
+      <h3 class="us_modal_title" style="color:var(--error);">¿Eliminar Cuenta Permanentemente?</h3>
+      <p style="font-size: var(--fz_m1); color: var(--tx2); line-height: 1.6;">
+        Estás a punto de borrar de forma permanente a <strong id="delete_user_display">usuario</strong> (@<span id="delete_username">username</span>).
+        <br /><br />
+        Esta acción removerá el perfil de la tabla <strong>smiles</strong>. Esto no se puede deshacer.
+      </p>
+      <div class="us_modal_actions">
+        <button class="us_btn_secondary" id="delete_btn_cancel">Cancelar</button>
+        <button class="us_btn_submit" id="delete_btn_confirm" style="background:var(--error); box-shadow:0 4px 12px color-mix(in srgb, var(--error) 15%, transparent)">Confirmar Eliminación</button>
+      </div>
+    </div>
+  </div>
+
+</Layout>
+
+<script>
+  import { db } from '../lib/firebase.js';
+  import { collection, query, orderBy, limit, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+  import { protegerRuta } from '../lib/auth.js';
+  import { Notificacion, getls, savels } from '../lib/widev.js';
+
+  let u: any = null;
+  let usuarios: any[] = [];
+  let filtroRol = 'todos';
+  let busqueda = '';
+
+  let activeEditUser: any = null;
+  let activeDeleteUser: any = null;
+
+  const defaultAvatar = '/smile.avif';
+  const CACHE_TTL = 0.5; // 30 minutos de caché
+  const K_USERS_LIST = 'us_cache_list';
+  let eventsSetup = false;
+
+  const formatTime = (ts: any) => {
+    if (!ts) return 'Inactivo';
+    const date = new Date(ts);
+    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) + 
+           ' ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getFiltered = () => {
+    return usuarios.filter(user => {
+      // 1. Filtro por Rol
+      if (filtroRol !== 'todos' && user.rol !== filtroRol) return false;
+
+      // 2. Filtro por Buscador
+      if (busqueda.trim()) {
+        const queryStr = busqueda.toLowerCase().trim();
+        const nomStr = `${user.nombre || ''} ${user.apellidos || ''}`.toLowerCase();
+        const userStr = (user.usuario || '').toLowerCase();
+        const emStr = (user.email || '').toLowerCase();
+
+        if (!nomStr.includes(queryStr) && !userStr.includes(queryStr) && !emStr.includes(queryStr)) {
+          return false;
+        }
+      }
+      return true;
+    });
+  };
+
+  const renderConsole = () => {
+    const list = getFiltered();
+    const tableBody = document.getElementById('us_table_body');
+    const mobileList = document.getElementById('us_mobile_list');
+    const emptySec = document.getElementById('us_empty');
+
+    if (list.length === 0) {
+      if (tableBody) tableBody.innerHTML = '';
+      if (mobileList) mobileList.innerHTML = '';
+      if (emptySec) emptySec.classList.remove('dpn');
+      return;
+    }
+
+    if (emptySec) emptySec.classList.add('dpn');
+
+    // ── RENDER TABLE ──
+    if (tableBody) {
+      tableBody.innerHTML = list.map(user => {
+        const nom = `${user.nombre || ''} ${user.apellidos || ''}`.trim() || user.usuario || 'Usuario';
+        const img = user.avatar || defaultAvatar;
+        const act = formatTime(user.actualizado);
+        const est = user.estado || (user.activo ? 'activo' : 'bloqueado');
+
+        return `
+          <tr>
+            <td>
+              <div class="us_profile_cell">
+                <img class="us_avatar" src="${img}" alt="${user.usuario}" onerror="this.src='${defaultAvatar}'" />
+                <div class="us_user_meta">
+                  <span class="us_name">${nom}</span>
+                  <span class="us_sub">@${user.usuario} • ${user.email}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="us_badge_tag ${user.rol}">${user.rol}</span>
+            </td>
+            <td>
+              <span class="us_status_dot">
+                <span class="us_dot ${est}"></span>
+                ${est === 'activo' ? 'Activo' : 'Bloqueado'}
+              </span>
+            </td>
+            <td style="color:var(--tx3); font-size:0.82rem; font-weight:600;">
+              ${act}
+            </td>
+            <td>
+              <div class="us_actions">
+                <button class="us_btn_action btn_edit" data-id="${user.id}" title="Editar Cuenta"><i class="fas fa-edit"></i></button>
+                <button class="us_btn_action btn_delete" data-id="${user.id}" title="Eliminar Cuenta"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ── RENDER MOBILE ──
+    if (mobileList) {
+      mobileList.innerHTML = list.map(user => {
+        const nom = `${user.nombre || ''} ${user.apellidos || ''}`.trim() || user.usuario || 'Usuario';
+        const img = user.avatar || defaultAvatar;
+        const act = formatTime(user.actualizado);
+        const est = user.estado || (user.activo ? 'activo' : 'bloqueado');
+
+        return `
+          <div class="us_card_item">
+            <div style="display:flex; gap:1.5vh; align-items:center;">
+              <img class="us_avatar" src="${img}" alt="${user.usuario}" onerror="this.src='${defaultAvatar}'" />
+              <div class="us_user_meta">
+                <span class="us_name">${nom}</span>
+                <span class="us_sub">@${user.usuario} • ${user.email}</span>
+              </div>
+            </div>
+            <div class="us_card_row" style="border-top:1px solid var(--brd); padding-top:1rem; margin-top:0.2rem">
+              <span class="us_badge_tag ${user.rol}">${user.rol}</span>
+              <span class="us_status_dot">
+                <span class="us_dot ${est}"></span>
+                ${est === 'activo' ? 'Activo' : 'Bloqueado'}
+              </span>
+            </div>
+            <div class="us_card_row">
+              <small style="color:var(--tx3); font-size:0.75rem; font-weight:600;">Actividad: ${act}</small>
+              <div class="us_actions">
+                <button class="us_btn_action btn_edit" data-id="${user.id}"><i class="fas fa-edit"></i></button>
+                <button class="us_btn_action btn_delete" data-id="${user.id}"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  };
+
+  const handleEditSave = async () => {
+    if (!activeEditUser) return;
+    const user = activeEditUser;
+
+    const selectRole = document.getElementById('modal_select_role') as HTMLSelectElement;
+    const selectStatus = document.getElementById('modal_select_status') as HTMLSelectElement;
+
+    const newRol = selectRole ? selectRole.value : user.rol;
+    const newEst = selectStatus ? selectStatus.value : user.estado;
+    const newAct = newEst === 'activo';
+
+    const modal = document.getElementById('edit_modal');
+    if (modal) modal.classList.add('dpn');
+
+    try {
+      const docRef = doc(db, 'smiles', user.id);
+      await updateDoc(docRef, {
+        rol: newRol,
+        estado: newEst,
+        activo: newAct,
+        actualizado: new Date().toISOString()
+      });
+
+      usuarios = usuarios.map(u => u.id === user.id ? { ...u, rol: newRol, estado: newEst, activo: newAct, actualizado: new Date().toISOString() } : u);
+      savels(K_USERS_LIST, usuarios, CACHE_TTL);
+      renderConsole();
+      Notificacion(`Cuenta @${user.usuario} actualizada`, 'success');
+    } catch(err) {
+      console.error(err);
+      Notificacion('Error al actualizar la cuenta', 'error');
+    } finally {
+      activeEditUser = null;
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!activeDeleteUser) return;
+    const user = activeDeleteUser;
+
+    const modal = document.getElementById('delete_modal');
+    if (modal) modal.classList.add('dpn');
+
+    try {
+      const docRef = doc(db, 'smiles', user.id);
+      await deleteDoc(docRef);
+
+      usuarios = usuarios.filter(u => u.id !== user.id);
+      savels(K_USERS_LIST, usuarios, CACHE_TTL);
+      renderConsole();
+      Notificacion(`Cuenta @${user.usuario} eliminada permanentemente`, 'info');
+    } catch (err) {
+      console.error(err);
+      Notificacion('Error al eliminar la cuenta', 'error');
+    } finally {
+      activeDeleteUser = null;
+    }
+  };
+
+  const setupEvents = () => {
+    if (eventsSetup) return;
+    eventsSetup = true;
+
+    // Delegación de eventos en tabla y tarjetas
+    document.addEventListener('click', (e: Event) => {
+      const target = e.target as HTMLElement;
+
+      // 1. Abrir Modal Editar
+      const btnEdit = target.closest('.btn_edit');
+      if (btnEdit) {
+        const id = btnEdit.getAttribute('data-id');
+        const user = usuarios.find(u => u.id === id);
+        if (user) {
+          activeEditUser = user;
+          const modalUsername = document.getElementById('modal_username');
+          const selectRole = document.getElementById('modal_select_role') as HTMLSelectElement;
+          const selectStatus = document.getElementById('modal_select_status') as HTMLSelectElement;
+          const modal = document.getElementById('edit_modal');
+
+          if (modalUsername) modalUsername.textContent = user.usuario;
+          if (selectRole) selectRole.value = user.rol;
+          if (selectStatus) selectStatus.value = user.estado || (user.activo ? 'activo' : 'bloqueado');
+          if (modal) modal.classList.remove('dpn');
+        }
+      }
+
+      // 2. Abrir Modal Eliminar
+      const btnDelete = target.closest('.btn_delete');
+      if (btnDelete) {
+        const id = btnDelete.getAttribute('data-id');
+        const user = usuarios.find(u => u.id === id);
+        if (user) {
+          activeDeleteUser = user;
+          const delUserDisplay = document.getElementById('delete_user_display');
+          const delUsername = document.getElementById('delete_username');
+          const modal = document.getElementById('delete_modal');
+
+          if (delUserDisplay) delUserDisplay.textContent = `${user.nombre || ''} ${user.apellidos || ''}`.trim() || user.usuario;
+          if (delUsername) delUsername.textContent = user.usuario;
+          if (modal) modal.classList.remove('dpn');
+        }
+      }
+    });
+
+    // Inputs & Filtros
+    const searchInp = document.getElementById('us_search');
+    if (searchInp) {
+      searchInp.addEventListener('input', (e: Event) => {
+        busqueda = (e.target as HTMLInputElement).value;
+        renderConsole();
+      });
+    }
+
+    const filterBtns = document.querySelectorAll('.us_filter_btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', (e: Event) => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        const activeBtn = e.currentTarget as HTMLElement;
+        activeBtn.classList.add('active');
+        filtroRol = activeBtn.getAttribute('data-role') || 'todos';
+        renderConsole();
+      });
+    });
+
+    // Modales Eventos
+    const modalCancel = document.getElementById('modal_btn_cancel');
+    const modalSave = document.getElementById('modal_btn_save');
+    const delCancel = document.getElementById('delete_btn_cancel');
+    const delConfirm = document.getElementById('delete_btn_confirm');
+
+    const modalEdit = document.getElementById('edit_modal');
+    const modalDelete = document.getElementById('delete_modal');
+
+    if (modalCancel) {
+      modalCancel.addEventListener('click', () => {
+        if (modalEdit) modalEdit.classList.add('dpn');
+        activeEditUser = null;
+      });
+    }
+    if (modalSave) {
+      modalSave.addEventListener('click', handleEditSave);
+    }
+
+    if (delCancel) {
+      delCancel.addEventListener('click', () => {
+        if (modalDelete) modalDelete.classList.add('dpn');
+        activeDeleteUser = null;
+      });
+    }
+    if (delConfirm) {
+      delConfirm.addEventListener('click', handleDeleteConfirm);
+    }
+  };
+
+  const init = async () => {
+    if (window.location.pathname.replace(/\/$/, '') !== '/usuarios') return;
+
+    if (sessionStorage.getItem('vault_unlocked') !== 'true') {
+      window.location.replace('/verificar');
+      return;
+    }
+
+    u = await protegerRuta(['admin']);
+    if (!u) return;
+
+    const loader = document.getElementById('us_loader');
+    const card = document.getElementById('us_card');
+
+    // 1. Intentar cargar desde caché local inmediatamente (0ms)
+    const cache = getls(K_USERS_LIST);
+    if (cache && Array.isArray(cache)) {
+      usuarios = cache;
+      if (loader) loader.style.display = 'none';
+      if (card) card.style.display = 'flex';
+      renderConsole();
+      setupEvents();
+    }
+
+    // 2. Revalidar en segundo plano silenciosamente
+    try {
+      const q = query(
+        collection(db, 'smiles'),
+        orderBy('actualizado', 'desc'),
+        limit(10)
+      );
+      const snap = await getDocs(q);
+      const freshUsers = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      savels(K_USERS_LIST, freshUsers, CACHE_TTL);
+
+      const hasChanged = JSON.stringify(usuarios) !== JSON.stringify(freshUsers);
+      if (hasChanged || !cache) {
+        usuarios = freshUsers;
+        if (loader) loader.style.display = 'none';
+        if (card) card.style.display = 'flex';
+        renderConsole();
+        if (!cache) {
+          setupEvents();
+        }
+      }
+    } catch(err) {
+      console.error(err);
+      if (!cache) {
+        if (loader) loader.style.display = 'none';
+        Notificacion('Error de conexión al obtener la lista de usuarios', 'error');
+      }
+    }
+  };
+
+  document.addEventListener('astro:page-load', init);
+</script>

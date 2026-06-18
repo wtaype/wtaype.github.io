@@ -1,0 +1,104 @@
+---
+// src/components/PostComent.astro
+interface Props {
+  slug: string;
+  titulo: string;
+}
+
+const { slug, titulo } = Astro.props;
+---
+
+<div id="wi_comments" class="po_comments po_fade po_visible" style="--d:.55s" data-slug={slug} data-title={titulo}>
+  <div class="po_comments_title"><i class="fas fa-comments"></i> Comentarios</div>
+  <div id="disqus_thread"></div>
+</div>
+
+<script>
+import { linkweb } from "../wii";
+
+  let disqusObserver: IntersectionObserver | null = null;
+  let disqusLoaded = false;
+  let loadDisqusRef: any = null;
+
+  const initDisqus = () => {
+    const commentsContainer = document.getElementById('wi_comments');
+    if (!commentsContainer) return;
+
+    const slug = commentsContainer.getAttribute('data-slug');
+    const title = commentsContainer.getAttribute('data-title');
+    if (!slug) return;
+
+    disqusLoaded = false;
+    loadDisqusRef = () => {
+      if (disqusLoaded) return;
+      disqusLoaded = true;
+
+      if (disqusObserver) {
+        disqusObserver.disconnect();
+        disqusObserver = null;
+      }
+
+      commentsContainer.removeEventListener('mouseenter', loadDisqusRef);
+      commentsContainer.removeEventListener('touchstart', loadDisqusRef);
+
+      const dCfg = function (this: any) {
+        this.page.url = `${linkweb}/${slug}`;
+        this.page.identifier = slug;
+        this.page.title = title || '';
+      };
+
+      const win = window as any;
+      if (win.DISQUS) {
+        win.DISQUS.reset({ reload: true, config: dCfg });
+      } else {
+        win.disqus_config = dCfg;
+        const script = document.createElement('script');
+        script.src = 'https://superwii.disqus.com/embed.js';
+        script.setAttribute('data-timestamp', String(+new Date()));
+        document.body.appendChild(script);
+      }
+    };
+
+    if ('IntersectionObserver' in window) {
+      disqusObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            loadDisqusRef();
+          }
+        });
+      }, { rootMargin: '300px' });
+      disqusObserver.observe(commentsContainer);
+    } else {
+      loadDisqusRef();
+    }
+
+    commentsContainer.addEventListener('mouseenter', loadDisqusRef, { once: true });
+    commentsContainer.addEventListener('touchstart', loadDisqusRef, { once: true, passive: true } as any);
+  };
+
+  const cleanupDisqus = () => {
+    if (disqusObserver) {
+      disqusObserver.disconnect();
+      disqusObserver = null;
+    }
+    const commentsEl = document.getElementById('wi_comments');
+    if (commentsEl && loadDisqusRef) {
+      commentsEl.removeEventListener('mouseenter', loadDisqusRef);
+      commentsEl.removeEventListener('touchstart', loadDisqusRef);
+    }
+
+    // Limpieza de recursos Disqus al navegar a otra página
+    document.querySelectorAll('script[src*="disqus.com"]').forEach(s => s.remove());
+    document.querySelectorAll('iframe[src*="disqus.com"]').forEach(i => i.remove());
+    const thread = document.getElementById('disqus_thread');
+    if (thread) thread.innerHTML = '';
+
+    const win = window as any;
+    delete win.DISQUS;
+    delete win.disqus_config;
+    delete win.disqus_thread;
+  };
+
+  document.addEventListener('astro:page-load', initDisqus);
+  document.addEventListener('astro:before-preparation', cleanupDisqus);
+</script>

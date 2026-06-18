@@ -1,0 +1,745 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { seo } from '../lib/seo.js';
+
+const SKILLS = [
+  { id:  1, nombre: 'HTML5',          porcentaje: 99, categoria: 'frontend', icono: 'html5/html5-original.svg',                 color: '#E34F26', experiencia: '5 años', proyectos: 50 },
+  { id:  2, nombre: 'CSS3',           porcentaje: 99, categoria: 'frontend', icono: 'css3/css3-original.svg',                   color: '#1572B6', experiencia: '5 años', proyectos: 50 },
+  { id:  4, nombre: 'jQuery',         porcentaje: 98, categoria: 'frontend', icono: 'jquery/jquery-original.svg',               color: '#0769AD', experiencia: '4 años', proyectos: 40 },
+  { id:  3, nombre: 'JavaScript',     porcentaje: 96, categoria: 'frontend', icono: 'javascript/javascript-original.svg',       color: '#F7DF1E', experiencia: '4 años', proyectos: 45 },
+  { id: 13, nombre: 'Firebase',       porcentaje: 95, categoria: 'backend',  icono: 'firebase/firebase-original.svg',           color: '#FFCA28', experiencia: '3 años', proyectos: 28 },
+  { id: 10, nombre: 'Node.js',        porcentaje: 90, categoria: 'backend',  icono: 'nodejs/nodejs-original.svg',               color: '#339933', experiencia: '3 años', proyectos: 22 },
+  { id: 15, nombre: 'Git',            porcentaje: 95, categoria: 'tools',    icono: 'git/git-original.svg',                     color: '#F05032', experiencia: '4 años', proyectos: 50 },
+  { id: 18, nombre: 'Flutter',        porcentaje: 95, categoria: 'mobile',   icono: 'flutter/flutter-original.svg',             color: '#02569B', experiencia: '2 años', proyectos: 10 },
+  { id: 16, nombre: 'GitHub',         porcentaje: 96, categoria: 'tools',    icono: 'github/github-original.svg',               color: '#181717', experiencia: '4 años', proyectos: 50 },
+  { id: 17, nombre: 'VS Code',        porcentaje: 98, categoria: 'tools',    icono: 'vscode/vscode-original.svg',               color: '#007ACC', experiencia: '5 años', proyectos: 50 },
+  { id: 20, nombre: 'Kotlin',         porcentaje: 85, categoria: 'mobile',   icono: 'kotlin/kotlin-original.svg',               color: '#7F52FF', experiencia: '2 años', proyectos: 10 },
+  { id:  5, nombre: 'React',          porcentaje: 80, categoria: 'frontend', icono: 'react/react-original.svg',                 color: '#61DAFB', experiencia: '3 años', proyectos: 25 },
+  { id:  6, nombre: 'Vue.js',         porcentaje: 60, categoria: 'frontend', icono: 'vuejs/vuejs-original.svg',                 color: '#4FC08D', experiencia: '2 años', proyectos: 15 },
+  { id:  7, nombre: 'Angular',        porcentaje: 50, categoria: 'frontend', icono: 'angular/angular-original.svg',             color: '#DD0031', experiencia: '3 años', proyectos: 18 },
+  { id:  8, nombre: 'Tailwind CSS',   porcentaje: 92, categoria: 'frontend', icono: 'tailwindcss/tailwindcss-original.svg',     color: '#06B6D4', experiencia: '2 años', proyectos: 20 },
+  { id:  9, nombre: 'Bootstrap',      porcentaje: 85, categoria: 'frontend', icono: 'bootstrap/bootstrap-original.svg',         color: '#7952B3', experiencia: '4 años', proyectos: 35 },
+  { id: 11, nombre: 'PHP',            porcentaje: 82, categoria: 'backend',  icono: 'php/php-original.svg',                     color: '#777BB4', experiencia: '3 años', proyectos: 20 },
+  { id: 12, nombre: 'Python',         porcentaje: 75, categoria: 'backend',  icono: 'python/python-original.svg',               color: '#3776AB', experiencia: '2 años', proyectos: 12 },
+  { id: 14, nombre: 'MySQL',          porcentaje: 85, categoria: 'backend',  icono: 'mysql/mysql-original.svg',                 color: '#4479A1', experiencia: '4 años', proyectos: 25 },
+  { id: 19, nombre: 'Android Studio', porcentaje: 85, categoria: 'mobile',   icono: 'androidstudio/androidstudio-original.svg', color: '#3DDC84', experiencia: '2 años', proyectos: 12 },
+  { id: 21, nombre: 'Photoshop',      porcentaje: 95, categoria: 'design',   icono: 'photoshop/photoshop-original.svg',         color: '#31A8FF', experiencia: '5 años', proyectos: 40 },
+  { id: 22, nombre: 'Premiere Pro',   porcentaje: 90, categoria: 'design',   icono: 'premierepro/premierepro-original.svg',     color: '#9999FF', experiencia: '3 años', proyectos: 20 },
+  { id: 23, nombre: 'Canva',          porcentaje: 96, categoria: 'design',   icono: 'canva/canva-original.svg',                 color: '#00C4CC', experiencia: '4 años', proyectos: 45 },
+  { id: 24, nombre: 'WordPress',      porcentaje: 90, categoria: 'cms',      icono: 'wordpress/wordpress-original.svg',         color: '#21759B', experiencia: '4 años', proyectos: 30 },
+];
+
+const TECH_ICONS = [
+  { nombre: 'JavaScript', icono: 'fab fa-js',        color: '#F7DF1E' },
+  { nombre: 'jQuery',     icono: 'fas fa-dollar-sign',color: '#0769AD' },
+  { nombre: 'Node.js',    icono: 'fab fa-node',       color: '#339933' },
+  { nombre: 'GitHub',     icono: 'fab fa-github',     color: '#181717' },
+  { nombre: 'Railway',    icono: 'fas fa-train',      color: '#0B0D0E' },
+  { nombre: 'Blogger',    icono: 'fab fa-blogger',    color: '#FF5722' },
+  { nombre: 'Git',        icono: 'fab fa-git-alt',    color: '#F05032' },
+  { nombre: 'Vite',       icono: 'fas fa-bolt',       color: '#646CFF' },
+  { nombre: 'Firebase',   icono: 'fas fa-fire',       color: '#FFCA28' },
+  { nombre: 'HTML5',      icono: 'fab fa-html5',      color: '#E34F26' },
+  { nombre: 'CSS3',       icono: 'fab fa-css3-alt',   color: '#1572B6' },
+  { nombre: 'VS Code',    icono: 'fas fa-code',       color: '#007ACC' },
+];
+
+const CATS = [
+  ['all',      'fas fa-layer-group', 'Todas'       ],
+  ['frontend', 'fab fa-html5',       'Frontend'    ],
+  ['backend',  'fas fa-server',      'Backend'     ],
+  ['mobile',   'fas fa-mobile-alt',  'Mobile'      ],
+  ['tools',    'fas fa-tools',       'Herramientas'],
+  ['design',   'fas fa-palette',     'Diseño'      ],
+  ['cms',      'fab fa-wordpress',   'CMS'         ],
+];
+
+const EXP = [
+  { ico: 'fas fa-laptop-code',    titulo: 'Frontend Development', num: '+70', label: 'Proyectos completados' },
+  { ico: 'fas fa-database',       titulo: 'Backend & Databases',  num: '+20', label: 'Proyectos completados' },
+  { ico: 'fas fa-mobile-screen',  titulo: 'Mobile Apps',          num: '+3',  label: 'Proyectos completados' },
+  { ico: 'fas fa-palette',        titulo: 'Diseño & Creatividad', num: '+30', label: 'Proyectos completados' },
+  { ico: 'fas fa-terminal',       titulo: 'Herramientas & DevOps',num: '+50', label: 'Repositorios gestionados' },
+  { ico: 'fab fa-wordpress',      titulo: 'Gestores de Contenido', num: '+15', label: 'Sitios web creados' },
+];
+
+const TOTAL_SKILLS  = SKILLS.length;
+const PROMEDIO      = Math.round(SKILLS.reduce((a, b) => a + b.porcentaje, 0) / TOTAL_SKILLS);
+const TOTAL_CATS    = new Set(SKILLS.map(s => s.categoria)).size;
+const DEVICON_BASE  = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/';
+---
+
+<Layout {...seo.skills}>
+  <div class="skills_container">
+
+    <!-- ★ HERO ─────────────────────────────────────────────────────────────── -->
+    <section class="skills_hero" data-herowi="100">
+      <div class="hero_content">
+        <h1 class="hero_title">Mis <span class="gradient_text">Habilidades</span></h1>
+        <p class="hero_subtitle">Tecnologías y herramientas que domino para crear soluciones innovadoras. Cada habilidad representa horas de práctica, proyectos reales y aprendizaje continuo.</p>
+        <div class="hero_stats_row">
+          <div class="stat_hero"><i class="fas fa-code"></i><div class="stat_info"><span class="stat_number">{TOTAL_SKILLS}</span><span class="stat_label">Tecnologías</span></div></div>
+          <div class="stat_hero"><i class="fas fa-chart-line"></i><div class="stat_info"><span class="stat_number">{PROMEDIO}%</span><span class="stat_label">Promedio</span></div></div>
+          <div class="stat_hero"><i class="fas fa-layer-group"></i><div class="stat_info"><span class="stat_number">{TOTAL_CATS}</span><span class="stat_label">Categorías</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ★ FILTROS ───────────────────────────────────────────────────────────── -->
+    <section class="skills_filtros">
+      <div class="filtros_wrapper">
+        {CATS.map(([v, i, t]) => (
+          <button class={`categoria_btn ${v === 'all' ? 'active' : ''}`} data-categoria={v}>
+            <i class={i}></i><span>{t}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <!-- ★ GRID ──────────────────────────────────────────────────────────────── -->
+    <section class="skills_grid_section">
+      <div class="skills_grid" id="skillsGrid">
+        {SKILLS.map((s, i) => (
+          <div class="skill_card" data-skill={s.id} data-categoria={s.categoria} style={`--tech-color: ${s.color}; animation-delay: ${i * 0.03}s`}>
+            <div class="skill_header">
+              <img src={`${DEVICON_BASE}${s.icono}`} alt={s.nombre} class="skill_icon" loading="lazy" />
+            </div>
+            <div class="skill_body">
+              <h3 class="skill_nombre">{s.nombre}</h3>
+              <div class="skill_progress_container">
+                <svg class="skill_circle" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id={`grad-${s.id}`} x1="0%" y1="100%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color={s.color} />
+                      <stop offset="100%" stop-color="#ffffff" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="circle_bg" cx="50" cy="50" r="45"></circle>
+                  <circle class="circle_progress" cx="50" cy="50" r="45" data-porcentaje={s.porcentaje} style={`stroke: url(#grad-${s.id})`}></circle>
+                  <text class="skill_porcentaje" x="50" y="50" text-anchor="middle" dy="7">
+                    <tspan class="porcentaje_numero">0</tspan>%
+                  </text>
+                </svg>
+              </div>
+              <div class="skill_info">
+                <div class="info_row"><i class="fas fa-clock"></i><span>{s.experiencia}</span></div>
+                <div class="info_row"><i class="fas fa-project-diagram"></i><span>{s.proyectos} proyectos</span></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ★ EXPERIENCIA ───────────────────────────────────────────────────────── -->
+    <section class="experiencia_section">
+      <h2 class="section_title">Experiencia en Proyectos</h2>
+      <div class="experiencia_grid">
+        {EXP.map(e => (
+          <div class="experiencia_card">
+            <i class={e.ico}></i>
+            <h3>{e.titulo}</h3>
+            <p class="exp_numero">{e.num}</p>
+            <p class="exp_label">{e.label}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ★ TECH ICONS ─────────────────────────────────────────────────────────── -->
+    <section class="tech_principales">
+      <h2 class="section_title">Tecnologías Principales</h2>
+      <div class="tech_grid">
+        {TECH_ICONS.map(t => (
+          <div class="tech_card" style={`--tech-color: ${t.color}`}>
+            <i class={t.icono}></i>
+            <span>{t.nombre}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+  </div>
+</Layout>
+
+<style is:global>
+.skills_container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 4vh 2vw 8vh;
+}
+
+/* ==================== HERO SKILLS ==================== */
+.skills_hero {
+  text-align: center;
+  padding: 6vh 0 4vh;
+}
+
+.hero_title {
+  font-size: var(--fz_x2);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 2vh;
+  animation: fadeInDown 0.6s ease;
+}
+
+.hero_subtitle {
+  font-size: var(--fz_m4);
+  color: var(--txe);
+  max-width: 750px;
+  margin: 0 auto 4vh;
+  line-height: 1.7;
+  animation: fadeInUp 0.6s ease 0.2s backwards;
+}
+
+.hero_stats_row {
+  display: flex;
+  justify-content: center;
+  gap: 4vw;
+  animation: fadeIn 0.6s ease 0.4s backwards;
+}
+
+.stat_hero {
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  padding: 2vh 3vw;
+  background: var(--wb);
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: all var(--tr_m);
+}
+
+.stat_hero:hover {
+  border-color: var(--mco);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.stat_hero i {
+  font-size: var(--fz_x1);
+  color: var(--mco);
+}
+
+.stat_info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.stat_hero .stat_number {
+  font-size: var(--fz_l2);
+  font-weight: 800;
+  color: var(--tx);
+  line-height: 1;
+}
+
+.stat_hero .stat_label {
+  font-size: var(--fz_s4);
+  color: var(--txe);
+  margin-top: 0.5vh;
+}
+
+/* ==================== FILTROS ==================== */
+.skills_filtros {
+  margin-bottom: 6vh;
+}
+
+.filtros_wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 1.5vh;
+  flex-wrap: wrap;
+  padding: 2vh 0;
+}
+
+.categoria_btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8vh;
+  padding: 1.5vh 2.5vw;
+  background: var(--wb);
+  color: var(--tx);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: var(--fz_m2);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_m);
+  min-width: 120px;
+}
+
+.categoria_btn i {
+  font-size: var(--fz_l1);
+  color: var(--txe);
+  transition: all var(--tr_f);
+}
+
+.categoria_btn:hover {
+  border-color: var(--mco);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.categoria_btn:hover i {
+  color: var(--mco);
+  transform: scale(1.1);
+}
+
+.categoria_btn.active {
+  background: var(--mco);
+  color: var(--txa);
+  border-color: var(--mco);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.categoria_btn.active i {
+  color: var(--txa);
+}
+
+/* ==================== GRID SKILLS ==================== */
+.skills_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 3vh 2vw;
+}
+
+.skill_card {
+  background: color-mix(in srgb, var(--wb) 68%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 3vh 2.2vw;
+  border: 1px solid var(--brd);
+  transition: all var(--tr_m), border-color 0.4s ease, box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(25px) scale(0.96);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.015);
+  perspective: 1000px; /* Para efecto 3D hover en iconos */
+}
+
+.skill_card.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.skill_card:hover {
+  border-color: var(--tech-color, var(--mco));
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--tech-color, var(--mco)) 15%, transparent);
+}
+
+.skill_header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2vh;
+}
+
+.skill_icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  transition: transform var(--tr_m);
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
+}
+
+.skill_card:hover .skill_icon {
+  transform: scale(1.1) rotateY(15deg);
+}
+
+.skill_body {
+  text-align: center;
+}
+
+.skill_nombre {
+  font-size: var(--fz_m4);
+  font-weight: 700;
+  color: var(--tx);
+  margin-bottom: 2vh;
+}
+
+.skill_progress_container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2vh;
+}
+
+.skill_circle {
+  width: 120px;
+  height: 120px;
+  transform: rotate(-90deg);
+}
+
+.circle_bg {
+  fill: none;
+  stroke: var(--bg);
+  stroke-width: 8;
+}
+
+.circle_progress {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.skill_porcentaje {
+  transform: rotate(90deg);
+  transform-origin: center;
+  font-size: var(--fz_m5);
+  font-weight: 800;
+  fill: var(--tx);
+}
+
+.porcentaje_numero {
+  font-size: var(--fz_l1);
+}
+
+.skill_info {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  padding-top: 1.5vh;
+  border-top: 2px solid var(--bg);
+}
+
+.info_row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8vh;
+  font-size: var(--fz_s4);
+  color: var(--txe);
+}
+
+.info_row i {
+  color: var(--mco);
+  font-size: var(--fz_m2);
+}
+
+/* ==================== EXPERIENCIA ==================== */
+.experiencia_section {
+  margin-top: 8vh;
+  padding: 6vh 0;
+  background: var(--wb);
+  border-radius: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.section_title {
+  text-align: center;
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 4vh;
+}
+
+.experiencia_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3vw;
+  padding: 0 4vw;
+}
+
+.experiencia_card {
+  text-align: center;
+  padding: 3vh 2vw;
+  background: var(--bg);
+  border-radius: 16px;
+  border: 2px solid transparent;
+  transition: all var(--tr_m);
+}
+
+.experiencia_card:hover {
+  border-color: var(--mco);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+}
+
+.experiencia_card i {
+  font-size: 3rem;
+  color: var(--mco);
+  margin-bottom: 2vh;
+  display: block;
+}
+
+.experiencia_card h3 {
+  font-size: var(--fz_m5);
+  font-weight: 700;
+  color: var(--tx);
+  margin-bottom: 2vh;
+}
+
+.exp_numero {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--mco);
+  line-height: 1;
+  margin-bottom: 1vh;
+}
+
+.exp_label {
+  font-size: var(--fz_m2);
+  color: var(--txe);
+}
+
+/* ==================== TECNOLOGÍAS PRINCIPALES ==================== */
+.tech_principales {
+  padding: 8vh 0;
+  text-align: center;
+  position: relative;
+}
+.tech_principales::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, var(--bg4), transparent 70%);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.tech_principales .section_title {
+  font-size: var(--fz_x2);
+  font-weight: 900;
+  color: var(--tx);
+  margin-bottom: 6vh;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+.tech_principales .section_title::after {
+  content: '';
+  position: absolute;
+  bottom: -2vh; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px; 
+  height: 5px;
+  background: linear-gradient(90deg, var(--mco), var(--bg2));
+  border-radius: 10px;
+}
+.tech_principales .tech_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 3vh 2.5vw;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+.tech_principales .tech_card {
+  background: var(--wb);
+  padding: 3vh 2vw;
+  border-radius: 20px;
+  border: 2px solid var(--bg5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+  transition: all var(--tr_m);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+}
+.tech_principales .tech_card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--tech-color);
+  opacity: 0;
+  transition: opacity var(--tr_m);
+}
+.tech_principales .tech_card:hover {
+  border-color: var(--tech-color);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+.tech_principales .tech_card:hover::before { opacity: 0.1; }
+.tech_principales .tech_card i {
+  font-size: 3.5rem;
+  color: var(--tech-color);
+  transition: all var(--tr_m);
+  position: relative;
+  z-index: 1;
+}
+.tech_principales .tech_card:hover i { transform: scale(1.2) rotateY(360deg); }
+.tech_principales .tech_card span {
+  font-size: var(--fz_m3);
+  font-weight: 700;
+  color: var(--tx);
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1024px) {
+  .skills_grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .hero_stats_row {
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+  }
+
+  .stat_hero {
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .skills_grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filtros_wrapper {
+    gap: 1vh;
+  }
+
+  .categoria_btn {
+    min-width: 100px;
+    padding: 1.2vh 2vw;
+  }
+
+  .categoria_btn span {
+    font-size: var(--fz_s4);
+  }
+
+  .experiencia_grid {
+    grid-template-columns: 1fr;
+  }
+  .tech_principales .tech_grid { grid-template-columns: repeat(2, 1fr); }
+  .tech_principales .tech_card i { font-size: 2.8rem; }
+}
+
+@media (max-width: 480px) {
+  .skills_grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill_circle {
+    width: 100px;
+    height: 100px;
+  }
+}
+</style>
+
+<script>
+  import { showi, herowi } from '../lib/widev.js';
+
+  let activeObserver: IntersectionObserver | null = null;
+
+  const animarCirculos = () => {
+    const cards = document.querySelectorAll('.skill_card');
+    cards.forEach((card: any, i) => {
+      const circle = card.querySelector('.circle_progress') as SVGCircleElement;
+      const num = card.querySelector('.porcentaje_numero') as SVGTextElement;
+      if (!circle || !num) return;
+      const pct = parseInt(circle.dataset.porcentaje || '0');
+      
+      setTimeout(() => {
+        card.classList.add('visible');
+        const circ = 2 * Math.PI * 45;
+        circle.style.strokeDashoffset = String(circ - (pct / 100) * circ);
+        
+        // Animación numérica fluida a 60fps (requestAnimationFrame)
+        const duration = 1200; // 1.2 segundos para suavidad extrema
+        let startTime: number | null = null;
+        
+        const animate = (timestamp: number) => {
+          if (!startTime) startTime = timestamp;
+          const progress = timestamp - startTime;
+          const val = Math.min((progress / duration) * pct, pct);
+          num.textContent = String(Math.floor(val));
+          
+          if (progress < duration) {
+            requestAnimationFrame(animate);
+          } else {
+            num.textContent = String(pct);
+          }
+        };
+        requestAnimationFrame(animate);
+      }, i * 35); // Escalado stagger inicial
+    });
+  };
+
+  const initSkills = () => {
+    // Filtros por categoría con transición staggered fluida
+    document.querySelectorAll('.categoria_btn').forEach(btn => {
+      btn.addEventListener('click', function(this: HTMLElement) {
+        document.querySelectorAll('.categoria_btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const cat = this.dataset.categoria;
+        const cards = Array.from(document.querySelectorAll('.skill_card')) as HTMLElement[];
+        
+        // 1. Ocultar tarjetas que no coinciden (desvanecimiento)
+        cards.forEach(card => {
+          const matching = cat === 'all' || card.dataset.categoria === cat;
+          if (!matching) {
+            card.classList.remove('visible');
+            setTimeout(() => {
+              card.style.display = 'none';
+            }, 300); // Coincide con transición CSS
+          }
+        });
+        
+        // 2. Mostrar tarjetas que coinciden de manera escalonada (staggered)
+        let visibleCount = 0;
+        cards.forEach(card => {
+          const matching = cat === 'all' || card.dataset.categoria === cat;
+          if (matching) {
+            if (card.style.display === 'none' || !card.classList.contains('visible')) {
+              card.style.display = 'block';
+              card.style.animationDelay = '0s'; // resetear delay inicial
+              
+              // Frame refresh para asegurar que display:block tome efecto
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  setTimeout(() => {
+                    card.classList.add('visible');
+                  }, visibleCount * 40);
+                  visibleCount++;
+                });
+              });
+            }
+          }
+        });
+      });
+    });
+
+    // Iniciar animaciones de circulo progresivo al entrar en vista
+    activeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animarCirculos();
+          activeObserver?.disconnect();
+          activeObserver = null;
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    const grid = document.getElementById('skillsGrid');
+    if (grid) {
+      activeObserver.observe(grid);
+    } else {
+      animarCirculos();
+    }
+
+    if (typeof herowi === 'function') herowi();
+    if (typeof showi === 'function') showi();
+  };
+
+  const destroySkills = () => {
+    if (activeObserver) {
+      activeObserver.disconnect();
+      activeObserver = null;
+    }
+  };
+
+  document.addEventListener('astro:page-load', initSkills);
+  document.addEventListener('astro:before-preparation', destroySkills);
+</script>

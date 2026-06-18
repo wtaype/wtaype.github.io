@@ -1,0 +1,879 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app } from '../wii.js';
+import { seo } from '../lib/seo.js';
+
+---
+
+<style is:global>
+
+/* ── 1. SKELETON ─────────────────────────────────── */
+@keyframes shimmer {
+  from { background-position: -200vh 0; }
+  to   { background-position:  200vh 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, var(--brd) 25%, var(--bg3) 50%, var(--brd) 75%);
+  background-size: 200vh 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: .8vh;
+}
+.bl_card_sk {
+  background: var(--wb);
+  border-radius: 1.8vh;
+  border: 1px solid var(--brd);
+  box-shadow: 0 4px 12px rgba(0,0,0,.02);
+  overflow: hidden;
+}
+.bl_sk_img  { height: 22vh; }
+.bl_sk_body { padding: 2vh; display: flex; flex-direction: column; gap: 1vh; }
+.bl_sk_cat  { height: 2.2vh; width: 10vh; border-radius: 2vh; }
+.bl_sk_tit  { height: 3.2vh; width: 94%; }
+.bl_sk_t2   { width: 68%; }
+.bl_sk_p    { height: 1.6vh; width: 100%; }
+.bl_sk_p2   { width: 78%; }
+.bl_sk_foot { height: 1.8vh; width: 55%; margin-top: .6vh; }
+
+/* ── 2. FADE ENTRADA ─────────────────────────────── */
+.bl_fade {
+  opacity: 0;
+  transform: translateY(-2.5vh);
+  transition: opacity .6s cubic-bezier(.34,1.56,.64,1),
+              transform .6s cubic-bezier(.34,1.56,.64,1);
+}
+.bl_fade.bl_visible { opacity: 1; transform: none; }
+
+/* ── 3. WRAP ─────────────────────────────────────── */
+.bl_wrap { max-width: 1400px; margin: 0 auto; font-family: var(--ff_P); }
+
+/* ── 4. HERO ─────────────────────────────────────── */
+.bl_hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+  padding: 5vh 0 3.5vh;
+  text-align: center;
+}
+.bl_hero_tit {
+  font-size: clamp(2rem, 4.5vh, 3.2rem);
+  font-weight: 800;
+  color: var(--tx1);
+  line-height: 1.15;
+  margin: 0;
+  font-family: var(--ff_O);
+  letter-spacing: -.02em;
+}
+.bl_grad {
+  background: linear-gradient(135deg, var(--mco) 0%, var(--bg2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.bl_hero_sub {
+  font-size: var(--fz_m3);
+  color: var(--tx3);
+  margin: 0;
+  font-style: italic;
+  max-width: 40vh;
+}
+
+/* ── 5. SEARCH BAR ───────────────────────────────── */
+.bl_search_bar {
+  padding: 1.2vh 0;
+  margin-bottom: .5vh;
+}
+.bl_search_inner {
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+  background: var(--wb);
+  border: 2px solid var(--mco);
+  border-radius: 1.8vh;
+  padding: 1vh 1.5vh;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--mco) 15%, transparent);
+  transition: all .3s;
+}
+.bl_search_ico {
+  color: var(--mco);
+  font-size: var(--fz_m3);
+  flex-shrink: 0;
+}
+#bl_search_inp {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--tx);
+  font-size: var(--fz_m3);
+  font-family: var(--ff_P);
+  outline: none;
+}
+#bl_search_inp::placeholder { color: var(--tx3); }
+.bl_search_close {
+  background: none;
+  border: none;
+  color: var(--tx3);
+  cursor: pointer;
+  font-size: var(--fz_m3);
+  padding: 0;
+  transition: color var(--tr_f);
+  flex-shrink: 0;
+}
+.bl_search_close:hover { color: var(--error); }
+
+/* ── 6. BARRA STICKY ─────────────────────────────── */
+.bl_bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .8vh;
+  padding: 1.2vh 0;
+  margin-bottom: 2.5vh;
+  border-bottom: 1px solid var(--brd);
+}
+
+/* Categorías — smart & dinámicas */
+.bl_cats { display: flex; flex-wrap: wrap; gap: .5vh; }
+.bl_cat_btn {
+  display: flex;
+  align-items: center;
+  gap: .5vh;
+  padding: .65vh 1.4vh;
+  background: var(--bg4);
+  color: var(--tx2);
+  border: 2px solid transparent;
+  border-radius: 5vh;
+  font-size: var(--fz_m1);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--tr_f);
+  white-space: nowrap;
+}
+.bl_cat_btn i { color: var(--cc); font-size: var(--fz_m1); flex-shrink: 0; }
+.bl_cat_btn:hover { border-color: var(--cc); color: var(--cc); background: var(--wb); }
+.bl_cat_btn.active {
+  background: var(--cc);
+  border-color: var(--cc);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 3px 12px rgba(0,0,0,.15);
+}
+.bl_cat_btn.active i { color: #fff; }
+
+/* Derecha */
+.bl_bar_right { display: flex; align-items: center; gap: .5vh; }
+.bl_orden     { display: flex; gap: .3vh; background: var(--bg4); padding: .35vh; border-radius: 5vh; border: 1px solid var(--brd); }
+
+.bl_ord_btn {
+  display: flex; align-items: center; gap: .4vh;
+  padding: .5vh 1.2vh;
+  background: transparent; color: var(--tx3);
+  border: none; border-radius: 5vh;
+  font-size: var(--fz_m1); font-weight: 500;
+  cursor: pointer; transition: all var(--tr_f); white-space: nowrap;
+}
+.bl_ord_btn i { color: var(--mco); }
+.bl_ord_btn:hover { color: var(--tx1); }
+.bl_ord_btn.active { background: var(--wb); color: var(--mco); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.bl_ord_btn.active i { color: var(--mco); }
+
+/* Botones icono (search + refresh) */
+.bl_icon_btn {
+  width: 4vh; height: 4vh;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg4);
+  color: var(--tx2);
+  border: 2px solid var(--bg4);
+  border-radius: 50%;
+  font-size: var(--fz_m2);
+  cursor: pointer;
+  transition: all var(--tr_f);
+  flex-shrink: 0;
+}
+.bl_icon_btn:hover { background: color-mix(in srgb, var(--mco) 10%, transparent); border-color: var(--mco); color: var(--mco); }
+.bl_icon_btn:disabled { opacity: .5; cursor: wait; }
+#bl_refresh:hover { transform: rotate(180deg); }
+
+/* ── 7. RESULT BAR ───────────────────────────────── */
+.bl_result_bar {
+  display: flex; align-items: center; gap: .8vh;
+  font-size: var(--fz_s4); color: var(--tx3);
+  min-height: 2.2vh; margin-bottom: 2vh;
+}
+.bl_result_bar strong { color: var(--tx1); font-weight: 700; }
+.bl_result_bar em { color: var(--mco); font-style: normal; font-weight: 600; }
+
+.bl_cache_tag, .bl_fire_tag {
+  display: inline-flex; align-items: center; gap: .3vh;
+  padding: .2vh .8vh; border-radius: 2vh;
+  font-size: var(--fz_s3); font-weight: 700; cursor: default;
+}
+.bl_cache_tag { background: linear-gradient(135deg, var(--mco), var(--bg2)); color: var(--txa); animation: bl_pulse 2.5s ease-in-out infinite; }
+.bl_fire_tag  { background: var(--bg4); color: var(--tx3); border: 1px solid var(--brd); }
+@keyframes bl_pulse { 0%, 100% { opacity: 1; } 50% { opacity: .75; } }
+
+/* ── 8. GRID ─────────────────────────────────────── */
+.bl_grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2vh;
+  margin-bottom: 3vh;
+}
+
+/* ── 9. CARD — IMAGEN & OVERLAY ──────────────────── */
+.bl_card {
+  background: var(--wb);
+  border-radius: 1.8vh;
+  border: 1px solid var(--brd);
+  box-shadow: 0 4px 12px rgba(0,0,0,.02);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  cursor: pointer;
+  transition: transform var(--tr_m), box-shadow var(--tr_m), border-color var(--tr_m);
+}
+.bl_card:hover {
+  transform: translateY(-.5vh);
+  box-shadow: 0 14px 36px rgba(0,0,0,.1);
+  border-color: var(--mco);
+}
+
+.bl_card_img {
+  position: relative; overflow: hidden;
+  height: 22vh; flex-shrink: 0;
+}
+.bl_card_img img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .6s ease;
+}
+.bl_card:hover .bl_card_img img { transform: scale(1.06); }
+
+.bl_card_over {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,.4) 0%, transparent 50%, rgba(0,0,0,.05) 100%);
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 1.4vh;
+}
+.bl_card_cat {
+  display: inline-flex; align-items: center; gap: .4vh;
+  padding: .4vh 1.1vh;
+  background: var(--cc); color: #fff;
+  border-radius: 5vh; font-size: var(--fz_s4); font-weight: 700;
+}
+.bl_card_dest {
+  width: 3.5vh; height: 3.5vh;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--warning); color: #fff;
+  border-radius: 50%; font-size: var(--fz_m1); cursor: default;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+
+/* ── 10. CARD — BODY & FOOTER ────────────────────── */
+.bl_card_body {
+  flex: 1; display: flex; flex-direction: column;
+  gap: .8vh; padding: 2vh;
+}
+.bl_card_tit {
+  font-size: var(--fz_m4); font-weight: 700; color: var(--tx1);
+  line-height: 1.3; margin: 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  transition: color var(--tr_f); font-family: var(--ff_O);
+}
+.bl_card:hover .bl_card_tit { color: var(--mco); }
+
+.bl_card_res {
+  font-size: var(--fz_m2); color: var(--tx3); line-height: 1.6; margin: 0; flex: 1;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.bl_card_footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 1vh; border-top: 1px solid var(--brd); margin-top: auto;
+}
+.bl_card_meta { display: flex; align-items: center; gap: 1vh; }
+.bl_card_meta span { display: flex; align-items: center; gap: .3vh; font-size: var(--fz_s4); color: var(--tx3); cursor: default; }
+.bl_card_meta i { color: var(--mco); font-size: var(--fz_s4); }
+.bl_card_meta i.fa-heart { color: #fe0149; }
+.bl_card_leer {
+  display: flex; align-items: center; gap: .4vh;
+  font-size: var(--fz_m1); font-weight: 700; color: var(--mco);
+  transition: gap var(--tr_f);
+}
+.bl_card:hover .bl_card_leer { gap: .9vh; }
+.bl_card_leer i { font-size: var(--fz_s4); }
+
+/* ── 11. VER MÁS & SIN RESULTADOS ───────────────── */
+.bl_mas_wrap { display: flex; justify-content: center; padding: 1vh 0 5vh; }
+.bl_mas_btn {
+  display: flex; align-items: center; gap: .8vh;
+  padding: 1.2vh 3.5vh;
+  background: transparent; color: var(--mco);
+  border: 2px solid var(--mco); border-radius: 5vh;
+  font-size: var(--fz_m3); font-weight: 600; cursor: pointer;
+  transition: all var(--tr_m);
+}
+.bl_mas_btn:hover { background: var(--mco); color: var(--txa); transform: translateY(-.3vh); box-shadow: 0 8px 20px rgba(0,0,0,.15); }
+
+.bl_empty { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; min-height: 40vh; color: var(--tx3); text-align: center; padding: 10vh 0; }
+.bl_empty i  { font-size: 8vh; color: var(--mco); opacity: .25; margin-bottom: 2vh; display: block; }
+.bl_empty h3 { font-size: var(--fz_l2); color: var(--tx1); margin: 0; font-weight: 700; }
+.bl_empty p  { margin: 0; font-size: var(--fz_m3); }
+
+/* ── 12. RESPONSIVE ──────────────────────────────── */
+@media (max-width: 1100px) { .bl_grid { grid-template-columns: repeat(2, 1fr); } }
+
+@media (max-width: 900px) {
+  .bl_bar { position: static; flex-direction: column; align-items: flex-start; }
+  .bl_bar_right { width: 100%; justify-content: flex-end; }
+  .bl_hero_tit { font-size: var(--fz_x1); }
+}
+
+@media (max-width: 640px) {
+  .bl_grid     { grid-template-columns: 1fr; gap: 1.5vh; }
+  .bl_hero     { padding: 2.5vh 0; }
+  .bl_card_img { height: 20vh; }
+  .bl_cat_btn span, .bl_ord_btn span { display: none; }
+  .bl_cat_btn, .bl_ord_btn { padding: .7vh; border-radius: 50%; width: 4vh; height: 4vh; justify-content: center; }
+  .bl_cat_btn i, .bl_ord_btn i { margin: 0; font-size: var(--fz_m3); }
+  .bl_stat_div { display: none; }
+  .bl_hero_sub { max-width: 90%; }
+}
+</style>
+
+<Layout {...seo.blog}>
+  <div class="bl_wrap">
+    <div class="bl_hero" data-herowi="100">
+      <h1 class="bl_hero_tit">Consejos y <span class="bl_grad">Estrategias</span> 💼</h1>
+      <p class="bl_hero_sub">Aprende a destacar tu perfil, optimizar tu CV y triunfar en procesos de selección</p>
+    </div>
+    
+    <div class="bl_search_bar" id="bl_search_bar" style="display:none">
+      <div class="bl_search_inner">
+        <i class="fas fa-search bl_search_ico"></i>
+        <input id="bl_search_inp" type="text" placeholder="Buscar artículos..." autocomplete="off" spellcheck="false"/>
+        <button id="bl_search_close" class="bl_search_close"><i class="fas fa-xmark"></i></button>
+      </div>
+    </div>
+    
+    <div class="bl_bar">
+      <div class="bl_cats" id="bl_cats">
+        <button class="bl_cat_btn active" data-cat="todo" style="--cc:var(--mco)"><i class="fas fa-grip"></i><span>Todas</span></button>
+      </div>
+      <div class="bl_bar_right">
+        <div class="bl_orden">
+          <button class="bl_ord_btn active" data-ord="nuevo"><i class="fas fa-clock"></i><span>Recientes</span></button>
+          <button class="bl_ord_btn" data-ord="vistas"><i class="fas fa-fire"></i><span>Populares</span></button>
+        </div>
+        <button class="bl_icon_btn" id="bl_search_toggle" data-witip="Buscar"><i class="fas fa-search"></i></button>
+        <button class="bl_icon_btn" id="bl_refresh" data-witip="Actualizar"><i class="fas fa-rotate"></i></button>
+      </div>
+    </div>
+    
+    <div class="bl_result_bar" id="bl_result_bar"></div>
+    
+    <div class="bl_grid" id="bl_grid" data-herowi="140">
+      <!-- Loading skeletons initially -->
+      <div class="bl_card_sk"><div class="bl_sk_img shimmer"></div><div class="bl_sk_body"><div class="bl_sk_cat shimmer"></div><div class="bl_sk_tit shimmer"></div><div class="bl_sk_tit bl_sk_t2 shimmer"></div><div class="bl_sk_p shimmer"></div><div class="bl_sk_p bl_sk_p2 shimmer"></div><div class="bl_sk_foot shimmer"></div></div></div>
+      <div class="bl_card_sk"><div class="bl_sk_img shimmer"></div><div class="bl_sk_body"><div class="bl_sk_cat shimmer"></div><div class="bl_sk_tit shimmer"></div><div class="bl_sk_tit bl_sk_t2 shimmer"></div><div class="bl_sk_p shimmer"></div><div class="bl_sk_p bl_sk_p2 shimmer"></div><div class="bl_sk_foot shimmer"></div></div></div>
+      <div class="bl_card_sk"><div class="bl_sk_img shimmer"></div><div class="bl_sk_body"><div class="bl_sk_cat shimmer"></div><div class="bl_sk_tit shimmer"></div><div class="bl_sk_tit bl_sk_t2 shimmer"></div><div class="bl_sk_p shimmer"></div><div class="bl_sk_p bl_sk_p2 shimmer"></div><div class="bl_sk_foot shimmer"></div></div></div>
+      <div class="bl_card_sk"><div class="bl_sk_img shimmer"></div><div class="bl_sk_body"><div class="bl_sk_cat shimmer"></div><div class="bl_sk_tit shimmer"></div><div class="bl_sk_tit bl_sk_t2 shimmer"></div><div class="bl_sk_p shimmer"></div><div class="bl_sk_p bl_sk_p2 shimmer"></div><div class="bl_sk_foot shimmer"></div></div></div>
+    </div>
+    
+    <div class="bl_mas_wrap" id="bl_mas_wrap" style="display:none">
+      <button class="bl_mas_btn" id="bl_mas"><i class="fas fa-plus"></i> Ver más</button>
+    </div>
+    
+    <div class="bl_empty" id="bl_empty">
+      <i class="fas fa-folder-open"></i>
+      <h3>Sin artículos</h3>
+      <p>Próximamente nuevos artículos</p>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { db } from '../lib/firebase.js';
+  import { collection, query, where, limit, getDocs } from 'firebase/firestore';
+  import { savels, getls, Notificacion } from '../lib/widev.js';
+
+  const PAG_INI = 16, PAG_MAS = 8;
+  
+  const CATS = [
+    { id:'todo',           icon:'fa-grip',         label:'Todas',          color:'var(--mco)' },
+    { id:'Cv',             icon:'fa-address-card', label:'Currículum',     color:'#ff3849'    },
+    { id:'ATS',            icon:'fa-robot',        label:'ATS',            color:'#0EBEFF'    },
+    { id:'Entrevistas',    icon:'fa-comments',     label:'Entrevistas',    color:'#25b62a'    },
+    { id:'Teletrabajo',    icon:'fa-house-laptop', label:'Teletrabajo',    color:'#6a00f5'    },
+    { id:'Marca personal', icon:'fa-award',        label:'Marca Personal', color:'#ffa726'    },
+    { id:'Buscar trabajo', icon:'fa-search',       label:'Buscar Trabajo', color:'#ffa726'    },
+    { id:'Empleo',         icon:'fa-briefcase',    label:'Empleo',         color:'#ffa726'    },
+  ];
+
+  const catInfo = (c: string) => CATS.find(x => x.id.toLowerCase() === c.toLowerCase()) || { id: c, icon: 'fa-briefcase', label: c, color: 'var(--mco)' };
+  
+  const toMs = (v: any) => {
+    if (!v) return null;
+    if (v.seconds) return v.seconds * 1000;
+    const dateObj = new Date(v);
+    return isNaN(dateObj.getTime()) ? null : dateObj.getTime();
+  };
+  const ser = (d: any) => {
+    if (!d) return null;
+    return {
+      ...d,
+      resumen: d.descripcion || '',
+      creado: toMs(d.creado)
+    };
+  };
+
+  const skCard = () => `<div class="bl_card_sk"><div class="bl_sk_img shimmer"></div><div class="bl_sk_body"><div class="bl_sk_cat shimmer"></div><div class="bl_sk_tit shimmer"></div><div class="bl_sk_tit bl_sk_t2 shimmer"></div><div class="bl_sk_p shimmer"></div><div class="bl_sk_p bl_sk_p2 shimmer"></div><div class="bl_sk_foot shimmer"></div></div></div>`;
+
+  const srcBadge = (fc: boolean) => fc
+    ? `<span class="bl_cache_tag" data-witip="⚡ Veloz"><i class="fas fa-bolt"></i> Veloz</span>`
+    : `<span class="bl_fire_tag"  data-witip="☁️ Online"><i class="fas fa-cloud"></i> Online</span>`;
+
+  const formatCardDate = (creadoMs: any) => {
+    if (!creadoMs) return '—';
+    const d = new Date(creadoMs);
+    return d.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
+  const tplCard = (p: any) => {
+    const c = catInfo(p.categoria);
+    return `
+      <a href="/${p.slug || p.id}" class="bl_card">
+        <div class="bl_card_img">
+          <img src="${p.imagen || 'https://placehold.co/600x400?text=📖'}" alt="${p.imagenAlt || p.titulo}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=📖'"/>
+          <div class="bl_card_over">
+            <span class="bl_card_cat" style="--cc:${c.color}"><i class="fas ${c.icon}"></i> ${p.categoria || '—'}</span>
+            ${p.pin ? `<span class="bl_card_dest" data-witip="Destacada"><i class="fas fa-thumbtack"></i></span>` : ''}
+          </div>
+        </div>
+        <div class="bl_card_body">
+          <h2 class="bl_card_tit">${p.titulo}</h2>
+          <p class="bl_card_res">${p.resumen || ''}</p>
+          <div class="bl_card_footer">
+            <div class="bl_card_meta">
+              <span data-witip="Fecha"><i class="fas fa-calendar-alt"></i> ${formatCardDate(p.creado)}</span>
+              <span data-witip="Vistas"><i class="fas fa-eye"></i> ${p.vistas || 0}</span>
+              <span data-witip="Likes"><i class="fas fa-heart"></i> ${p.likes || 0}</span>
+            </div>
+            <span class="bl_card_leer">Leer <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </a>`;
+  };
+
+  const cleanCacheLRU = () => {
+    try {
+      const keys = Object.keys(localStorage).filter(k => k.startsWith('wi_blogs') || k.startsWith('wi_post_') || k.startsWith('wi_mas_'));
+      if (keys.length > 25) {
+        const items = keys.map(k => {
+          const raw = localStorage.getItem(k);
+          if (!raw) return { k, e: 0 };
+          try { const p = JSON.parse(raw); return { k, e: p.e || 0 }; } catch { return { k, e: 0 }; }
+        }).sort((a, b) => a.e - b.e);
+        items.slice(0, 10).forEach(i => localStorage.removeItem(i.k));
+      }
+    } catch (e) {}
+  };
+
+  // State variables
+  let cat = 'todo';
+  let ord = 'nuevo';
+  let lista: any[] = [];
+  let busy = false;
+  let lastSnap: any = null;
+  let hasMore = true;
+  let isFirstLoad = true;
+  let _allCache: any[] | null = null;
+  let _allTime = 0;
+  const _prefetched = new Set();
+  let eventListeners: Array<{ target: EventTarget | Window | Document, type: string, handler: any }> = [];
+
+  const K_list = (c: string, o: string) => c === 'todo' && o === 'nuevo' ? 'wi_blogs' : `wi_blogs_${c}_${o}`;
+  const K_post = (s: string) => `wi_post_${s}`;
+
+  const listen = (target: EventTarget | Window | Document, type: string, handler: any) => {
+    target.addEventListener(type, handler);
+    eventListeners.push({ target, type, handler });
+  };
+
+  const fetchAllPostsFromFirestore = async (force = false) => {
+    if (!force && _allCache && Date.now() - _allTime < 60000) return _allCache;
+    try {
+      const q = query(collection(db, 'blog'), where('activo', '==', true));
+      const snap = await getDocs(q);
+      const data = snap.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+      _allCache = data.map(d => ser(d));
+      _allTime = Date.now();
+      return _allCache;
+    } catch (err) {
+      console.error('[blog] Error fetching from Firestore:', err);
+      return [];
+    }
+  };
+
+  const prefetchPost = async (slug: string) => {
+    if (_prefetched.has(slug) || getls(K_post(slug))) return;
+    _prefetched.add(slug);
+    try {
+      if (_allCache) {
+        const found = _allCache.find(p => p.slug === slug);
+        if (found) {
+          savels(K_post(slug), found, 12);
+          return;
+        }
+      }
+      const q = query(collection(db, 'blog'), where('slug', '==', slug), limit(1));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        const docData = snap.docs[0].data();
+        const parsed = { ...docData, id: snap.docs[0].id };
+        savels(K_post(slug), ser(parsed), 12);
+      }
+    } catch (err) {}
+  };
+
+  const fetchAll = async (force = false) => {
+    return await fetchAllPostsFromFirestore(force);
+  };
+
+  const getPostsPaginated = async (c = 'todo', o = 'nuevo', force = false, lastSnapshot = null, pageSize = 16) => {
+    cleanCacheLRU();
+    const PAGE_SIZE = pageSize;
+    
+    const key = K_list(c, o) + (lastSnapshot ? '_page' : '');
+    if (!force && !lastSnapshot) { 
+      const cachedList = getls(key); 
+      if (Array.isArray(cachedList) && cachedList.length) return { lista: cachedList, fromCache: true, lastSnap: null }; 
+    }
+
+    const allPosts = await fetchAllPostsFromFirestore(force);
+    let filtered = c === 'todo' ? allPosts : allPosts.filter(p => p.categoria && p.categoria.toLowerCase() === c.toLowerCase());
+    
+    if (o === 'vistas') {
+      filtered = filtered.sort((a: any, b: any) => (b.vistas || 0) - (a.vistas || 0));
+    } else {
+      filtered = filtered.sort((a: any, b: any) => (b.creado || 0) - (a.creado || 0));
+    }
+    
+    const offset = lastSnapshot || 0;
+    const paginated = filtered.slice(offset, offset + PAGE_SIZE);
+    const newLastSnap = (offset + paginated.length < filtered.length) ? offset + paginated.length : null;
+    
+    if (paginated.length && !lastSnapshot) {
+      savels(key, paginated, 3);
+    }
+    
+    return { lista: paginated, fromCache: !force, lastSnap: newLastSnap };
+  };
+
+  const buildCats = (postsOrUniq: any[]) => {
+    const isPostObj = postsOrUniq.length > 0 && typeof postsOrUniq[0] === 'object';
+    const uniq = isPostObj 
+      ? [...new Set(postsOrUniq.map(p => {
+          const catName = p.categoria || '';
+          const matched = CATS.find(x => x.id.toLowerCase() === catName.toLowerCase());
+          return matched ? matched.id : (catName ? catName.charAt(0).toUpperCase() + catName.slice(1).toLowerCase() : '');
+        }).filter(Boolean))].sort()
+      : postsOrUniq.sort();
+      
+    localStorage.setItem('wi_blogs_cats', JSON.stringify(uniq));
+    
+    const catsEl = document.getElementById('bl_cats');
+    if (catsEl) {
+      catsEl.innerHTML = `<button class="bl_cat_btn ${cat.toLowerCase() === 'todo' ? 'active' : ''}" data-cat="todo" style="--cc:var(--mco)"><i class="fas fa-grip"></i><span>Todas</span></button>` + 
+        uniq.map(c => {
+          const info = catInfo(c);
+          return `<button class="bl_cat_btn ${cat.toLowerCase() === c.toLowerCase() ? 'active' : ''}" data-cat="${c}" style="--cc:${info.color}"><i class="fas ${info.icon}"></i><span>${c}</span></button>`;
+        }).join('');
+    }
+  };
+
+  const grid = (append: boolean, newItems: any[] = []) => {
+    const items = append || newItems.length ? newItems : lista;
+    const emptyEl = document.getElementById('bl_empty');
+    const gridEl = document.getElementById('bl_grid');
+    const masWrapEl = document.getElementById('bl_mas_wrap');
+
+    if (!items.length && !append) {
+      if (emptyEl) emptyEl.style.display = 'flex';
+      if (masWrapEl) masWrapEl.style.display = 'none';
+      if (gridEl) gridEl.innerHTML = '';
+      return;
+    }
+    
+    if (emptyEl) emptyEl.style.display = 'none';
+    
+    const cardsHtml = items.map(tplCard).join('');
+    
+    if (gridEl) {
+      if (append) {
+        gridEl.insertAdjacentHTML('beforeend', cardsHtml);
+      } else {
+        gridEl.innerHTML = cardsHtml;
+      }
+    }
+
+    if (typeof (window as any).herowi === 'function') {
+      (window as any).herowi();
+    }
+    
+    if (masWrapEl) {
+      masWrapEl.style.display = (newItems.length && newItems !== lista) ? 'none' : (hasMore ? 'flex' : 'none');
+    }
+  };
+
+  const renderInstantaneo = () => {
+    try {
+      const c = JSON.parse(localStorage.getItem('wi_blogs_cats') || '[]');
+      if (c.length) buildCats(c);
+    } catch (e) {}
+
+    const cData = getls(cat === 'todo' && ord === 'nuevo' ? 'wi_blogs' : `wi_blogs_${cat}_${ord}`);
+    if (Array.isArray(cData) && cData.length) {
+      lista = cData.slice(0, PAG_INI);
+      const resultBar = document.getElementById('bl_result_bar');
+      if (resultBar) {
+        resultBar.innerHTML = `<span><strong>${lista.length}</strong> historia${lista.length !== 1 ? 's' : ''}</span><span class="bl_cache_tag" data-witip="⚡ Memoria"><i class="fas fa-bolt"></i> Local</span>`;
+      }
+      grid(false, lista);
+      isFirstLoad = false;
+      return true;
+    }
+    return false;
+  };
+
+  const cargar = async (force = false, append = false) => {
+    if (busy) return;
+    busy = true;
+    const limitCount = append ? PAG_MAS : PAG_INI;
+    
+    const emptyEl = document.getElementById('bl_empty');
+    const masWrapEl = document.getElementById('bl_mas_wrap');
+    if (!append) {
+      if (emptyEl) emptyEl.style.display = 'none';
+      if (masWrapEl) masWrapEl.style.display = 'none';
+      lastSnap = null;
+    }
+    
+    try {
+      const r = await getPostsPaginated(cat, ord, force, lastSnap, limitCount);
+      if (isFirstLoad || JSON.stringify(append ? [] : lista) !== JSON.stringify(r.lista)) {
+        lista = append ? [...lista, ...r.lista] : r.lista;
+        buildCats(lista);
+        grid(append, r.lista);
+      }
+      lastSnap = r.lastSnap;
+      hasMore = r.lista.length === limitCount;
+      
+      const resultBar = document.getElementById('bl_result_bar');
+      if (resultBar) {
+        resultBar.innerHTML = `<span><strong>${lista.length}</strong> historia${lista.length !== 1 ? 's' : ''}</span>${srcBadge(r.fromCache)}`;
+      }
+    } catch(e) {
+      console.error('[blog]', e);
+      Notificacion('Error al cargar', 'error');
+      
+      const gridEl = document.getElementById('bl_grid');
+      if (!append && !lista.length && gridEl && gridEl.querySelectorAll('.bl_card').length === 0) {
+        if (emptyEl) emptyEl.style.display = 'flex';
+      }
+    }
+    isFirstLoad = false;
+    busy = false;
+  };
+
+  let sT: number;
+  const doSearch = (q: string) => {
+    window.clearTimeout(sT);
+    sT = window.setTimeout(async () => {
+      const resultBar = document.getElementById('bl_result_bar');
+      if (!q.trim()) {
+        grid(false);
+        if (resultBar) {
+          resultBar.innerHTML = `<span><strong>${lista.length}</strong> historias</span>`;
+        }
+        return;
+      }
+      const s = q.toLowerCase();
+      if (resultBar) {
+        resultBar.innerHTML = `<span><i class="fas fa-spinner fa-spin"></i> Buscando...</span>`;
+      }
+      
+      const allPosts = await fetchAll();
+      const res = allPosts.filter(p => [p.titulo, p.resumen, p.categoria, ...(p.tags || [])].some(t => t?.toLowerCase().includes(s)));
+      
+      if (resultBar) {
+        resultBar.innerHTML = `<span><i class="fas fa-search"></i> <strong>${res.length}</strong> resultados — "<em>${q}</em>"</span>`;
+      }
+      grid(false, res);
+    }, 400);
+  };
+
+  const resetList = () => {
+    isFirstLoad = true;
+    const gridEl = document.getElementById('bl_grid');
+    if (!renderInstantaneo() && gridEl && gridEl.querySelectorAll('.bl_card').length === 0) {
+      gridEl.innerHTML = Array(16).fill(skCard()).join('');
+    }
+  };
+
+  const init = async () => {
+    cleanup();
+    
+    cat = 'todo';
+    ord = 'nuevo';
+    lista = [];
+    busy = false;
+    lastSnap = null;
+    hasMore = true;
+    isFirstLoad = true;
+
+    // Direct event listeners delegation in Vanilla JS
+    listen(document, 'click', async (e: Event) => {
+      const target = e.target as HTMLElement;
+
+      // Category button
+      const catBtn = target.closest('.bl_cat_btn') as HTMLElement;
+      if (catBtn) {
+        const c = catBtn.getAttribute('data-cat') || 'todo';
+        if (c === cat) return;
+        cat = c;
+        resetList();
+        await cargar();
+        return;
+      }
+
+      // Order button
+      const ordBtn = target.closest('.bl_ord_btn') as HTMLElement;
+      if (ordBtn) {
+        const o = ordBtn.getAttribute('data-ord') || 'nuevo';
+        if (o === ord) return;
+        ord = o;
+        resetList();
+        await cargar();
+        return;
+      }
+
+      // Refresh button
+      const refreshBtn = target.closest('#bl_refresh') as HTMLButtonElement;
+      if (refreshBtn) {
+        const icon = refreshBtn.querySelector('i');
+        if (icon) icon.className = 'fas fa-spinner fa-spin';
+        refreshBtn.disabled = true;
+
+        // Clear local storage cache
+        Object.keys(localStorage).filter(k => k.startsWith('wi_blogs')).forEach(k => localStorage.removeItem(k));
+        localStorage.removeItem('wi_blogs_cats');
+        
+        resetList();
+        await cargar(true);
+
+        if (icon) icon.className = 'fas fa-cross'; // will reset to rotate
+        refreshBtn.innerHTML = '<i class="fas fa-rotate"></i>';
+        refreshBtn.disabled = false;
+        Notificacion('Actualizado ✅', 'success');
+        return;
+      }
+
+      // Search toggle button
+      const searchToggle = target.closest('#bl_search_toggle');
+      if (searchToggle) {
+        const searchBar = document.getElementById('bl_search_bar');
+        const searchInp = document.getElementById('bl_search_inp') as HTMLInputElement;
+        if (searchBar) {
+          if (searchBar.style.display === 'none' || !searchBar.style.display) {
+            searchBar.style.display = 'block';
+            if (searchInp) searchInp.focus();
+          } else {
+            searchBar.style.display = 'none';
+            if (searchInp) {
+              searchInp.value = '';
+              grid(false);
+            }
+          }
+        }
+        return;
+      }
+
+      // Search close button
+      const searchClose = target.closest('#bl_search_close');
+      if (searchClose) {
+        const searchBar = document.getElementById('bl_search_bar');
+        const searchInp = document.getElementById('bl_search_inp') as HTMLInputElement;
+        if (searchBar) searchBar.style.display = 'none';
+        if (searchInp) {
+          searchInp.value = '';
+          grid(false);
+        }
+        return;
+      }
+
+      // Load more button
+      const loadMoreBtn = target.closest('#bl_mas') as HTMLButtonElement;
+      if (loadMoreBtn) {
+        const oldHtml = loadMoreBtn.innerHTML;
+        loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
+        loadMoreBtn.disabled = true;
+        await cargar(false, true).finally(() => {
+          loadMoreBtn.innerHTML = oldHtml;
+          loadMoreBtn.disabled = false;
+        });
+        return;
+      }
+
+      // Card link redirect
+      const card = target.closest('.bl_card') as HTMLAnchorElement;
+      if (card) {
+        e.preventDefault();
+        const path = card.getAttribute('href');
+        if (path) {
+          window.location.href = path;
+        }
+        return;
+      }
+    });
+
+    // Prefetching trigger on hover
+    listen(document, 'mouseover', (e: Event) => {
+      const target = e.target as HTMLElement;
+      const card = target.closest('.bl_card');
+      if (card) {
+        const href = card.getAttribute('href');
+        if (href) {
+          const slug = href.startsWith('/') ? href.substring(1) : href;
+          prefetchPost(slug);
+        }
+      }
+    });
+
+    // Search input field event
+    const searchInp = document.getElementById('bl_search_inp') as HTMLInputElement;
+    if (searchInp) {
+      listen(searchInp, 'input', () => {
+        doSearch(searchInp.value);
+      });
+    }
+
+    const gridEl = document.getElementById('bl_grid');
+    if (gridEl && gridEl.querySelectorAll('.bl_card').length === 0) {
+      renderInstantaneo() || (gridEl.innerHTML = Array(16).fill(skCard()).join(''));
+    }
+    
+    await cargar(false, false);
+  };
+
+  const cleanup = () => {
+    eventListeners.forEach(({ target, type, handler }) => {
+      target.removeEventListener(type, handler);
+    });
+    eventListeners = [];
+  };
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-preparation', cleanup);
+</script>
+

@@ -1,0 +1,143 @@
+---
+// src/components/PostPage.astro
+import PostComent from './PostComent.astro';
+import { icon, linkweb } from '../wii.js';
+import { Image } from 'astro:assets';
+
+interface Props {
+  post: any;
+  headings: { text: string; id: string; depth: number }[];
+  prevPost?: any;
+  nextPost?: any;
+}
+
+const { post, headings, prevPost, nextPost } = Astro.props;
+
+const formatLongDate = (dateVal: any) => {
+  if (!dateVal) return '';
+  const d = new Date(dateVal);
+  return d.toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric' });
+};
+---
+
+<div class="po_progress_bar" id="po_progress"></div>
+
+<div class="po_wrap" data-id={post.id} data-slug={post.slug || post.id} data-title={post.titulo}>
+  <div class="po_layout">
+    <div class="po_col_main">
+      <div class="po_content">
+        <!-- Hero del Post -->
+        <div class="po_hero po_fade po_visible" style="--d:0s">
+          {post.imagenTop || post.imagen ? (
+            <Image src={post.imagenTop || post.imagen} width={1180} height={425} alt={post.metaSEO?.alt || post.titulo} class="po_hero_img" loading="eager" fetchpriority="high" />
+          ) : (
+            <img src="/poster.webp" alt="" class="po_hero_img" />
+          )}
+          <div class="po_hero_over">
+            <a href="/blog" class="po_back" data-witip="Volver"><i class="fas fa-arrow-left"></i> Blog</a>
+            <div class="po_hero_badges">
+              <span class="po_cat_badge" data-witip={post.categoria}><i class={`fas ${icon}`}></i> {post.categoria}</span>
+              {post.pin && <span class="po_dest_badge" data-witip="Destacada"><i class="fas fa-thumbtack"></i> Pin</span>}
+              <button class="po_like_btn po_like_sync po_hero_like" data-witip="Me encanta">
+                <i class="fas fa-heart"></i> <span class="po_likes_count_text">{post.likes || 0}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cabecera del Artículo -->
+        <header class="po_header po_fade po_visible" style="--d:.1s">
+          <h1 class="po_titulo">{post.titulo}</h1>
+          {post.descripcion && <p class="po_resumen">{post.descripcion}</p>}
+          <div class="po_meta">
+            <span data-witip="Autor"><i class="fas fa-user-pen"></i> {post.autor}</span>
+            <span data-witip="Fecha"><i class="fas fa-calendar"></i> {formatLongDate(post.creado)}</span>
+            <span data-witip="Lectura"><i class="fas fa-clock"></i> {post.lecturaTM}</span>
+            <span data-witip="Vistas" class="po_vistas_sync"><i class="fas fa-eye"></i> <span class="po_vistas_count_text">{post.vistas || 0}</span></span>
+            <button class="po_like_btn po_like_sync" data-witip="Me encanta">
+              <i class="fas fa-heart"></i> <span class="po_likes_count_text">{post.likes || 0}</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Contenedor de Tabla de Contenidos (Generado en Servidor) -->
+        {headings && headings.length > 0 && (
+          <div class="po_toc_box">
+            <div class="po_toc_title"><i class="fas fa-list"></i> En este artículo</div>
+            <ul class="po_toc">
+              {headings.map(h => (
+                <li style={{ marginLeft: h.depth === 3 ? '1.5vh' : '0' }}>
+                  <a href={`#${h.id}`} class="po_toc_link">{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- Cuerpo del Artículo -->
+        <article class="po_contenido po_fade po_visible" style="--d:.2s" set:html={post.contenido}>
+        </article>
+
+        <!-- Navegación Anterior/Siguiente -->
+        {(prevPost || nextPost) && (
+          <div class="po_pn_box po_fade po_visible" style="--d:.4s">
+            {prevPost ? (
+              <a href={`/${prevPost.slug || prevPost.id}`} class="po_pn_card pn_prev" data-witip="Anterior">
+                <div class="po_pn_img">
+                  <img src={prevPost.imagen} alt="" loading="lazy" />
+                </div>
+                <div class="po_pn_info">
+                  <span class="po_pn_lb"><i class="fas fa-arrow-left"></i> Anterior</span>
+                  <strong class="po_pn_tit">{prevPost.titulo}</strong>
+                </div>
+              </a>
+            ) : (
+              <div></div>
+            )}
+            {nextPost ? (
+              <a href={`/${nextPost.slug || nextPost.id}`} class="po_pn_card pn_next" data-witip="Siguiente">
+                <div class="po_pn_info">
+                  <span class="po_pn_lb">Siguiente <i class="fas fa-arrow-right"></i></span>
+                  <strong class="po_pn_tit">{nextPost.titulo}</strong>
+                </div>
+                <div class="po_pn_img">
+                  <img src={nextPost.imagen} alt="" loading="lazy" />
+                </div>
+              </a>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        )}
+
+        <!-- Compartir Artículo -->
+        <div class="po_share po_fade po_visible" style="--d:.45s">
+          <span><i class="fas fa-share-nodes"></i> Compartes</span>
+          <div class="po_share_btns">
+            <button class="po_like_btn po_like_sync" data-witip="Me encanta">
+              <i class="fas fa-heart"></i> <span class="po_likes_count_text">{post.likes || 0}</span>
+            </button>
+            <a href={`https://www.facebook.com/sharer/sharer.php?u=${linkweb}/${post.slug || post.id}`} target="_blank" rel="noopener" class="po_share_btn" style="--sc:#1877F2" data-witip="Facebook">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href={`https://twitter.com/intent/tweet?url=${linkweb}/${post.slug || post.id}&text=${encodeURIComponent(post.titulo)}`} target="_blank" rel="noopener" class="po_share_btn" style="--sc:#1da1f2" data-witip="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href={`https://wa.me/?text=${encodeURIComponent(post.titulo + ' ' + linkweb + '/' + (post.slug || post.id))}`} target="_blank" rel="noopener" class="po_share_btn" style="--sc:#25D366" data-witip="WhatsApp">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+            <button class="po_share_btn po_copy" style="--sc:var(--mco)" data-witip="Copiar">
+              <i class="fas fa-link"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comentarios Disqus -->
+      <PostComent slug={post.slug || post.id} titulo={post.titulo} />
+    </div>
+
+    <!-- Barra lateral renderizada aquí -->
+    <slot />
+  </div>
+</div>

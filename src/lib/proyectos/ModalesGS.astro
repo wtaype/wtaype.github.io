@@ -1,0 +1,87 @@
+---
+// Componente de soporte: Modales de gestión para proyectos
+const CATS = [
+  ['web', 'Web Apps'],
+  ['mobile', 'Mobile'],
+  ['windows', 'Windows'],
+  ['educacion', 'Educación'],
+  ['diseno', 'Diseño'],
+  ['devs', 'Devs'],
+  ['tools', 'Herramientas'],
+  ['camino', 'Camino']
+];
+---
+
+<div class="wiModal" id="modalProyecto">
+  <div class="modalBody modal_proyecto_body">
+    <button class="modalX" aria-label="Cerrar modal"><i class="fas fa-times"></i></button>
+    <div class="modal_proyecto_header">
+      <h2 class="modal_titulo" id="modalTitulo">Agregar Proyecto</h2>
+    </div>
+    <form class="modal_proyecto_form" id="formProyecto">
+      <div class="form_row">
+        <div class="form_group">
+          <label for="inputTitulo"><i class="fas fa-heading"></i> Título</label>
+          <input type="text" id="inputTitulo" class="form_input" placeholder="Ej: Mi Proyecto" required />
+        </div>
+        <div class="form_group">
+          <label for="inputId"><i class="fas fa-key"></i> ID</label>
+          <div style="position: relative; width: 100%;">
+            <input type="text" id="inputId" class="form_input" placeholder="ej: mi-proyecto" required style="padding-right: 45px;" />
+            <span id="idFeedback" class="id-feedback"></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form_group">
+        <label for="inputUrl"><i class="fas fa-link"></i> URL Proyecto</label>
+        <input type="url" id="inputUrl" class="form_input" placeholder="https://..." required />
+      </div>
+      
+      <div class="form_group">
+        <label for="inputImg"><i class="fas fa-image"></i> Imagen URL</label>
+        <input type="url" id="inputImg" class="form_input" placeholder="https://..." required />
+      </div>
+      
+      <div class="form_group">
+        <label for="inputDescripcion"><i class="fas fa-align-left"></i> Descripción</label>
+        <textarea id="inputDescripcion" class="form_textarea" placeholder="Describe tu proyecto..." rows="3" required></textarea>
+      </div>
+      
+      <div class="form_row">
+        <div class="form_group">
+          <label for="inputTecnologias"><i class="fas fa-code"></i> Tecnologías</label>
+          <input type="text" id="inputTecnologias" class="form_input" placeholder="Astro, React, CSS (separadas por comas)" required />
+        </div>
+        <div class="form_group">
+          <label for="inputFecha"><i class="fas fa-calendar"></i> Fecha</label>
+          <input type="date" id="inputFecha" class="form_input" required />
+        </div>
+      </div>
+      
+      <div class="form_row">
+        <div class="form_group">
+          <label for="inputCategoria"><i class="fas fa-folder"></i> Categoría</label>
+          <select id="inputCategoria" class="form_select" required>
+            <option value="">Seleccionar...</option>
+            {CATS.map(([val, label]) => (
+              <option value={val}>{label}</option>
+            ))}
+          </select>
+        </div>
+        <div class="form_group cb_destacado_group">
+          <label class="destacado_cb_label">
+            <input type="checkbox" id="inputDestacado" />
+            <span>Destacado <i class="fas fa-star"></i></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="modal_acciones">
+        <button type="submit" class="btn_modal btn_guardar" id="btnGuardar">
+          <i class="fas fa-save"></i> <span>Guardar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+{
+  "name": "wtaype-web",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^6.4.7",
+    "firebase": "^12.14.0",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.20.0"
+  }
+}

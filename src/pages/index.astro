@@ -1,0 +1,1413 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Saludar, year, wiTip } from '../lib/widev.js';
+import { seo } from '../lib/seo.js';
+
+// ── Datos Estáticos ──────────────────────────────────────────────────────────
+const ROLES = ['Desarrollador Full Stack', 'Ingeniero de Sistemas', 'Creador de Soluciones'];
+const STATS = [
+  [6, 'Años de Experiencia'],
+  [60, 'Proyectos Entregados'],
+  [30, 'Tecnologías Dominadas']
+];
+
+// 4 Tecnologías flotantes del Hero
+const TECHS = [
+  ['Astro', 'fas fa-rocket', '#FF5D01'],
+  ['JavaScript', 'fab fa-js', '#F7DF1E'],
+  ['Node.js', 'fab fa-node-js', '#68A063'],
+  ['Firebase', 'fas fa-fire', '#FFA611']
+];
+
+const FORTALEZAS = [
+  'Desarrollo Full Stack',
+  'Optimización de Rendimiento',
+  'UI/UX Intuitivo y Dinámico',
+  'Soluciones de Software Escalables',
+  'Multiplataforma (Web / Android / Windows)',
+  'Arquitecturas Cloud & APIs Robundas'
+];
+
+const TRAYECTORIA = [
+  [year(), 'Creando proyectos innovadores con tecnologías web de vanguardia'],
+  ['2025', 'Graduado de Ingeniería de Sistemas · +40 proyectos completados con éxito'],
+  ['2021', 'Universidad San Ignacio de Loyola — Ingeniería Empresarial'],
+  ['2017', 'Inicio de mi camino profesional en el mundo del desarrollo de software']
+];
+
+const STACK = [
+  ['Astro', 'fas fa-rocket', '#FF5D01'],
+  ['JavaScript', 'fab fa-js-square', '#F7DF1E'],
+  ['Node.js', 'fab fa-node-js', '#68A063'],
+  ['Firebase', 'fas fa-fire', '#FFA611'],
+  ['Supabase', 'fas fa-database', '#3ECF8E'],
+  ['React', 'fab fa-react', '#61DAFB'],
+  ['Next.js', 'fas fa-bolt', '#000000'],
+  ['Vite', 'fas fa-bolt', '#646CFF'],
+  ['Kotlin', 'fab fa-kotlin', '#7F52FF'],
+  ['Jetpack Compose', 'fab fa-android', '#4285F4'],
+  ['Tauri', 'fas fa-laptop-code', '#FFC131'],
+  ['Rust', 'fab fa-rust', '#E05D44'],
+  ['WebRTC', 'fas fa-network-wired', '#326CE5'],
+  ['Vercel', 'fas fa-bolt', '#000000'],
+  ['Wordpress', 'fab fa-wordpress', '#21759b'],
+  ['HTML5', 'fab fa-html5', '#E34F26'],
+  ['CSS3', 'fab fa-css3-alt', '#1572B6'],
+  ['Git', 'fab fa-git-alt', '#F05032'],
+  ['GitHub', 'fab fa-github', '#6e40c9']
+];
+
+const SERVICIOS = [
+  { icon: 'fas fa-globe', titulo: 'Aplicaciones Web', desc: 'SPAs modernas con React, Next.js y Astro. Rápidas, seguras y optimizadas para Lighthouse.' },
+  { icon: 'fas fa-mobile-alt', titulo: 'Desarrollo Android', desc: 'Interfaces móviles fluidas, adaptables y construidas bajo metodologías de alto rendimiento.' },
+  { icon: 'fas fa-desktop', titulo: 'Soluciones Windows', desc: 'Software de escritorio robusto y veloz diseñado para la automatización y control de procesos.' },
+  { icon: 'fas fa-bolt', titulo: 'Rendimiento & SEO', desc: 'Auditorías de carga, optimización avanzada de assets y estructuración para motores de búsqueda.' },
+  { icon: 'fas fa-database', titulo: 'Cloud & APIs', desc: 'Estructuración de servidores escalables, bases de datos no relacionales y APIs robustas.' },
+  { icon: 'fas fa-graduation-cap', titulo: 'Sistemas Escalables', desc: 'Arquitecturas de código limpio pensadas a futuro, fáciles de documentar, mantener y expandir.' },
+  { icon: 'fas fa-robot', titulo: 'IA & Automatización', desc: 'Integración de modelos LLM, agentes autónomos y automatización de procesos inteligentes.' },
+  { icon: 'fas fa-shield-alt', titulo: 'Seguridad & Cloud', desc: 'Configuración segura de infraestructura en la nube, bases de datos protegidas y auditorías de código.' }
+];
+
+// Fallback estático de Proyectos Destacados (Favoritos) por seguridad
+let proyectosDestacados = [
+  { id: 'lovewi', titulo: 'Lovewi — Mensajes de Amor', img: 'https://lovewi.web.app/poster.webp', descripcion: 'Crea mensajes de amor únicos y personalizados para San Valentín y fechas especiales.', url: 'https://lovewi.web.app/', tecnologias: ['Canvas','JavaScript','CSS3'] },
+  { id: 'loveeye', titulo: 'Love Eye — Cuida tus Ojitos', img: 'https://loveye.web.app/poster.webp', descripcion: 'Guía completa para el cuidado de la visión. Prevención, diagnóstico y ejercicios.', url: 'https://loveye.web.app/', tecnologias: ['jQuery','JS','CSS3'] },
+  { id: 'wiihope', titulo: 'WiiHope — Confía en Dios', img: 'https://wiihope.web.app/poster.webp', descripcion: 'Plataforma cristiana para orar, leer frases bíblicas y escuchar la Biblia en audio.', url: 'https://wiihope.web.app/', tecnologias: ['Web','jQuery','HTML'] }
+];
+
+// Lógica de datos de Firestore REST
+const firebaseProjectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || 'wtaype';
+let posts: any[] = [];
+
+// Helper para convertir el formato JSON complejo de Firestore REST a un objeto limpio de JS
+function parseFirestore(doc: any) {
+  const fields = doc.fields || {};
+  const res: any = {};
+  for (const [k, v] of Object.entries(fields)) {
+    const val: any = v;
+    res[k] = val.stringValue ?? val.timestampValue ?? val.booleanValue ?? val.integerValue ?? val.doubleValue ?? val.arrayValue?.values?.map((x: any) => x.stringValue) ?? null;
+  }
+  res.id = doc.name.split('/').pop();
+  return res;
+}
+
+try {
+  // 1. Obtener Proyectos Destacados desde Firestore
+  const proyectosRes = await fetch(`https://firestore.googleapis.com/v1/projects/${firebaseProjectId}/databases/(default)/documents/proyectos`);
+  if (proyectosRes.ok) {
+    const rawProyectos = await proyectosRes.json();
+    if (rawProyectos.documents) {
+      const parsedProyectos = rawProyectos.documents.map(parseFirestore);
+      // Filtrar por favoritos/destacados y limitar a 4
+      const filtrados = parsedProyectos.filter((p: any) => p.destacado === true);
+      if (filtrados.length > 0) {
+        proyectosDestacados = filtrados.slice(0, 4);
+      }
+    }
+  }
+} catch (e) {
+  console.warn('Usando fallback estático para proyectos destacados en compilación:', e);
+}
+
+try {
+  // 2. Obtener Artículos de Blog desde Firestore (Límite 12)
+  const blogRes = await fetch(`https://firestore.googleapis.com/v1/projects/${firebaseProjectId}/databases/(default)/documents/blog`);
+  if (blogRes.ok) {
+    const rawBlog = await blogRes.json();
+    if (rawBlog.documents) {
+      const parsedBlog = rawBlog.documents.map(parseFirestore);
+      // Filtrar los que estén activos y ordenar por fecha (creadoEn)
+      posts = parsedBlog
+        .filter((p: any) => p.activo !== false)
+        .sort((a: any, b: any) => new Date(b.creado || b.creadoEn || 0).getTime() - new Date(a.creado || a.creadoEn || 0).getTime())
+        .slice(0, 12);
+    }
+  }
+} catch (e) {
+  console.warn('No se pudieron obtener posts de blog desde Firestore en compilación:', e);
+}
+---
+
+<style is:global>
+.inicio { max-width: 1400px; margin: 0 auto; padding: 0 2vw; }
+
+/* ══════════════════ HERO SECTION ══════════════════ */
+.hero {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 6vw;
+  align-items: center;
+  min-height: 85vh;
+  padding: 6vh 0;
+}
+.hero_txt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+.hero_saludo {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  font-size: var(--fz_m4);
+  font-weight: 600;
+  color: var(--tx);
+  margin-bottom: 2.5vh;
+  padding: 0.8vh 2vh;
+  background: color-mix(in srgb, var(--mco) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mco) 15%, transparent);
+  border-radius: 50px;
+  animation: slideInLeft 0.8s ease;
+}
+.saludo_emoji {
+  font-size: var(--fz_l1);
+  animation: wave 1.5s infinite;
+  transform-origin: 70% 70%;
+}
+.hero_title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  color: var(--tx);
+  line-height: 1.1;
+  margin-bottom: 0.5vh;
+  animation: slideInLeft 0.8s ease 0.2s backwards;
+  letter-spacing: -2px;
+}
+.gradient_text {
+  background: linear-gradient(135deg, var(--mco) 0%, var(--bg2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero_sub_tit {
+  font-size: var(--fz_l1);
+  font-weight: 800;
+  display: block;
+  margin-bottom: 2.5vh;
+  animation: slideInLeft 0.8s ease 0.3s backwards;
+}
+.hero_roles {
+  height: 4vh;
+  margin-bottom: 3vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  animation: slideInLeft 0.8s ease 0.4s backwards;
+}
+.role {
+  position: absolute;
+  font-size: var(--fz_l1);
+  font-weight: 700;
+  color: var(--mco);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.role.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hero_subtitle {
+  font-size: var(--fz_m3);
+  color: var(--tx3);
+  line-height: 1.6;
+  margin-bottom: 4vh;
+  max-width: 600px;
+  animation: slideInLeft 0.8s ease 0.6s backwards;
+}
+.hero_stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2vw;
+  margin-bottom: 4vh;
+  width: 100%;
+  animation: slideInLeft 0.8s ease 0.8s backwards;
+}
+.stat_card {
+  text-align: center;
+  padding: 2.5vh 1.2vw;
+  background: var(--bg1);
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all var(--tr_m);
+}
+.stat_card:hover {
+  border-color: var(--mco);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+.stat_number {
+  font-size: var(--fz_x1);
+  font-weight: 850;
+  color: var(--mco);
+  line-height: 1;
+  margin-bottom: 0.5vh;
+}
+.stat_label {
+  font-size: var(--fz_s4);
+  color: var(--txe);
+  font-weight: 600;
+}
+.hero_actions {
+  display: flex;
+  gap: 2vh;
+  animation: slideInLeft 0.8s ease 1s backwards;
+  flex-wrap: wrap;
+}
+.btn_primary,
+.btn_secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2vh;
+  padding: 1.5vh 3.5vh;
+  border-radius: 12px;
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+.btn_principal {
+  background: linear-gradient(135deg, var(--mco), var(--bg2)) !important;
+  color: var(--txa) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--mco) 30%, transparent);
+}
+.btn_principal:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--mco) 45%, transparent);
+}
+.btn_secundario {
+  background: var(--bg1) !important;
+  color: var(--tx) !important;
+  border: 1px solid var(--bg5) !important;
+  backdrop-filter: blur(8px);
+}
+.btn_secundario:hover {
+  border-color: var(--mco) !important;
+  background: var(--bg4) !important;
+  transform: translateY(-3px);
+}
+
+/* ══════════════════ HERO VISUAL (DISEÑO ANILLOS) ══════════════════ */
+.hero_visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 55vh;
+  animation: fadeIn 1s ease 0.5s backwards;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.profile_container {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+.profile_ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid var(--mco);
+  border-top-color: transparent;
+  animation: rotate 10s linear infinite;
+  pointer-events: none;
+}
+.ring2 {
+  width: 112%;
+  height: 112%;
+  border-color: var(--bg2);
+  border-bottom-color: transparent;
+  animation-direction: reverse;
+  animation-duration: 8s;
+}
+.profile_img_wrapper {
+  width: 85%;
+  height: 85%;
+  border-radius: 50%;
+  border: 5px solid var(--wb);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.profile_img_wrapper:hover {
+  transform: scale(1.05);
+}
+.profile_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.profile_badge {
+  position: absolute;
+  bottom: 8%;
+  right: 8%;
+  background: var(--success);
+  color: #fff;
+  padding: 0.8vh 1.8vh;
+  border-radius: 50px;
+  font-size: var(--fz_s4);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5vh;
+  box-shadow: 0 4px 16px rgba(60, 215, 65, 0.3);
+  animation: pulse 2s infinite;
+  z-index: 3;
+}
+.profile_badge i {
+  animation: blink 1.5s infinite;
+}
+.floating_tech {
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  animation: float 4s ease-in-out infinite;
+  cursor: pointer;
+  transition: all var(--tr_m);
+  z-index: 4;
+}
+.floating_tech:hover {
+  transform: translateY(-10px) scale(1.1);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  border-color: var(--pill-color);
+}
+.floating_tech i {
+  color: var(--pill-color);
+}
+.tech1 { top: 8%; left: -6%; animation-delay: 0s; --pill-color: #FF5D01; }
+.tech2 { top: 22%; right: -8%; animation-delay: 0.8s; --pill-color: #F7DF1E; }
+.tech3 { bottom: 25%; left: -8%; animation-delay: 1.6s; --pill-color: #68A063; }
+.tech4 { bottom: 12%; right: -6%; animation-delay: 2.4s; --pill-color: #FFA611; }
+
+@keyframes rotate { to { transform: rotate(360deg); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+}
+@keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+
+/* ══════════════════ SECCIONES BASE ══════════════════ */
+.inicio section { padding: 9vh 0; }
+.sec_header {
+  text-align: center;
+  margin-bottom: 6vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sec_title {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 1vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5vh;
+}
+.sec_title i { color: var(--mco); }
+.sec_line {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--mco), var(--bg2));
+  margin: 0 auto;
+  border-radius: 2px;
+}
+.sec_desc {
+  text-align: center;
+  font-size: var(--fz_m3);
+  color: var(--tx3);
+  margin-top: 2.5vh;
+  margin-bottom: 0;
+  max-width: 800px;
+  font-weight: 500;
+}
+
+/* ══════════════════ ACERCA DE MÍ ══════════════════ */
+.about_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3vw;
+}
+.about_card {
+  background: var(--wb);
+  border-radius: 16px;
+  padding: 4vh 2.2vw;
+  border: 1px solid var(--bg5);
+  transition: all var(--tr_m);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.about_card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.about_card:hover {
+  border-color: var(--mco);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+.card_icon {
+  width: 55px;
+  height: 55px;
+  background: var(--bg4);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2.5vh;
+  color: var(--mco);
+  font-size: var(--fz_l1);
+}
+.about_card h3 {
+  font-size: var(--fz_m4);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 2.5vh;
+}
+.fortalezas_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.fortalezas_list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2vh;
+  font-size: var(--fz_m1);
+  color: var(--tx1);
+  margin-bottom: 1.5vh;
+  line-height: 1.4;
+}
+.fortalezas_list li i {
+  color: var(--success);
+  font-size: var(--fz_m2);
+  margin-top: 0.2vh;
+}
+.timeline {
+  position: relative;
+  padding-left: 2vh;
+  border-left: 2px solid var(--brd);
+}
+.timeline_item {
+  position: relative;
+  margin-bottom: 2.5vh;
+}
+.timeline_item:last-child { margin-bottom: 0; }
+.timeline_dot {
+  position: absolute;
+  left: -2.6vh;
+  top: 0.6vh;
+  width: 1vh;
+  height: 1vh;
+  border-radius: 50%;
+  background: var(--mco);
+  border: 2px solid var(--wb);
+}
+.timeline_year {
+  font-size: var(--fz_s4);
+  font-weight: 800;
+  color: var(--mco);
+  display: block;
+  margin-bottom: 0.4vh;
+}
+.timeline_content p {
+  font-size: var(--fz_s3);
+  color: var(--tx2);
+  line-height: 1.4;
+  margin: 0;
+}
+.mision_text {
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.7;
+}
+
+/* ══════════════════ PROYECTOS DESTACADOS ══════════════════ */
+.pdin_section {
+  background: color-mix(in srgb, var(--mco) 4%, var(--wb));
+  border: 1px solid var(--brd);
+  border-radius: 3vh;
+  padding: 7vh 4vw !important;
+}
+.pdin_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 4vh;
+  margin-top: 5vh;
+}
+.pdin_card {
+  background: var(--wb);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--brd);
+  transition: all var(--tr_m);
+  display: flex;
+  flex-direction: column;
+}
+.pdin_card:hover {
+  transform: translateY(-8px);
+  border-color: var(--mco);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+.pdin_img_box {
+  position: relative;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+}
+.pdin_img_box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.pdin_card:hover .pdin_img_box img {
+  transform: scale(1.05);
+}
+.pdin_overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.pdin_card:hover .pdin_overlay {
+  opacity: 1;
+}
+.pdin_overlay i {
+  color: #fff;
+  font-size: 2rem;
+}
+.pdin_info {
+  padding: 3vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.pdin_title {
+  font-size: var(--fz_m4);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 1.5vh;
+}
+.pdin_desc {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  line-height: 1.5;
+  margin-bottom: 2.5vh;
+  flex: 1;
+}
+.pdin_tags {
+  display: flex;
+  gap: 1vh;
+  flex-wrap: wrap;
+}
+.pdin_tag {
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  padding: 0.6vh 1.4vh;
+  border-radius: 50px;
+  background: var(--bg4);
+  color: var(--tx2);
+}
+.pdin_footer {
+  text-align: center;
+  margin-top: 5vh;
+}
+.pdin_ver_todos {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2vh;
+  padding: 1.5vh 3.5vh;
+  border-radius: 12px;
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  color: var(--txa);
+  background: var(--mco);
+  text-decoration: none;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 30%, transparent);
+  transition: all var(--tr_m);
+}
+.pdin_ver_todos:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--mco) 40%, transparent);
+}
+
+/* ══════════════════ STACK TECNOLÓGICO ══════════════════ */
+.stack_grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.2vh;
+  justify-content: center;
+  margin-top: 4vh;
+}
+.stack_pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5vh;
+  padding: 1.4vh 2.6vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 50px;
+  font-size: var(--fz_m1);
+  font-weight: 600;
+  color: var(--tx);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(20px);
+}
+.stack_pill.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.stack_pill:hover {
+  transform: translateY(-5px);
+  border-color: var(--pill-color);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--pill-color) 12%, rgba(0, 0, 0, 0.05));
+  background: color-mix(in srgb, var(--pill-color) 4%, var(--wb));
+}
+
+/* ══════════════════ SERVICIOS ══════════════════ */
+.servicios_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 4vh;
+  margin-top: 5vh;
+}
+.servicio_card {
+  background: var(--wb);
+  padding: 5vh 3.5vw;
+  border-radius: 20px;
+  border: 1px solid var(--brd);
+  text-align: center;
+  transition: all var(--tr_m);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.servicio_card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.servicio_card:hover {
+  transform: translateY(-8px);
+  border-color: var(--mco);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+.servicio_icon {
+  width: 70px;
+  height: 70px;
+  background: color-mix(in srgb, var(--mco) 10%, transparent);
+  color: var(--mco);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_l2);
+  margin-bottom: 3vh;
+  transition: all 0.4s ease;
+}
+.servicio_card:hover .servicio_icon {
+  background: var(--mco);
+  color: #fff;
+  transform: scale(1.1) rotate(6deg);
+}
+.servicio_card h3 {
+  font-size: var(--fz_m4);
+  font-weight: 850;
+  color: var(--tx);
+  margin-bottom: 2vh;
+}
+.servicio_card p {
+  font-size: var(--fz_s3);
+  color: var(--tx2);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ══════════════════ BLOG ══════════════════ */
+.ib_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3.5vh;
+  margin-top: 5vh;
+}
+.ib_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: all var(--tr_m);
+  display: flex;
+  flex-direction: column;
+}
+.ib_card:hover {
+  transform: translateY(-8px);
+  border-color: var(--mco);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+.ib_img {
+  aspect-ratio: 16/9;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bg4);
+  position: relative;
+}
+.ib_cat {
+  position: absolute;
+  top: 1.5vh;
+  left: 1.5vh;
+  font-size: var(--fz_s2);
+  font-weight: 750;
+  padding: 0.6vh 1.4vh;
+  border-radius: 50px;
+  backdrop-filter: blur(6px);
+}
+.ib_body {
+  padding: 3vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 1vh;
+}
+.ib_tit {
+  font-size: var(--fz_m2);
+  font-weight: 750;
+  color: var(--tx);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ib_resumen {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  line-height: 1.55;
+  flex: 1;
+}
+.ib_meta {
+  display: flex;
+  gap: 2vh;
+  font-size: var(--fz_s2);
+  color: var(--tx3);
+  margin-top: auto;
+  padding-top: 1.5vh;
+  border-top: 1px solid var(--brd);
+}
+.ib_meta i { color: var(--mco); margin-right: 0.4vh; }
+.ib_footer {
+  text-align: center;
+  margin-top: 5vh;
+}
+.ib_ver_mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2vh;
+  padding: 1.5vh 3.5vh;
+  border-radius: 12px;
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  color: var(--txa);
+  background: var(--mco);
+  text-decoration: none;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 30%, transparent);
+  transition: all var(--tr_m);
+}
+.ib_ver_mas:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--mco) 40%, transparent);
+}
+.ib_empty {
+  text-align: center;
+  color: var(--tx3);
+  padding: 8vh;
+  font-size: var(--fz_m2);
+  grid-column: 1/-1;
+}
+.ib_empty i {
+  display: block;
+  font-size: 2.5rem;
+  margin-bottom: 2vh;
+  opacity: 0.4;
+}
+
+/* ══════════════════ CTA SECCION ══════════════════ */
+.cta_section {
+  background: linear-gradient(135deg, var(--mco), var(--bg2));
+  border-radius: 24px;
+  padding: 8vh 4vw;
+  text-align: center;
+  color: var(--txa);
+  box-shadow: 0 15px 40px color-mix(in srgb, var(--mco) 25%, transparent);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all var(--tr_m);
+}
+.cta_section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.cta_section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><circle cx="40" cy="40" r="1.5" fill="white" opacity=".06"/></svg>') repeat;
+  pointer-events: none;
+}
+.cta_content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.cta_icon {
+  font-size: 3rem;
+  margin-bottom: 2vh;
+  color: #fff;
+}
+.cta_content h2 {
+  font-size: var(--fz_x1);
+  font-weight: 850;
+  margin-bottom: 2vh;
+}
+.cta_content p {
+  font-size: var(--fz_m2);
+  line-height: 1.6;
+  margin-bottom: 4vh;
+  color: rgba(255, 255, 255, 0.9);
+}
+.cta_btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2vh;
+  background: #fff;
+  color: var(--mco);
+  padding: 1.6vh 3.5vh;
+  border-radius: 12px;
+  font-size: var(--fz_m2);
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cta_btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* ══════════════════ RESPONSIVE ══════════════════ */
+@media (max-width: 1024px) {
+  .inicio {
+    padding: 0 4vw;
+  }
+}
+
+@media (max-width: 950px) {
+  .hero { 
+    grid-template-columns: 1fr; 
+    text-align: center; 
+    gap: 6vh; 
+    padding: 4vh 0; 
+  }
+  .hero_txt { 
+    align-items: center; 
+    text-align: center; 
+  }
+  .hero_stats { 
+    gap: 3vw; 
+  }
+  .hero_roles { 
+    justify-content: center; 
+  }
+  .hero_actions { 
+    justify-content: center; 
+  }
+  .about_grid { 
+    grid-template-columns: 1fr; 
+    gap: 4vh; 
+  }
+  .ib_grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 3vh;
+  }
+  .inicio section { 
+    padding: 6vh 0; 
+  }
+  
+  /* Contenedor visual del Hero y tecnologías flotantes */
+  .hero_visual {
+    min-height: 45vh;
+    max-width: 420px;
+  }
+  .profile_container {
+    width: 290px;
+    height: 290px;
+  }
+  .floating_tech {
+    width: 58px;
+    height: 58px;
+    font-size: 1.6rem;
+  }
+  /* Estabilizar posiciones flotantes para evitar desbordes */
+  .tech1 { top: 6%; left: 15%; }
+  .tech2 { top: 18%; right: 12%; }
+  .tech3 { bottom: 22%; left: 12%; }
+  .tech4 { bottom: 10%; right: 15%; }
+}
+
+@media (max-width: 768px) {
+  .pdin_grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 3vh;
+  }
+  .servicios_grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 3vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .ib_grid { 
+    grid-template-columns: 1fr; 
+    gap: 3.5vh;
+  }
+  .hero_stats { 
+    grid-template-columns: 1fr; 
+    gap: 2vh; 
+  }
+  .stat_card { 
+    padding: 2vh 4vw; 
+  }
+  
+  /* Ajuste móvil del perfil y tech flotantes */
+  .hero_visual {
+    min-height: 40vh;
+    max-width: 360px;
+  }
+  .profile_container {
+    width: 240px;
+    height: 240px;
+  }
+  .floating_tech {
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+  }
+  .tech1 { top: 4%; left: 22%; }
+  .tech2 { top: 20%; right: 18%; }
+  .tech3 { bottom: 24%; left: 18%; }
+  .tech4 { bottom: 8%; right: 22%; }
+
+  .hero_title {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+  }
+  .hero_subtitle {
+    font-size: var(--fz_m2);
+  }
+}
+
+@media (max-width: 480px) {
+  .inicio {
+    padding: 0 2vw;
+  }
+  .about_card{
+    padding: 2vh;
+
+  }
+  .hero_visual {
+    min-height: 38vh;
+    max-width: 320px;
+  }
+  .profile_container {
+    width: 210px;
+    height: 210px;
+  }
+  .floating_tech {
+    width: 42px;
+    height: 42px;
+    font-size: 1.15rem;
+    border-radius: 12px;
+  }
+  .tech1 { top: 0%; left: 26%; }
+  .tech2 { top: 20%; right: 22%; }
+  .tech3 { bottom: 24%; left: 22%; }
+  .tech4 { bottom: 2%; right: 26%; }
+
+  .hero_actions {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+  }
+  .hero_actions .btn_principal,
+  .hero_actions .btn_secundario {
+    width: 100%;
+    text-align: center;
+    padding: 1.8vh 3vh;
+  }
+  
+  .pdin_grid {
+    grid-template-columns: 1fr;
+  }
+  .pdin_img_box {
+    aspect-ratio: 16/9;
+  }
+  .pdin_info {
+    padding: 2.5vh;
+  }
+  .pdin_title {
+    font-size: var(--fz_m2);
+  }
+  .pdin_desc {
+    font-size: var(--fz_s3);
+  }
+  
+  .servicios_grid {
+    grid-template-columns: 1fr;
+  }
+  .servicio_card {
+    padding: 4vh 5vw;
+  }
+  
+  .cta_section {
+    padding: 5vh 4vw;
+  }
+  .cta_content h2 {
+    font-size: var(--fz_l1);
+  }
+  .cta_btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+</style>
+
+<Layout {...seo.inicio}>
+  <div class="inicio">
+
+    <!-- ★ HERO SECTION ────────────────────────────────────────────────── -->
+    <section class="hero">
+      <div class="hero_txt">
+        <div class="hero_saludo">
+          <span>{Saludar()} Tigre!</span><span class="saludo_emoji">👋</span>
+        </div>
+        <h1 class="hero_title">Soy <span class="gradient_text">Wilder Taype</span></h1>
+        <div class="hero_roles">
+          {ROLES.map((r, i) => <span class={`role${i === 0 ? ' active' : ''}`}>{r}</span>)}
+        </div>
+        <p class="hero_subtitle">
+          Transformo ideas complejas en experiencias digitales de alto rendimiento. Especializado en construir aplicaciones web y móviles rápidas, intuitivas y escalables a futuro.
+        </p>
+        <div class="hero_stats">
+          {STATS.map(([n, l]) => (
+            <div class="stat_card">
+              <div class="stat_number" data-target={n}>0</div>
+              <div class="stat_label">{l}</div>
+            </div>
+          ))}
+        </div>
+        <div class="hero_actions">
+          <a href="/proyectos" class="btn_primary btn_principal"><i class="fas fa-rocket"></i><span>Ver Proyectos</span></a>
+          <a href="/contacto" class="btn_secondary btn_secundario"><i class="fas fa-envelope"></i><span>Contactar</span></a>
+        </div>
+      </div>
+
+      <div class="hero_visual">
+        <div class="profile_container">
+          <div class="profile_ring"></div>
+          <div class="profile_ring ring2"></div>
+          <div class="profile_img_wrapper">
+            <img src="/wilder.webp" alt="Wilder Taype" class="profile_img" />
+          </div>
+          <div class="profile_badge"><i class="fas fa-circle"></i><span>Disponible</span></div>
+        </div>
+        {TECHS.map(([t, i, c], x) => (
+          <div class={`floating_tech tech${x + 1}`} data-witip={t} style={`--pill-color:${c}`}>
+            <i class={i}></i>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ★ ACERCA DE MÍ ────────────────────────────────────────────────── -->
+    <section class="about" id="sec_about">
+      <div class="sec_header">
+        <h2 class="sec_title"><i class="fas fa-brain"></i> Acerca de Mí</h2>
+        <div class="sec_line"></div>
+        <p class="sec_desc">Una mirada a mi visión profesional, fortalezas y mi trayectoria en la ingeniería de software.</p>
+      </div>
+      <div class="about_grid">
+
+        <div class="about_card">
+          <div class="card_icon"><i class="fas fa-check-double"></i></div>
+          <h3>Mis Fortalezas</h3>
+          <ul class="fortalezas_list">
+            {FORTALEZAS.map(f => <li><i class="fas fa-check-circle"></i><span>{f}</span></li>)}
+          </ul>
+        </div>
+
+        <div class="about_card">
+          <div class="card_icon"><i class="fas fa-route"></i></div>
+          <h3>Mi Trayectoria</h3>
+          <div class="timeline">
+            {TRAYECTORIA.map(([y, t]) => (
+              <div class="timeline_item">
+                <div class="timeline_dot"></div>
+                <div class="timeline_content">
+                  <span class="timeline_year">{y}</span>
+                  <p>{t}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="about_card">
+          <div class="card_icon"><i class="fas fa-eye"></i></div>
+          <h3>Misión & Visión</h3>
+          <div class="mision_text">
+            <p><strong>Misión:</strong> Diseñar y construir productos de software que no solo cumplan especificaciones técnicas, sino que deleiten a los usuarios finales en rapidez y usabilidad.</p>
+            <p style="margin-top: 2vh;"><strong>Visión:</strong> Ser un referente en la creación de soluciones tecnológicas multiplataforma de rendimiento extremo y SEO impecable, impulsando la innovación en cada línea de código.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ★ PROYECTOS DESTACADOS ────────────────────────────────────────── -->
+    <section class="pdin_section" id="sec_proyectos_favoritos">
+      <div class="sec_header">
+        <h2 class="sec_title"><i class="fas fa-star"></i> Proyectos Destacados</h2>
+        <div class="sec_line"></div>
+        <p class="sec_desc" style="color: var(--tx2);">Una selección especial de mis trabajos favoritos y soluciones tecnológicas reales.</p>
+      </div>
+      <div class="pdin_grid">
+        {proyectosDestacados.map((p) => (
+          <a href={p.url} target="_blank" rel="noopener" class="pdin_card">
+            <div class="pdin_img_box">
+              <img src={p.img} alt={p.titulo} loading="lazy" />
+              <div class="pdin_overlay"><i class="fas fa-external-link-alt"></i></div>
+            </div>
+            <div class="pdin_info">
+              <h3 class="pdin_title">{p.titulo}</h3>
+              <p class="pdin_desc">{p.descripcion}</p>
+              <div class="pdin_tags">
+                {(p.tecnologias || []).slice(0, 3).map(t => <span class="pdin_tag">{t}</span>)}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="pdin_footer">
+        <a href="/proyectos" class="pdin_ver_todos"><i class="fas fa-arrow-right"></i><span>Ver todos los proyectos</span></a>
+      </div>
+    </section>
+
+    <!-- ★ STACK TECNOLÓGICO ───────────────────────────────────────────── -->
+    <section class="stack_section" id="sec_stack">
+      <div class="sec_header">
+        <h2 class="sec_title"><i class="fas fa-terminal"></i> Mi Stack Tecnológico</h2>
+        <div class="sec_line"></div>
+        <p class="sec_desc">Las herramientas, lenguajes y bases de datos que domino para dar vida a tus proyectos.</p>
+      </div>
+      <div class="stack_grid">
+        {STACK.map(([nombre, icon, color]) => (
+          <div class="stack_pill" data-witip={nombre} style={`--pill-color:${color}`}>
+            <i class={icon} style={`color:${color}`}></i>
+            <span>{nombre}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ★ SERVICIOS ───────────────────────────────────────────────────── -->
+    <section class="servicios" id="sec_servicios">
+      <div class="sec_header">
+        <h2 class="sec_title"><i class="fas fa-laptop-code"></i> ¿Qué puedo hacer por ti?</h2>
+        <div class="sec_line"></div>
+        <p class="sec_desc">Soluciones y servicios integrales para llevar tu negocio o idea al siguiente nivel.</p>
+      </div>
+      <div class="servicios_grid">
+        {SERVICIOS.map((s) => (
+          <div class="servicio_card">
+            <div class="servicio_icon"><i class={s.icon}></i></div>
+            <h3>{s.titulo}</h3>
+            <p>{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ★ SECCIÓN DE BLOG ─────────────────────────────────────────────── -->
+    <section class="sec_blog" id="sec_blog">
+      <div class="sec_header">
+        <h2 class="sec_title"><i class="fas fa-blog"></i> Consejos y Estrategias Técnicas</h2>
+        <div class="sec_line"></div>
+        <p class="sec_desc">Artículos sobre tecnología, desarrollo de software, IA y guías para profesionales.</p>
+      </div>
+      <div class="ib_grid">
+        {posts.length > 0 ? (
+          posts.map((p) => {
+            const catColors = { IA: '#FF5D01', Sistemas: '#6a00f5', Web: '#0EBEFF', Cloud: '#29C72E', Dev: '#ffa726' };
+            const c = catColors[p.categoria as keyof typeof catColors] ?? 'var(--mco)';
+            const fechaVal = p.creado || p.creadoEn;
+            const formattedDate = fechaVal ? new Date(fechaVal?.seconds ? fechaVal.seconds * 1000 : fechaVal).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+            return (
+              <a href={`/blog/${p.slug || p.id || ''}`} class="ib_card">
+                <div class="ib_img" style={`background-image:url('${p.imagen || '/poster.webp'}')`}>
+                  <span class="ib_cat" style={`background:color-mix(in srgb,${c} 12%,transparent);color:${c}`}>{p.categoria || 'Blog'}</span>
+                </div>
+                <div class="ib_body">
+                  <h3 class="ib_tit">{p.titulo || 'Sin título'}</h3>
+                  <p class="ib_resumen">{(p.descripcion || p.resumen || '').slice(0, 90)}...</p>
+                  <div class="ib_meta">
+                    <span><i class="fas fa-calendar-alt"></i> {formattedDate}</span>
+                    <span><i class="fas fa-eye"></i> {p.vistas || 0}</span>
+                    <span><i class="fas fa-heart" style="color:#fe0149"></i> {p.likes || 0}</span>
+                  </div>
+                </div>
+              </a>
+            );
+          })
+        ) : (
+          <p class="ib_empty"><i class="fas fa-scroll"></i> Próximamente nuevos artículos</p>
+        )}
+      </div>
+      <div class="ib_footer">
+        <a class="ib_ver_mas" href="/blog">
+          <i class="fas fa-arrow-right"></i><span>Ver todos los artículos</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ★ CTA FINAL ──────────────────────────────────────────────────── -->
+    <section class="sec_cta" style="padding-top: 4vh; padding-bottom: 8vh;">
+      <div class="cta_section">
+        <div class="cta_content">
+          <div class="cta_icon"><i class="fas fa-handshake"></i></div>
+          <h2>¿Tienes un proyecto en mente?</h2>
+          <p>Estoy listo para ayudarte a convertir tu visión en una solución digital de alto impacto y rendimiento.</p>
+          <a href="/contacto" class="cta_btn"><span>Hablemos ahora</span><i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</Layout>
+
+<script>
+  import { wiVista, wiTip } from '../lib/widev.js';
+
+  let roleInterval: any = null;
+
+  const cleanup = () => {
+    if (roleInterval) {
+      clearInterval(roleInterval);
+      roleInterval = null;
+    }
+  };
+
+  const animarContadores = () => {
+    const statCards = document.querySelectorAll('.stat_card');
+    if (!statCards.length) return;
+
+    statCards.forEach((card) => {
+      const numEl = card.querySelector('.stat_number');
+      if (!numEl) return;
+      const target = Number(numEl.getAttribute('data-target')) || 0;
+      const step = target / 50;
+      let current = 0;
+
+      const t = setInterval(() => {
+        current = Math.min(current + step, target);
+        numEl.textContent = current < target ? String(Math.floor(current)) : `${target}+`;
+        if (current >= target) clearInterval(t);
+      }, 30);
+    });
+  };
+
+  const checkSession = () => {
+    const wi = localStorage.getItem('wiSmile');
+    // Si necesitas lógica adicional de botones admin en el cliente, se inyecta aquí.
+  };
+
+  const init = () => {
+    cleanup();
+    wiTip(); // Inicializar el módulo de tooltips (widev.js)
+
+    // 1. Rotador de Roles
+    let idx = 0;
+    const roles = document.querySelectorAll('.hero_roles .role');
+    if (roles.length) {
+      roleInterval = setInterval(() => {
+        roles[idx].classList.remove('active');
+        idx = (idx + 1) % roles.length;
+        roles[idx].classList.add('active');
+      }, 2500);
+    }
+
+    // 2. Animación de Contadores al entrar en vista
+    wiVista('.hero_stats', animarContadores, { once: true });
+
+    // 3. Stagger de Tarjetas de Acerca de Mí
+    wiVista('.about_card', (el: any, i: any) => {
+      setTimeout(() => el.classList.add('visible'), i * 150);
+    }, { once: true, threshold: 0.05 });
+
+    // 4. Stagger del Stack Tecnológico
+    wiVista('.stack_pill', (el: any, i: any) => {
+      setTimeout(() => el.classList.add('visible'), i * 50);
+    }, { once: true, threshold: 0.05 });
+
+    // 5. Stagger de Servicios
+    wiVista('.servicio_card', (el: any, i: any) => {
+      setTimeout(() => el.classList.add('visible'), i * 100);
+    }, { once: true, threshold: 0.05 });
+
+    // 6. Fade de la sección CTA
+    wiVista('.cta_section', (el: any) => el.classList.add('visible'), { once: true });
+
+    checkSession();
+  };
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-preparation', cleanup);
+</script>

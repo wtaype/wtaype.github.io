@@ -1,0 +1,288 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app, descri, id } from '../wii.js';
+import { seo } from '../lib/seo.js';
+---
+
+<style is:global>
+/* =====================================================
+   CSS PREMIUM
+===================================================== */
+
+.dc_wrap { margin: 0 auto; padding: 8vh 4vw 12vh; font-family: var(--ff_P); }
+
+.dc_hero { text-align: center; margin-bottom: 10vh; }
+.dc_badge {
+  display: inline-flex; align-items: center; gap: 1vh; padding: 0.8vh 2vh;
+  background: color-mix(in srgb, var(--mco) 15%, transparent); color: var(--mco);
+  border-radius: 50px; font-weight: 700; margin-bottom: 2vh; font-size: var(--fz_m2);
+}
+.dc_title { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; color: var(--tx); margin-bottom: 2vh; line-height: 1.1; letter-spacing: -0.02em; }
+.dc_grad { background: linear-gradient(135deg, var(--mco), #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.dc_desc { font-size: var(--fz_m4); color: var(--tx2); max-width: 700px; margin: 0 auto; line-height: 1.7; }
+
+/* Grid de Bento (Mosaico Moderno) */
+.dc_bento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(320px, auto);
+  gap: 3vh 2vw;
+}
+
+.dc_card {
+  background: var(--wb);
+  border-radius: 36px;
+  padding: 5vh 3vw;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0,0,0,.04);
+  border: 2px solid transparent;
+  transition: transform var(--tr_m), border-color var(--tr_m), box-shadow var(--tr_m);
+}
+.dc_card:hover {
+  transform: translateY(-8px);
+  border-color: var(--mco);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--mco) 15%, transparent);
+}
+
+/* Variaciones de tamaño del Bento */
+.dc_c_large { grid-column: span 2; }
+.dc_c_full { grid-column: 1 / -1; display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 6vh 4vw; }
+.dc_c_full .dc_info { flex: 1; max-width: 500px; }
+.dc_c_full .dc_visual { flex: 1; margin-top: 0; display: flex; justify-content: flex-end; }
+
+.dc_icon {
+  width: 70px; height: 70px; border-radius: 20px;
+  background: color-mix(in srgb, var(--mco) 15%, transparent); color: var(--mco);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem; margin-bottom: 3vh;
+  transition: transform .3s, background .3s, color .3s;
+}
+.dc_card:hover .dc_icon { transform: scale(1.1) rotate(5deg); background: var(--mco); color: #fff; }
+
+.dc_info h3 { font-size: var(--fz_l1); font-weight: 800; color: var(--tx1); margin-bottom: 1.5vh; line-height: 1.2; }
+.dc_info p { font-size: var(--fz_m3); color: var(--tx2); line-height: 1.6; }
+
+/* Contenedor Visual dentro del card */
+.dc_visual { flex: 1; margin-top: 4vh; position: relative; display: flex; align-items: flex-end; justify-content: center; width: 100%; }
+
+/* === Mockups CSS Internos === */
+
+/* 1. Gráfico de Analíticas */
+.dc_graph { width: 100%; height: 120px; display: flex; align-items: flex-end; justify-content: center; gap: 12px; }
+.dc_bar { width: 40px; background: var(--bg4); border-radius: 8px 8px 0 0; transform-origin: bottom; transition: background .3s; animation: dc_grow 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.dc_card:hover .dc_bar { background: var(--mco); }
+.dc_bar:nth-child(1) { height: 30%; animation-delay: 0s; }
+.dc_bar:nth-child(2) { height: 60%; animation-delay: 0.1s; }
+.dc_bar:nth-child(3) { height: 45%; animation-delay: 0.2s; }
+.dc_bar:nth-child(4) { height: 90%; animation-delay: 0.3s; }
+.dc_bar:nth-child(5) { height: 70%; animation-delay: 0.4s; }
+
+@keyframes dc_grow { 0% { transform: scaleY(0); } 100% { transform: scaleY(1); } }
+
+/* 2. Redes y Apps flotantes */
+.dc_apps { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+.dc_app { width: 60px; height: 60px; border-radius: 16px; background: var(--wb); border: 2px solid var(--brd); box-shadow: 0 8px 24px rgba(0,0,0,.04); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; transition: transform .3s; }
+.dc_card:hover .dc_app:nth-child(odd) { transform: translateY(-10px) rotate(-5deg); border-color: var(--mco); color: var(--mco); }
+.dc_card:hover .dc_app:nth-child(even) { transform: translateY(-5px) rotate(5deg); border-color: #7000FF; color: #7000FF; }
+
+/* 3. Linkwii Blocks (Enlaces tipo esqueleto) */
+.dc_blocks { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 12px; }
+.dc_block { height: 40px; border-radius: 50px; background: var(--bg4); width: 100%; display: flex; align-items: center; padding: 0 15px; transition: transform .3s, background .3s; }
+.dc_block::before { content:''; width: 20px; height: 20px; border-radius: 50%; background: #fff; opacity: 0.5; }
+.dc_card:hover .dc_block { transform: translateX(10px); background: var(--mco); }
+.dc_card:hover .dc_block:nth-child(2) { background: #7000FF; transform: translateX(5px); }
+
+/* 4. Pagos / E-commerce */
+.dc_pay { position: relative; width: 180px; height: 110px; background: linear-gradient(135deg, #111, #333); border-radius: 16px; display: flex; flex-direction: column; justify-content: space-between; padding: 15px; box-shadow: 0 12px 30px rgba(0,0,0,.15); transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.dc_pay_top { width: 30px; height: 20px; background: #FFD101; border-radius: 4px; }
+.dc_pay_bot { display: flex; gap: 8px; }
+.dc_pay_bot div { height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; }
+.dc_pay_bot div:first-child { width: 60%; } .dc_pay_bot div:last-child { width: 30%; }
+.dc_card:hover .dc_pay { transform: scale(1.1) rotate(-3deg); box-shadow: 0 20px 40px rgba(0,0,0,.25); }
+
+/* 5. Customización */
+.dc_colors { display: flex; gap: -10px; }
+.dc_color { width: 50px; height: 50px; border-radius: 50%; border: 4px solid var(--wb); box-shadow: 0 4px 12px rgba(0,0,0,.1); margin-left: -15px; transition: transform .3s; }
+.dc_color:nth-child(1) { background: #FF5C69; z-index: 4; }
+.dc_color:nth-child(2) { background: #0EBEFF; z-index: 3; }
+.dc_color:nth-child(3) { background: #29C72E; z-index: 2; }
+.dc_color:nth-child(4) { background: #7000FF; z-index: 1; }
+.dc_card:hover .dc_color { transform: translateX(10px); }
+
+/* 6. Formulario / Leads */
+.dc_form { width: 100%; max-width: 250px; background: var(--wb); border: 2px dashed var(--brd); border-radius: 16px; padding: 15px; display: flex; flex-direction: column; gap: 10px; transition: border-color .3s; }
+.dc_form div { height: 12px; background: var(--bg4); border-radius: 6px; width: 100%; }
+.dc_form div:last-child { height: 30px; border-radius: 50px; background: color-mix(in srgb, var(--mco) 20%, transparent); width: 80%; margin: 0 auto; margin-top: 10px; }
+.dc_card:hover .dc_form { border-color: var(--mco); border-style: solid; box-shadow: 0 12px 24px rgba(0,0,0,.05); }
+.dc_card:hover .dc_form div:last-child { background: var(--mco); }
+
+/* CTA Final */
+.dc_cta { text-align: center; margin-top: 10vh; border-top: 1px dashed var(--brd); padding-top: 8vh; }
+.dc_cta_btn {
+  display: inline-flex; align-items: center; gap: 1vh; padding: 1.8vh 4vw;
+  background: linear-gradient(135deg, var(--mco), #7000FF);
+  color: #fff; font-size: var(--fz_m2); font-weight: 800;
+  border-radius: 50px; text-decoration: none;
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--mco) 30%, transparent);
+  transition: transform .3s, box-shadow .3s, filter .3s;
+}
+.dc_cta_btn:hover { transform: translateY(-4px); box-shadow: 0 16px 40px color-mix(in srgb, var(--mco) 40%, transparent); filter: brightness(1.1); }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .dc_bento { grid-template-columns: repeat(2, 1fr); }
+  .dc_c_large { grid-column: span 1; }
+}
+
+@media (max-width: 768px) {
+  .dc_bento { grid-template-columns: 1fr; }
+  .dc_c_large, .dc_c_full { grid-column: 1 / -1; }
+  .dc_c_full { flex-direction: column; text-align: center; }
+  .dc_c_full .dc_info { max-width: 100%; }
+  .dc_c_full .dc_visual { margin-top: 4vh; justify-content: center; }
+}
+
+/* Fade Up Animations */
+.wi_fadeUp {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wi_fadeUp.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+
+<Layout {...seo.descubre}>
+<div class="dc_wrap">
+  <div class="dc_hero wi_fadeUp" style="--d:0s">
+    <div class="dc_badge"><i class="fas fa-briefcase"></i> Funcionalidades</div>
+    <h1 class="dc_title">Potencia tu <span class="dc_grad">Carrera</span></h1>
+    <p class="dc_desc">Descubre todas las herramientas gratuitas que {app} tiene para ti. Un espacio de trabajo premium diseñado para optimizar tu currículum, entrenar con Inteligencia Artificial y destacar profesionalmente.</p>
+  </div>
+  
+  <div class="dc_bento">
+    <!-- Carta 1: Editor de CV -->
+    <div class="dc_card dc_c_large wi_fadeUp" style="--d:0.1s">
+      <div class="dc_icon"><i class="fas fa-file-invoice"></i></div>
+      <div class="dc_info">
+        <h3>Editor de CV en Tiempo Real</h3>
+        <p>Escribe y edita tu currículum profesional de forma dinámica y libre de distracciones. Con guardado en la nube automatizado para que nunca pierdas tu progreso.</p>
+      </div>
+      <div class="dc_visual">
+        <div class="dc_graph">
+          <div class="dc_bar"></div><div class="dc_bar"></div><div class="dc_bar"></div><div class="dc_bar"></div><div class="dc_bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carta 2: Optimización ATS -->
+    <div class="dc_card wi_fadeUp" style="--d:0.2s">
+      <div class="dc_icon" style="color:#E4405F; background:rgba(228,64,95,0.1);"><i class="fas fa-magnifying-glass-chart"></i></div>
+      <div class="dc_info">
+        <h3>Optimización ATS</h3>
+        <p>Adapta el vocabulario de tu perfil a las palabras clave del puesto. Analiza la compatibilidad técnica de tu CV con ofertas reales.</p>
+      </div>
+      <div class="dc_visual">
+        <div class="dc_apps">
+          <div class="dc_app"><i class="fas fa-briefcase"></i></div>
+          <div class="dc_app"><i class="fas fa-circle-check"></i></div>
+          <div class="dc_app"><i class="fas fa-robot"></i></div>
+          <div class="dc_app"><i class="fas fa-magnifying-glass"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carta 3: Entrevistas IA -->
+    <div class="dc_card wi_fadeUp" style="--d:0.3s">
+      <div class="dc_icon" style="color:#7000FF; background:rgba(112,0,255,0.1);"><i class="fas fa-comments"></i></div>
+      <div class="dc_info">
+        <h3>Simulación de Entrevistas</h3>
+        <p>Practica preguntas de reclutamiento real con nuestro asistente ChatWil entrenado por IA, recibiendo feedback detallado en cada respuesta.</p>
+      </div>
+      <div class="dc_visual">
+        <div class="dc_blocks">
+          <div class="dc_block"></div>
+          <div class="dc_block"></div>
+          <div class="dc_block"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carta 4: Guías Profesionales -->
+    <div class="dc_card dc_c_large wi_fadeUp" style="--d:0.4s">
+      <div class="dc_icon" style="color:#0EBEFF; background:rgba(14,190,255,0.1);"><i class="fas fa-lightbulb"></i></div>
+      <div class="dc_info">
+        <h3>Blog & Guías Profesionales</h3>
+        <p>Aprende las mejores técnicas de búsqueda de empleo, redacción de perfiles, marcas personales y consejos prácticos para destacar frente a los reclutadores más exigentes.</p>
+      </div>
+      <div class="dc_visual">
+        <div class="dc_colors">
+          <div class="dc_color"></div><div class="dc_color"></div><div class="dc_color"></div><div class="dc_color"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carta 5: Gestor de Notas -->
+    <div class="dc_card wi_fadeUp" style="--d:0.5s">
+      <div class="dc_icon" style="color:#29C72E; background:rgba(41,199,46,0.1);"><i class="fas fa-note-sticky"></i></div>
+      <div class="dc_info">
+        <h3>Gestor de Notas</h3>
+        <p>Organiza tus apuntes, registra los logros profesionales que quieras incluir en tu CV y prepárate eficientemente para tus entrevistas.</p>
+      </div>
+      <div class="dc_visual">
+        <div class="dc_pay">
+          <div class="dc_pay_top"></div>
+          <div class="dc_pay_bot"><div></div><div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carta 6: Alertas de Empleo -->
+    <div class="dc_card dc_c_large wi_fadeUp" style="--d:0.6s">
+      <div class="dc_icon" style="color:#FF8C00; background:rgba(255,140,0,0.1);"><i class="fas fa-envelope-open-text"></i></div>
+      <div class="dc_info">
+        <h3>Boletín y Novedades</h3>
+        <p>Recibe notificaciones sobre plantillas actualizadas, nuevas herramientas de análisis de currículum y tendencias del mercado laboral directamente en tu correo.</p>
+      </div>
+      <div class="dc_visual">
+        <div class="dc_form">
+          <div></div><div></div><div></div><div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dc_cta wi_fadeUp" style="--d:0.8s">
+    <a href="/word" class="dc_cta_btn"><i class="fas fa-rocket"></i> Empezar a Optimizar</a>
+  </div>
+</div>
+</Layout>
+
+<script>
+  import { app } from '../wii.js';
+
+  const initDescubre = () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.wi_fadeUp').forEach(el => {
+      observer.observe(el);
+    });
+
+    console.log('🚀 ' + app + ' Descubre cargado');
+    (window as any).__WIREADY__ = true;
+  };
+
+  document.addEventListener('astro:page-load', initDescubre);
+</script>

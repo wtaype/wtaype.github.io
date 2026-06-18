@@ -1,0 +1,1225 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ModalesGS from '../lib/proyectos/ModalesGS.astro';
+import { seo } from '../lib/seo.js';
+import { year } from '../lib/widev.js';
+
+// ── Datos Estáticos ──────────────────────────────────────────────────────────
+const CATS = [
+  ['web', 'Web Apps', 'globe'],
+  ['mobile', 'Mobile', 'mobile-alt'],
+  ['windows', 'Windows', 'desktop'],
+  ['educacion', 'Educación', 'graduation-cap'],
+  ['diseno', 'Diseño', 'palette'],
+  ['devs', 'Devs', 'user-astronaut'],
+  ['tools', 'Herramientas', 'tools'],
+  ['camino', 'Camino', 'hourglass-half']
+];
+
+const ORDEN = [
+  ['reciente', 'Más reciente'],
+  ['antiguo', 'Más antiguo'],
+  ['nombre', 'Por nombre']
+];
+
+const TAG_COLORS: Record<string, string> = {
+  JavaScript: '#F7DF1E',
+  'Node.js': '#68A063',
+  Firebase: '#FFA611',
+  Supabase: '#3ECF8E',
+  React: '#61DAFB',
+  'Next.js': '#000000',
+  Astro: '#FF5D01',
+  Kotlin: '#7F52FF',
+  'Jetpack Compose': '#4285F4',
+  Tauri: '#FFC131',
+  Rust: '#E05D44',
+  WebRTC: '#326CE5',
+  HTML: '#E34F26',
+  HTML5: '#E34F26',
+  CSS: '#1572B6',
+  CSS3: '#1572B6',
+  jQuery: '#0769AD',
+  Flutter: '#02569B',
+  WordPress: '#21759B'
+};
+
+const firebaseProjectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || 'wtaype';
+let todos: any[] = [];
+
+function parseFirestore(doc: any) {
+  const fields = doc.fields || {};
+  const res: any = {};
+  for (const [k, v] of Object.entries(fields)) {
+    const val: any = v;
+    res[k] = val.stringValue ?? val.timestampValue ?? val.booleanValue ?? val.integerValue ?? val.doubleValue ?? val.arrayValue?.values?.map((x: any) => x.stringValue) ?? null;
+  }
+  res.id = doc.name.split('/').pop();
+  return res;
+}
+
+try {
+  const res = await fetch(`https://firestore.googleapis.com/v1/projects/${firebaseProjectId}/databases/(default)/documents/proyectos`);
+  if (res.ok) {
+    const rawData = await res.json();
+    if (rawData.documents) {
+      todos = rawData.documents.map(parseFirestore);
+    }
+  }
+} catch (e) {
+  console.warn('Fallo fetch a Firestore REST en compilación:', e);
+}
+
+// 1. Proyectos destacados (solo destacados) en su orden natural
+const destacadosIniciales = todos.filter((p: any) => p.destacado);
+
+// 2. Colección completa ordenada strictly por fecha de publicación descending
+const coleccionOrdenada = [...todos].sort((a: any, b: any) => {
+  const dateA = new Date(a.fechaProyecto || a.creado || a.creadoEn || 0).getTime();
+  const dateB = new Date(b.fechaProyecto || b.creado || b.creadoEn || 0).getTime();
+  return dateB - dateA;
+});
+
+const coleccionInicial = coleccionOrdenada.slice(0, 10);
+---
+
+<Layout {...seo.proyectos}>
+  <div class="proyectos_container">
+
+    <!-- ★ HERO SECTION ────────────────────────────────────────────────── -->
+    <section class="proyectos_hero">
+      <h1 class="hero_title">Mis <span class="gradient_text">Proyectos</span></h1>
+      <p class="hero_subtitle">Explora mi portafolio de soluciones web, aplicaciones móviles y herramientas de escritorio construidas bajo estándares extremos de velocidad y UX.</p>
+    </section>
+
+    <!-- ★ SECCIÓN 1: PROYECTOS DESTACADOS ────────────────────────────────── -->
+    <section class="proyectos_destacados_section" id="destacadosSection">
+      <div class="section_header">
+        <h2 class="section_title h1pro"><i class="fas fa-star"></i> Proyectos Destacados</h2>
+        <div class="section_line"></div>
+        <p class="section_descripcion">Una selección curada de mis creaciones de software más exitosas e impactantes.</p>
+      </div>
+
+      <div class="proyectos_grid" id="destacadosGrid">
+        {destacadosIniciales.map((p, idx) => {
+          const num = String(idx + 1).padStart(2, '0');
+          return (
+            <a href={p.url} target="_blank" rel="noopener" class="proyecto_card visible" data-id={p.id}>
+              <div class="project_img">
+                <img src={p.img} alt={p.titulo} loading="lazy" class="img_fade" onload="this.classList.add('loaded')" />
+                <div class="project_overlay">
+                  <div class="btn_overlay"><i class="fas fa-external-link-alt"></i></div>
+                </div>
+                <div class="badge_destacado"><i class="fas fa-star"></i></div>
+                <span class="card_index">{num}</span>
+              </div>
+              <div class="project_info">
+                <h3 class="project_title">{p.titulo}</h3>
+                <p class="project_desc">{p.descripcion}</p>
+                <div class="project_tags">
+                  {(p.tecnologias || []).slice(0, 3).map((t: string) => {
+                    const color = TAG_COLORS[t] || 'var(--mco)';
+                    return <span class="tag" style={`--pill-color:${color}`}>{t}</span>;
+                  })}
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- ★ SECCIÓN 2: COLECCIÓN DE SOLUCIONES ────────────────────────────── -->
+    <section class="todos_proyectos_section">
+      <div class="section_header">
+        <h2 class="section_title"><i class="fas fa-archive"></i> Mi Colección de Proyectos</h2>
+        <div class="section_line"></div>
+        <p class="section_descripcion">Filtra y busca entre toda mi trayectoria de software creado para impulsar procesos y resolver problemas reales.</p>
+      </div>
+
+      <!-- Buscador y Filtros -->
+      <div class="search_section">
+        <div class="search_wrapper">
+          <i class="fas fa-search search_icon"></i>
+          <input type="text" id="buscarProyecto" class="search_input" placeholder="Buscar proyectos por nombre, descripción o tecnología...">
+          <button class="search_clear" id="clearSearch" style="display:none;"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+
+      <div class="filtros_section">
+        <div class="filtros_wrapper">
+          <button class="filtro_btn active" data-categoria="all"><i class="fas fa-layer-group"></i> Todos</button>
+          {CATS.map(([val, label, ico]) => (
+            <button class="filtro_btn" data-categoria={val}><i class={`fas fa-${ico}`}></i> {label}</button>
+          ))}
+        </div>
+        <div class="filtros_orden">
+          <select id="ordenarProyectos" class="orden_select" aria-label="Ordenar proyectos">
+            {ORDEN.map(([val, label]) => (
+              <option value={val}>{label}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <!-- Grid de Colección (4 Columnas en escritorio) -->
+      <div class="proyectos_grid" id="proyectosGrid">
+        {coleccionInicial.map((p) => {
+          return (
+            <a href={p.url} target="_blank" rel="noopener" class="proyecto_card visible" data-id={p.id}>
+              <div class="project_img">
+                <img src={p.img} alt={p.titulo} loading="lazy" class="img_fade" onload="this.classList.add('loaded')" />
+                <div class="project_overlay">
+                  <div class="btn_overlay"><i class="fas fa-external-link-alt"></i></div>
+                </div>
+                {p.destacado && <div class="badge_destacado"><i class="fas fa-star"></i></div>}
+              </div>
+              <div class="project_info">
+                <h3 class="project_title">{p.titulo}</h3>
+                <p class="project_desc">{p.descripcion}</p>
+                <div class="project_tags">
+                  {(p.tecnologias || []).slice(0, 3).map((t: string) => {
+                    const color = TAG_COLORS[t] || 'var(--mco)';
+                    return <span class="tag" style={`--pill-color:${color}`}>{t}</span>;
+                  })}
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- Sin Resultados -->
+      <div class="no_resultados" style="display:none;">
+        <i class="fas fa-search"></i>
+        <h3>No se encontraron proyectos</h3>
+        <p>Prueba con otros términos de búsqueda o filtros.</p>
+      </div>
+
+      <!-- Botón Paginador -->
+      <div class="load_more_section" id="loadMoreSection" style={coleccionOrdenada.length > 10 ? "" : "display:none;"}>
+        <button class="btn_load_more" id="btnLoadMore"><i class="fas fa-plus-circle"></i><span>Mostrar Más</span></button>
+      </div>
+    </section>
+
+    <!-- Datos embebidos para Javascript -->
+    <div id="proyectos-datos" data-raw={JSON.stringify(coleccionOrdenada)}></div>
+
+    <!-- Modales de Gestión de Proyectos -->
+    <ModalesGS />
+
+  </div>
+</Layout>
+
+<style is:global>
+/* ==================== CONTENEDOR GENERAL ==================== */
+.proyectos_container {
+  margin: 0 auto;
+  padding: 4vh 5vw 8vh;
+}
+
+/* ==================== HERO SECTION ==================== */
+.proyectos_hero {
+  text-align: center;
+  padding: 6vh 0 4vh;
+  position: relative;
+}
+.proyectos_hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, var(--bg4), transparent 70%);
+  pointer-events: none;
+  opacity: 0.5;
+}
+.hero_title {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 900;
+  color: var(--tx);
+  letter-spacing: -2px;
+  margin-bottom: 2vh;
+}
+.hero_subtitle {
+  font-size: var(--fz_m3);
+  color: var(--tx3);
+  max-width: 750px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ==================== SECCIÓN CABECERA ==================== */
+.section_header {
+  text-align: center;
+  margin-bottom: 5vh;
+  position: relative;
+}
+.section_title {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 1.2vh;
+}
+.section_title i {
+  color: var(--mco);
+}
+.section_line {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--mco), var(--bg2));
+  margin: 0 auto;
+  border-radius: 2px;
+}
+.section_descripcion {
+  font-size: var(--fz_m3);
+  color: var(--tx3);
+  max-width: 700px;
+  margin: 2vh auto 0;
+  line-height: 1.6;
+}
+
+/* ==================== IMÁGENES FADE-IN (SUAVES) ==================== */
+.img_fade {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.img_fade.loaded {
+  opacity: 1;
+}
+
+/* ==================== BUSCADOR Y FILTROS ==================== */
+.todos_proyectos_section {
+  padding: 4vh 0;
+}
+.search_section {
+  max-width: 800px;
+  margin: 0 auto 5vh;
+}
+.search_wrapper {
+  position: relative;
+  width: 100%;
+}
+.search_icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--mco);
+  font-size: var(--fz_m4);
+  pointer-events: none;
+}
+.search_input {
+  width: 100%;
+  padding: 2.2vh 30px 2.2vh 60px;
+  border: 1px solid var(--brd);
+  border-radius: 16px;
+  background: var(--wb);
+  color: var(--tx);
+  font-size: var(--fz_m2);
+  transition: all var(--tr_m);
+}
+.search_input:focus {
+  outline: none;
+  border-color: var(--mco);
+  box-shadow: 0 0 0 5px var(--bg4);
+}
+.search_clear {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg4);
+  color: var(--tx);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search_clear:hover {
+  background: var(--error);
+  color: #fff;
+}
+
+.filtros_section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2vw;
+  margin-bottom: 5vh;
+  flex-wrap: wrap;
+}
+.filtros_wrapper {
+  display: flex;
+  gap: 1.2vh;
+  flex-wrap: wrap;
+}
+.filtro_btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  padding: 1.2vh 2.2vh;
+  background: var(--wb);
+  color: var(--tx);
+  border: 1px solid var(--brd);
+  border-radius: 12px;
+  font-size: var(--fz_s4);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_m);
+  white-space: nowrap;
+}
+.filtro_btn:hover {
+  border-color: var(--mco);
+  transform: translateY(-2px);
+}
+.filtro_btn.active {
+  background: var(--mco);
+  color: var(--txa);
+  border-color: var(--mco);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 25%, transparent);
+}
+.orden_select {
+  padding: 1.2vh 2.5vh;
+  border: 1px solid var(--brd);
+  border-radius: 12px;
+  background: var(--wb);
+  color: var(--tx);
+  font-size: var(--fz_s4);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_m);
+}
+.orden_select:focus {
+  outline: none;
+  border-color: var(--mco);
+}
+
+/* ==================== GRID PRINCIPAL DE 4 COLUMNAS ==================== */
+.proyectos_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2vh;
+  margin-bottom: 6vh;
+}
+
+/* CARD DE AGREGAR PARA ADMINISTRADOR */
+.card_agregar {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 360px;
+  cursor: pointer;
+  transition: all var(--tr_m);
+  position: relative;
+  overflow: hidden;
+}
+.card_agregar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--success) 8%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.card_agregar:hover {
+  transform: translateY(-8px);
+  border-color: var(--success);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--success) 15%, transparent);
+}
+.agregar_content {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.agregar_icon {
+  width: 68px;
+  height: 68px;
+  background: var(--success);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_x1);
+  margin: 0 auto 2.5vh;
+  transition: all var(--tr_m);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--success) 40%, transparent);
+}
+.card_agregar:hover .agregar_icon {
+  transform: scale(1.12) rotate(90deg);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--success) 55%, transparent);
+}
+.agregar_content h3 {
+  font-size: var(--fz_m3);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 0.5vh;
+}
+.agregar_content p {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+}
+
+/* PROYECTO CARD */
+.proyecto_card {
+  background: var(--wb);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--brd);
+  transition: all var(--tr_m);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+.proyecto_card:hover {
+  transform: translateY(-8px);
+  border-color: var(--mco);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+.project_img {
+  position: relative;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--mco) 5%, var(--bg4));
+}
+.project_img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.proyecto_card:hover .project_img img {
+  transform: scale(1.04);
+}
+.project_overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+.proyecto_card:hover .project_overlay {
+  opacity: 1;
+  backdrop-filter: blur(5px);
+}
+/* Botón outline circular — visitante y admin */
+.btn_overlay {
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.85);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m1);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--tr_f);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.btn_overlay:hover {
+  transform: scale(1.12);
+  background: var(--mco);
+  border-color: var(--mco);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--mco) 50%, transparent);
+}
+.btn_editar:hover {
+  background: var(--info);
+  border-color: var(--info);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--info) 50%, transparent);
+}
+.btn_eliminar:hover {
+  background: var(--error);
+  border-color: var(--error);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--error) 50%, transparent);
+}
+.btn_editar, .btn_eliminar {
+  border-width: 2px;
+  border-style: solid;
+  border-color: rgba(255,255,255,0.85);
+}
+.badge_destacado {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--warning);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 1;
+  font-size: var(--fz_s4);
+}
+
+/* INDEX NUMÉRICO DE TARJETA — Solo en Destacados */
+.card_index {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-size: var(--fz_l1);
+  font-weight: 950;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  z-index: 3;
+  pointer-events: none;
+  font-family: var(--ff_G);
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.project_info {
+  padding: 2.5vh 1.8vw;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.project_title {
+  font-size: var(--fz_m3);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 1.5vh;
+  line-height: 1.3;
+}
+.project_desc {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  line-height: 1.5;
+  margin-bottom: 2.5vh;
+  flex: 1;
+}
+.project_tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8vh;
+  margin-top: auto;
+}
+
+/* BRAND GLOW EN TAGS */
+.tag {
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  padding: 0.5vh 1.2vh;
+  border-radius: 6px;
+  background: var(--bg4);
+  color: var(--tx2);
+  border: 1px solid var(--brd);
+  transition: all var(--tr_m);
+}
+.tag:hover {
+  background: var(--pill-color, var(--mco));
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--pill-color, var(--mco)) 35%, transparent);
+}
+
+/* ==================== SIN RESULTADOS ==================== */
+.no_resultados {
+  text-align: center;
+  padding: 8vh 0;
+}
+.no_resultados i {
+  font-size: 3rem;
+  opacity: 0.3;
+  margin-bottom: 2vh;
+}
+.no_resultados h3 {
+  font-size: var(--fz_m4);
+  color: var(--tx);
+  margin-bottom: 1vh;
+}
+
+/* ==================== BOTÓN MOSTRAR MÁS ==================== */
+.load_more_section {
+  display: flex;
+  justify-content: center;
+  margin: 4vh 0;
+}
+.btn_load_more {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2vh;
+  padding: 1.5vh 4vh;
+  background: linear-gradient(135deg, var(--mco), var(--bg2));
+  color: var(--txa);
+  border: none;
+  border-radius: 50px;
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 25%, transparent);
+  transition: all var(--tr_m);
+}
+.btn_load_more:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--mco) 35%, transparent);
+}
+
+
+
+/* ==================== ESTILOS MODAL ==================== */
+.modal_proyecto_body {
+  background: var(--wb);
+  padding: 4vh;
+  max-width: 650px;
+  border-radius: 20px;
+  border: 1px solid var(--brd);
+}
+.modal_proyecto_header {
+  margin-bottom: 3vh;
+  text-align: center;
+}
+.modal_titulo {
+  font-size: var(--fz_m5);
+  font-weight: 850;
+  color: var(--tx);
+}
+.form_input[readonly] {
+  background: var(--bg5, #e0e0e0) !important;
+  color: var(--tx3, #777) !important;
+  border-color: var(--brd) !important;
+  cursor: not-allowed;
+  box-shadow: none !important;
+  pointer-events: none;
+}
+.id-feedback {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--fz_m1, 0.95rem);
+  pointer-events: none;
+  transition: all var(--tr_f);
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+.id-feedback.disponible {
+  color: var(--success, #25b62a);
+}
+.id-feedback.ocupado {
+  color: var(--error, #ff3849);
+}
+.modal_proyecto_form {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+}
+.form_row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2vh;
+}
+.form_group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vh;
+}
+.form_group label {
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  color: var(--tx);
+}
+.form_group label i {
+  color: var(--mco);
+  margin-right: 0.5vh;
+}
+.form_input, .form_textarea, .form_select {
+  padding: 1.4vh 2vh;
+  border: 1px solid var(--brd);
+  border-radius: 10px;
+  background: var(--bg1);
+  color: var(--tx);
+  font-size: var(--fz_s4);
+}
+.form_input:focus, .form_textarea:focus, .form_select:focus {
+  outline: none;
+  border-color: var(--mco);
+  box-shadow: 0 0 0 3px var(--bg4);
+}
+.cb_destacado_group {
+  justify-content: center;
+}
+.destacado_cb_label {
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+  cursor: pointer;
+  margin-top: 3.5vh;
+}
+.destacado_cb_label input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--mco);
+}
+.modal_acciones {
+  margin-top: 1vh;
+}
+.btn_modal {
+  width: 100%;
+  padding: 1.6vh 0;
+  border: none;
+  border-radius: 10px;
+  font-size: var(--fz_m2);
+  font-weight: 800;
+  cursor: pointer;
+}
+.btn_guardar {
+  background: var(--mco);
+  color: var(--txa);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1200px) {
+  .proyectos_grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 950px) {
+  .proyectos_grid { grid-template-columns: repeat(2, 1fr); }
+  .filtros_section { flex-direction: column; align-items: stretch; }
+  .filtros_wrapper { justify-content: center; }
+}
+@media (max-width: 600px) {
+  .proyectos_grid { grid-template-columns: 1fr; }
+  .form_row { grid-template-columns: 1fr; }
+  .destacado_cb_label { margin-top: 1vh; }
+  .search_input { padding-left: 50px; font-size: var(--fz_s3); }
+  .search_icon { left: 18px; }
+}
+</style>
+
+
+<script>
+  import { wiVista, savels, getls, wiSuma, Mensaje } from '../lib/widev.js';
+
+  const TAG_COLORS: Record<string, string> = {
+    JavaScript: '#F7DF1E',
+    'Node.js': '#68A063',
+    Firebase: '#FFA611',
+    Supabase: '#3ECF8E',
+    React: '#61DAFB',
+    'Next.js': '#000000',
+    Astro: '#FF5D01',
+    Kotlin: '#7F52FF',
+    'Jetpack Compose': '#4285F4',
+    Tauri: '#FFC131',
+    Rust: '#E05D44',
+    WebRTC: '#326CE5',
+    HTML: '#E34F26',
+    HTML5: '#E34F26',
+    CSS: '#1572B6',
+    CSS3: '#1572B6',
+    jQuery: '#0769AD',
+    Flutter: '#02569B',
+    WordPress: '#21759B'
+  };
+
+  // Estado local in-memory
+  const state = {
+    todos: [] as any[],
+    filtrados: [] as any[],
+    autenticado: false
+  };
+
+  let cleanupFn: any = null;
+  let mostrados = 10;
+  const INCREMENTO = 5;
+
+  const getFiltroState = () => {
+    const cat = document.querySelector('.filtro_btn.active')?.getAttribute('data-categoria') || 'all';
+    const input = document.getElementById('buscarProyecto') as HTMLInputElement;
+    const buscar = input ? input.value.trim().toLowerCase() : '';
+    const orden = (document.getElementById('ordenarProyectos') as HTMLSelectElement)?.value || 'reciente';
+    return { cat, buscar, orden };
+  };
+
+  const normalizar = (s: string) => (s || '').toString().toLowerCase();
+
+  const parsearFecha = (p: any) => {
+    const f = p.fechaProyecto || p.creado || p.creadoEn || 0;
+    if (f && f.seconds) return f.seconds * 1000;
+    const d = new Date(f).getTime();
+    return isNaN(d) ? 0 : d;
+  };
+
+  // ── Tarjeta "Agregar" (solo aparece si tiene rol autorizado) ──────────────
+  const crearCardAgregar = () => {
+    const addCard = document.createElement('div');
+    addCard.className = 'proyecto_card card_agregar';
+    addCard.id = 'cardAgregar';
+    addCard.innerHTML = `
+      <div class="agregar_content">
+        <div class="agregar_icon"><i class="fas fa-plus"></i></div>
+        <h3>Agregar</h3>
+        <p>Nuevo Proyecto</p>
+      </div>
+    `;
+    return addCard;
+  };
+
+  // ── Tarjeta de proyecto — colección general (sin card_index) ─────────────
+  const crearCardHtml = (p: any) => {
+    const tagsHtml = (p.tecnologias || []).slice(0, 3).map((t: string) => {
+      const color = TAG_COLORS[t] || 'var(--mco)';
+      return `<span class="tag" style="--pill-color:${color}">${t}</span>`;
+    }).join('');
+
+    const badgeHtml = p.destacado ? `<div class="badge_destacado"><i class="fas fa-star"></i></div>` : '';
+
+    // ⚠️ Seguridad Anti-CSS: los botones de edición NUNCA se generan para roles no autorizados
+    // No existe ningún nodo en el DOM que pueda "desbloquearse" con CSS o DevTools
+    const overlayActions = state.autenticado
+      ? `<a href="${p.url}" target="_blank" rel="noopener" class="btn_overlay" title="Ver Demo" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i></a>
+         <button class="btn_overlay btn_editar" data-id="${p.id}" title="Editar"><i class="fas fa-edit"></i></button>
+         <button class="btn_overlay btn_eliminar" data-id="${p.id}" title="Eliminar"><i class="fas fa-trash"></i></button>`
+      : `<div class="btn_overlay" title="Ver Demo"><i class="fas fa-external-link-alt"></i></div>`;
+
+    const card = state.autenticado ? document.createElement('div') : document.createElement('a');
+    if (!state.autenticado) {
+      (card as HTMLAnchorElement).href = p.url;
+      (card as HTMLAnchorElement).target = '_blank';
+      (card as HTMLAnchorElement).rel = 'noopener';
+    }
+    card.className = 'proyecto_card';
+    card.setAttribute('data-id', p.id);
+    card.innerHTML = `
+      <div class="project_img">
+        <img src="${p.img}" alt="${p.titulo}" loading="lazy" class="img_fade" />
+        <div class="project_overlay">
+          <div style="display:flex;gap:1.5vh;">${overlayActions}</div>
+        </div>
+        ${badgeHtml}
+      </div>
+      <div class="project_info">
+        <h3 class="project_title">${p.titulo}</h3>
+        <p class="project_desc">${p.descripcion}</p>
+        <div class="project_tags">${tagsHtml}</div>
+      </div>
+    `;
+
+    // Fade-in suave de imagen
+    const img = card.querySelector('.img_fade') as HTMLImageElement;
+    if (img) {
+      if (img.complete) img.classList.add('loaded');
+      else img.onload = () => img.classList.add('loaded');
+    }
+    return card;
+  };
+
+  // ── Tarjeta de proyecto — Destacados (con número y siempre como <a>) ────
+  const crearCardDestacado = (p: any, num: string) => {
+    const tagsHtml = (p.tecnologias || []).slice(0, 3).map((t: string) => {
+      const color = TAG_COLORS[t] || 'var(--mco)';
+      return `<span class="tag" style="--pill-color:${color}">${t}</span>`;
+    }).join('');
+
+    const overlayActions = state.autenticado
+      ? `<a href="${p.url}" target="_blank" rel="noopener" class="btn_overlay" title="Ver Demo" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i></a>
+         <button class="btn_overlay btn_editar" data-id="${p.id}" title="Editar"><i class="fas fa-edit"></i></button>
+         <button class="btn_overlay btn_eliminar" data-id="${p.id}" title="Eliminar"><i class="fas fa-trash"></i></button>`
+      : `<div class="btn_overlay" title="Ver Demo"><i class="fas fa-external-link-alt"></i></div>`;
+
+    const card = state.autenticado ? document.createElement('div') : document.createElement('a');
+    if (!state.autenticado) {
+      (card as HTMLAnchorElement).href = p.url;
+      (card as HTMLAnchorElement).target = '_blank';
+      (card as HTMLAnchorElement).rel = 'noopener';
+    }
+    card.className = 'proyecto_card';
+    card.setAttribute('data-id', p.id);
+    card.innerHTML = `
+      <div class="project_img">
+        <img src="${p.img}" alt="${p.titulo}" loading="lazy" class="img_fade" />
+        <div class="project_overlay">
+          <div style="display:flex;gap:1.5vh;">${overlayActions}</div>
+        </div>
+        <div class="badge_destacado"><i class="fas fa-star"></i></div>
+        <span class="card_index">${num}</span>
+      </div>
+      <div class="project_info">
+        <h3 class="project_title">${p.titulo}</h3>
+        <p class="project_desc">${p.descripcion}</p>
+        <div class="project_tags">${tagsHtml}</div>
+      </div>
+    `;
+
+    const img = card.querySelector('.img_fade') as HTMLImageElement;
+    if (img) {
+      if (img.complete) img.classList.add('loaded');
+      else img.onload = () => img.classList.add('loaded');
+    }
+    return card;
+  };
+
+  // ── Renderizador principal ────────────────────────────────────────────────
+  const renderizar = (cantAdicional = 0, reset = false) => {
+    const grid = document.getElementById('proyectosGrid');
+    const destGrid = document.getElementById('destacadosGrid');
+    if (!grid) return;
+
+    if (reset) {
+      grid.innerHTML = '';
+      mostrados = 10;
+    } else {
+      mostrados += cantAdicional;
+    }
+
+    // 1. RENDER DESTACADOS — solo en re-renders completos
+    if (destGrid && reset) {
+      destGrid.innerHTML = '';
+      const destacados = state.todos.filter((p: any) => p.destacado);
+      destacados.forEach((p: any, idx: number) => {
+        const num = String(idx + 1).padStart(2, '0');
+        const card = crearCardDestacado(p, num);
+        card.classList.add('visible');
+        destGrid.appendChild(card);
+      });
+    }
+
+    // 2. RENDER COLECCIÓN
+    if (state.filtrados.length === 0) {
+      const emptyMsg = document.querySelector('.no_resultados') as HTMLElement;
+      if (emptyMsg) emptyMsg.style.display = 'block';
+      const paginationBox = document.getElementById('loadMoreSection') as HTMLElement;
+      if (paginationBox) paginationBox.style.display = 'none';
+      if (state.autenticado && reset) grid.appendChild(crearCardAgregar());
+      return;
+    } else {
+      const emptyMsg = document.querySelector('.no_resultados') as HTMLElement;
+      if (emptyMsg) emptyMsg.style.display = 'none';
+    }
+
+    if (state.autenticado && reset) grid.appendChild(crearCardAgregar());
+
+    const items = state.filtrados.slice(reset ? 0 : mostrados - cantAdicional, mostrados);
+    const nuevasCards: HTMLElement[] = [];
+
+    items.forEach((p: any) => {
+      const card = crearCardHtml(p);
+      // En reset, las tarjetas ya son visibles desde el inicio (SSR ya tiene .visible)
+      if (reset) card.classList.add('visible');
+      grid.appendChild(card);
+      if (!reset) nuevasCards.push(card);
+    });
+
+    // ⚡ Fix "Ver Más": animar SOLO las tarjetas nuevas con rAF (sin race condition)
+    if (!reset && nuevasCards.length > 0) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          nuevasCards.forEach(c => c.classList.add('visible'));
+        });
+      });
+    }
+
+    const paginationBox = document.getElementById('loadMoreSection') as HTMLElement;
+    if (paginationBox) {
+      paginationBox.style.display = mostrados < state.filtrados.length ? 'flex' : 'none';
+    }
+  };
+
+  const aplicarFiltrosYOrden = () => {
+    const { cat, buscar, orden } = getFiltroState();
+
+    let res = cat === 'all' ? [...state.todos] : state.todos.filter((p: any) => p.categoria === cat);
+
+    if (buscar) {
+      res = res.filter((p: any) =>
+        normalizar(p.titulo).includes(buscar) ||
+        normalizar(p.descripcion).includes(buscar) ||
+        (p.tecnologias || []).some((t: string) => normalizar(t).includes(buscar))
+      );
+    }
+
+    const sorters: Record<string, (a: any, b: any) => number> = {
+      reciente: (a, b) => parsearFecha(b) - parsearFecha(a),
+      antiguo:  (a, b) => parsearFecha(a) - parsearFecha(b),
+      nombre:   (a, b) => normalizar(a.titulo).localeCompare(normalizar(b.titulo))
+    };
+
+    if (sorters[orden]) res.sort(sorters[orden]);
+    state.filtrados = res;
+    renderizar(0, true);
+  };
+
+  const init = async () => {
+    // Resetear estado para evitar leaks en transiciones de página de Astro
+    mostrados = 10;
+    state.todos = [];
+    state.filtrados = [];
+    state.autenticado = false;
+
+    const dataBox = document.getElementById('proyectos-datos');
+    if (!dataBox) return;
+
+    try {
+      // ⚡ Intento de lectura de caché local para optimizar carga instantánea y ahorrar reads
+      const cachedProy = (getls('proyectosls') as any)?.data;
+      const cachedDest = (getls('destacadospj') as any)?.data;
+
+      if (cachedProy && Array.isArray(cachedProy) && cachedProy.length > 0) {
+        state.todos = cachedProy;
+      } else {
+        state.todos = JSON.parse(dataBox.getAttribute('data-raw') || '[]');
+        savels('proyectosls', { data: state.todos, ts: Date.now() }, 24);
+      }
+
+      state.filtrados = [...state.todos];
+
+      // Reconciliación instantánea de destacados si hay caché
+      if (cachedDest && Array.isArray(cachedDest) && cachedDest.length > 0) {
+        const destGrid = document.getElementById('destacadosGrid');
+        if (destGrid) {
+          destGrid.innerHTML = '';
+          cachedDest.forEach((p: any, idx: number) => {
+            const num = String(idx + 1).padStart(2, '0');
+            const card = crearCardDestacado(p, num);
+            card.classList.add('visible');
+            destGrid.appendChild(card);
+          });
+        }
+      } else {
+        const destacados = state.todos.filter((p: any) => p.destacado);
+        savels('destacadospj', { data: destacados, ts: Date.now() }, 24);
+      }
+    } catch (e) {
+      console.error('Error al inicializar proyectos de cliente:', e);
+    }
+
+    // Registrar observador de animaciones del hero
+    wiVista('.proyectos_hero', (el: any) => el.classList.add('visible'));
+
+    // ⚡ Carga dinámica de Firebase/Gestor según el rol en localStorage (cero impacto para visitantes comunes)
+    const wi = getls('wiSmile') as any;
+    state.autenticado = !!(wi && ['editor', 'gestor', 'admin'].includes(wi.rol));
+
+    if (state.autenticado) {
+      try {
+        const { initGestionar, traerProyectosCliente, cleanupGestionar } = await import('../lib/proyectos/gestionar.js');
+        cleanupFn = cleanupGestionar;
+        initGestionar(state, renderizar);
+        renderizar(0, true);
+
+        // Reconciliación caché/SSR para administradores
+        const cached = (getls('proyectos') as any)?.data;
+        if (cached && Array.isArray(cached) && cached.length > state.todos.length) {
+          requestAnimationFrame(() => {
+            state.todos = cached;
+            state.filtrados = [...cached];
+            renderizar(0, true);
+            const searchInput = document.getElementById('buscarProyecto') as HTMLInputElement;
+            if (searchInput) {
+              searchInput.placeholder = `Buscar en ${cached.length} proyectos...`;
+            }
+          });
+        } else {
+          // Pedir datos frescos a Firestore (1 read por admin)
+          traerProyectosCliente(state, renderizar, false);
+        }
+      } catch (err) {
+        console.error('Error al inicializar gestión dinámica:', err);
+      }
+    }
+
+    // Trigger secreto: 7 clics en el título de la sección para activar modo gestión y cargar Firebase bajo demanda
+    wiSuma('.h1pro', async () => {
+      if (state.autenticado) return;
+      state.autenticado = true;
+      try {
+        const { initGestionar, cleanupGestionar } = await import('../lib/proyectos/gestionar.js');
+        cleanupFn = cleanupGestionar;
+        initGestionar(state, renderizar);
+        renderizar(0, true);
+        Mensaje('¡Modo de gestión activado!', 'success');
+      } catch (err) {
+        console.error('Error al activar gestión desde el trigger secreto:', err);
+      }
+    }, 7);
+
+    // ── Listeners de interacción ──────────────────────────────────────────
+    const searchInput = document.getElementById('buscarProyecto') as HTMLInputElement;
+    const clearBtn = document.getElementById('clearSearch') as HTMLButtonElement;
+
+    if (searchInput) {
+      let searchTimeout: any = null;
+      searchInput.addEventListener('input', () => {
+        const value = searchInput.value.trim();
+        if (clearBtn) clearBtn.style.display = value ? 'block' : 'none';
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => aplicarFiltrosYOrden(), 200);
+      });
+    }
+
+    if (clearBtn && searchInput) {
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        aplicarFiltrosYOrden();
+        searchInput.focus();
+      });
+    }
+
+    // Filtros de categoría
+    document.querySelectorAll('.filtro_btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.filtro_btn').forEach(b => b.classList.remove('active'));
+        (e.currentTarget as HTMLElement).classList.add('active');
+        aplicarFiltrosYOrden();
+      });
+    });
+
+    // Ordenamiento select
+    const ordenSelect = document.getElementById('ordenarProyectos');
+    if (ordenSelect) {
+      ordenSelect.addEventListener('change', () => aplicarFiltrosYOrden());
+    }
+
+    // ── Botón "Mostrar Más" ───────────────────────────────────────────────
+    const loadMoreBtn = document.getElementById('btnLoadMore');
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', () => {
+        const grid = document.getElementById('proyectosGrid');
+        // Excluir card_agregar del conteo para evitar que altere la cuenta del paginador
+        const cantidadAntes = grid?.querySelectorAll('.proyecto_card:not(.card_agregar)').length || 0;
+
+        renderizar(INCREMENTO);
+
+        // Scroll suave preciso a la primera tarjeta nueva
+        requestAnimationFrame(() => {
+          // Excluir card_agregar también aquí para que el índice coincida perfectamente con cantidadAntes
+          const cards = grid?.querySelectorAll('.proyecto_card:not(.card_agregar)');
+          if (cards && cards.length > cantidadAntes) {
+            const primeraNueva = cards[cantidadAntes] as HTMLElement;
+            if (primeraNueva) {
+              primeraNueva.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        });
+      });
+    }
+
+    // Fade-in para imágenes SSR ya presentes en el DOM
+    document.querySelectorAll('.img_fade').forEach((img: any) => {
+      if (img.complete) img.classList.add('loaded');
+      else img.onload = () => img.classList.add('loaded');
+    });
+  };
+
+  const destroy = () => { if (cleanupFn) cleanupFn(); };
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-preparation', destroy);
+</script>
+

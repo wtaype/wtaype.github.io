@@ -1,0 +1,7 @@
+- Ilustración minimalista de una laptop mostrando un portafolio web con código limpio en pantalla y fondo moderno
+- Captura de pantalla de Visual Studio Code mostrando código de un clon genérico con advertencias de calidad de código
+- Estructura de carpetas limpia y organizada en un editor de código siguiendo buenas prácticas de arquitectura de software
+- Un desarrollador analizando métricas de rendimiento y cobertura de pruebas unitarias en su monitor
+- Ilustración del flujo de despliegue continuo desde GitHub hacia plataformas de hosting en la nube
+- Documento README de GitHub muy bien redactado con explicaciones claras de arquitectura y cómo instalar localmente
+- Desarrollador web sonriendo frente a su laptop al recibir una oferta de trabajo gracias a su portafolio de proyectos reales

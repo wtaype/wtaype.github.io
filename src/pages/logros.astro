@@ -1,0 +1,915 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { seo } from '../lib/seo.js';
+
+const LOGROS = [
+  { id: 1, titulo: 'Bachiller en Ingeniería Empresarial y de Sistemas', descripcion: 'Graduado con formación integral en gestión empresarial y desarrollo tecnológico. Especializado en diseño web y programación de aplicaciones.', tipo: 'academico', institucion: 'Universidad San Ignacio de Loyola', fecha: '2025-07-02', imagen: 'https://media.licdn.com/dms/image/v2/D4E2DAQH59UQuEfdISA/profile-treasury-image-shrink_800_800/B4EZjK6S9_HIAc-/0/1755750937389?e=1777770000&v=beta&t=wJ6_Oqgx9ObgCGilnHvPxHwf_hT1tnQjj3dt1hydbCw', url: 'https://www.linkedin.com/in/wildertaype/', destacado: true, icono: 'fas fa-user-graduate', color: '#4CAF50' },
+  { id: 2, titulo: '60+ Proyectos Completados', descripcion: 'Desarrollé y desplegué más de 60 proyectos web y móviles profesionales para diversos clientes y plataformas.', tipo: 'hito', institucion: 'Freelance / Personal', fecha: '2025-12-31', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '/proyectos', destacado: true, icono: 'fas fa-rocket', color: '#2196F3' },
+  { id: 3, titulo: 'Certificación de Udemy', descripcion: 'Certificación que avala conocimientos sólidos y habilidades prácticas en desarrollo.', tipo: 'certificado', institucion: 'Udemy', fecha: '2023-10-15', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://www.udemy.com/certificate/UC-a377f9f2-e979-442a-b0bf-05affc89c734/', destacado: false, icono: 'fas fa-certificate', color: '#FF9800' },
+  { id: 4, titulo: 'Perfil Profesional en GitHub', descripcion: 'Desarrollador activo compartiendo código, proyectos reales y contribuyendo al ecosistema open source.', tipo: 'hito', institucion: 'GitHub', fecha: '2024-05-10', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://github.com/wtaype', destacado: false, icono: 'fab fa-github', color: '#6e5494' }
+];
+
+const FILTROS = [
+  ['all',            'fas fa-layer-group', 'Todos'           ],
+  ['academico',      'fas fa-user-graduate','Académico'      ],
+  ['certificado',    'fas fa-certificate', 'Certificados'    ],
+  ['hito',           'fas fa-rocket',      'Hitos'           ],
+];
+
+// Stats calculados una vez en compilación
+const TOTAL       = LOGROS.length;
+const N_CERTS     = LOGROS.filter(l => l.tipo === 'certificado' || l.tipo === 'academico').length;
+const N_HITOS     = LOGROS.filter(l => l.tipo === 'hito').length;
+const N_DEST      = LOGROS.filter(l => l.destacado).length;
+const N_2025      = LOGROS.filter(l => l.fecha.startsWith('2025')).length;
+const N_2024      = LOGROS.filter(l => l.fecha.startsWith('2024')).length;
+
+const MESES_C = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const fmt = (f: string) => { 
+  const d = new Date(f + 'T00:00:00'); 
+  return `${MESES_C[d.getMonth()]} ${d.getFullYear()}`; 
+};
+const tipoLabel = (t: string) => ({ certificado: 'Certificado', academico: 'Académico', hito: 'Hito' }[t] || t);
+---
+
+<Layout {...seo.logros}>
+  <div class="logros_container">
+
+    <!-- ★ HERO ─────────────────────────────────────────────────────────────── -->
+    <section class="logros_hero" data-herowi="100">
+      <div class="hero_content">
+        <h1 class="hero_title">Mis <span class="gradient_text">Logros</span></h1>
+        <p class="hero_subtitle">Cada logro representa un desafío superado, un aprendizaje adquirido y un paso más hacia la excelencia. Aquí está mi trayectoria de crecimiento profesional.</p>
+        <div class="hero_stats_logros">
+          <div class="stat_logro"><i class="fas fa-trophy"></i>    <div class="stat_data"><span class="stat_number">{TOTAL}</span>    <span class="stat_texto">Logros Totales</span></div></div>
+          <div class="stat_logro"><i class="fas fa-certificate"></i><div class="stat_data"><span class="stat_number">{N_CERTS}</span>  <span class="stat_texto">Certificaciones</span></div></div>
+          <div class="stat_logro"><i class="fas fa-rocket"></i>     <div class="stat_data"><span class="stat_number">{N_HITOS}</span> <span class="stat_texto">Hitos</span></div></div>
+          <div class="stat_logro"><i class="fas fa-star"></i>      <div class="stat_data"><span class="stat_number">{N_DEST}</span>   <span class="stat_texto">Destacados</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ★ FILTROS ───────────────────────────────────────────────────────────── -->
+    <section class="logros_filtros">
+      <div class="filtros_tipos">
+        {FILTROS.map(([v, i, t]) => (
+          <button class={`tipo_btn ${v === 'all' ? 'active' : ''}`} data-tipo={v}>
+            <i class={i}></i><span>{t}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <!-- ★ GRID ──────────────────────────────────────────────────────────────── -->
+    <section class="logros_grid_section">
+      <div class="logros_grid" id="logrosGrid">
+        {[...LOGROS].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()).map((l, i) => (
+          <div class="logro_card" data-logro={l.id} data-tipo={l.tipo} style={`animation-delay: ${i * 0.05}s`}>
+            <div class="logro_icon_wrapper" style={`background: ${l.color}15`}>
+              <div class="logro_icon" style={`background: ${l.color}`}><i class={l.icono}></i></div>
+            </div>
+            <div class="logro_badges">
+              <span class="logro_tipo" style={`background: ${l.color}`}>{tipoLabel(l.tipo)}</span>
+              {l.destacado && <span class="logro_destacado"><i class="fas fa-star"></i> Destacado</span>}
+            </div>
+            <h3 class="logro_titulo">{l.titulo}</h3>
+            <p class="logro_descripcion">{l.descripcion}</p>
+            <div class="logro_footer">
+              <div class="logro_info">
+                <div class="info_item"><i class="fas fa-building"></i><span>{l.institucion}</span></div>
+                <div class="info_item"><i class="fas fa-calendar"></i><span>{fmt(l.fecha)}</span></div>
+              </div>
+              <button class="btn_ver_logro" data-id={l.id}><i class="fas fa-eye"></i> Ver más</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ★ PROGRESO ANUAL ────────────────────────────────────────────────────── -->
+    <section class="stats_anuales" id="statsAnuales">
+      <h2 class="section_title">Progreso Anual</h2>
+      <div class="stats_grid">
+        <div class="stat_anual_card">
+          <div class="stat_anual_icon"><i class="fas fa-code"></i></div>
+          <h3>2025</h3>
+          <div class="stat_anual_bar"><div class="stat_bar_fill" style="--width: 85%"></div></div>
+          <p class="stat_anual_numero">{N_2025} logros</p>
+        </div>
+        <div class="stat_anual_card">
+          <div class="stat_anual_icon"><i class="fas fa-fire"></i></div>
+          <h3>2024</h3>
+          <div class="stat_anual_bar"><div class="stat_bar_fill" style="--width: 70%"></div></div>
+          <p class="stat_anual_numero">{N_2024} logros</p>
+        </div>
+        <div class="stat_anual_card">
+          <div class="stat_anual_icon"><i class="fas fa-chart-line"></i></div>
+          <h3>Total</h3>
+          <div class="stat_anual_bar"><div class="stat_bar_fill" style="--width: 100%"></div></div>
+          <p class="stat_anual_numero">{TOTAL} logros</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ★ MODAL ──────────────────────────────────────────────────────────────────── -->
+  <div class="wiModal" id="modalLogro">
+    <div class="modalBody modal_logro_body">
+      <button class="modalX wi_modal_close">&times;</button>
+      <div class="modal_logro_content"></div>
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+.logros_container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 4vh 2vw 8vh;
+}
+
+/* ==================== HERO LOGROS ==================== */
+.logros_hero {
+  text-align: center;
+  padding: 6vh 0 5vh;
+}
+
+.hero_title {
+  font-size: var(--fz_x2);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 2vh;
+  animation: fadeInDown 0.6s ease;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero_subtitle {
+  font-size: var(--fz_m4);
+  color: var(--txe);
+  max-width: 800px;
+  margin: 0 auto 4vh;
+  line-height: 1.7;
+  animation: fadeInUp 0.6s ease 0.2s backwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero_stats_logros {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2vw;
+  max-width: 1000px;
+  margin: 0 auto;
+  animation: fadeIn 0.6s ease 0.4s backwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.stat_logro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.5vh;
+  padding: 2rem 1.5rem;
+  background: var(--wb);
+  border-radius: 20px;
+  border: 1px solid var(--bg5);
+  transition: all var(--tr_m);
+  backdrop-filter: blur(10px);
+}
+
+.stat_logro:hover {
+  border-color: var(--mco);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+.stat_logro i {
+  font-size: 2.5rem;
+  color: var(--mco);
+}
+
+.stat_data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat_numero {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  line-height: 1;
+}
+
+.stat_texto {
+  font-size: var(--fz_m1);
+  color: var(--txe);
+  margin-top: 0.5vh;
+}
+
+/* ==================== FILTROS ==================== */
+.logros_filtros {
+  margin-bottom: 5vh;
+}
+
+.filtros_tipos {
+  display: flex;
+  justify-content: center;
+  gap: 1.5vh;
+  flex-wrap: wrap;
+}
+
+.tipo_btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 12px 24px;
+  background: var(--wb);
+  color: var(--tx);
+  border: 1px solid var(--bg5);
+  border-radius: 50px;
+  font-size: var(--fz_m2);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_m);
+  backdrop-filter: blur(10px);
+}
+
+.tipo_btn i {
+  font-size: 1.2rem;
+  color: var(--mco);
+  transition: all var(--tr_f);
+}
+
+.tipo_btn:hover {
+  border-color: var(--mco);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  background: var(--bg4);
+}
+
+.tipo_btn.active {
+  background: var(--mco);
+  color: var(--txa);
+  border-color: var(--mco);
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--mco) 40%, transparent);
+}
+
+.tipo_btn.active i {
+  color: var(--txa);
+}
+
+/* ==================== GRID LOGROS ==================== */
+.logros_grid_section {
+  margin-bottom: 8vh;
+}
+
+.logros_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 3vh 2vw;
+}
+
+.logro_card {
+  background: var(--wb);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--bg5);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+  height: 100%;
+}
+
+.logro_card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.logro_card:hover {
+  border-color: var(--mco);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.logro_icon_wrapper {
+  width: 100%;
+  height: 140px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2.5vh;
+  position: relative;
+}
+
+.logro_icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--wb);
+  font-size: 2.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transition: transform var(--tr_m);
+}
+
+.logro_card:hover .logro_icon {
+  transform: scale(1.1) rotateY(15deg);
+}
+
+.logro_badges {
+  display: flex;
+  gap: 1vh;
+  margin-bottom: 2vh;
+  flex-wrap: wrap;
+}
+
+.logro_tipo {
+  padding: 0.8vh 1.5vw;
+  border-radius: 8px;
+  color: var(--wb);
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.logro_destacado {
+  padding: 0.8vh 1.5vw;
+  background: var(--warning);
+  color: var(--wb);
+  border-radius: 8px;
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5vh;
+}
+
+.logro_titulo {
+  font-size: var(--fz_l1);
+  font-weight: 700;
+  color: var(--tx);
+  margin-bottom: 1.5vh;
+  line-height: 1.3;
+}
+
+.logro_descripcion {
+  font-size: var(--fz_m2);
+  color: var(--txe);
+  line-height: 1.6;
+  margin-bottom: 2.5vh;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logro_footer {
+  padding-top: 2vh;
+  border-top: 2px solid var(--bg);
+  margin-top: auto;
+}
+
+.logro_info {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  margin-bottom: 2vh;
+}
+
+.info_item {
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+  font-size: var(--fz_m1);
+  color: var(--txe);
+}
+
+.info_item i {
+  color: var(--mco);
+  font-size: var(--fz_m3);
+}
+
+.btn_ver_logro {
+  width: 100%;
+  padding: 12px 24px;
+  background: var(--mco);
+  color: var(--txa);
+  border: none;
+  border-radius: 12px;
+  font-size: var(--fz_m2);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_m);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8vh;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 25%, transparent);
+}
+
+.btn_ver_logro:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--mco) 40%, transparent);
+}
+
+/* ==================== ESTADÍSTICAS ANUALES ==================== */
+.stats_anuales {
+  padding: 6vh 4vw;
+  background: var(--wb);
+  border-radius: 24px;
+  margin-bottom: 4vh;
+}
+
+.stats_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3vw;
+}
+
+.stat_anual_card {
+  text-align: center;
+  padding: 2rem;
+  background: var(--wb);
+  border-radius: 24px;
+  border: 1px solid var(--bg5);
+  transition: all var(--tr_m);
+  backdrop-filter: blur(10px);
+}
+
+.stat_anual_card:hover {
+  border-color: var(--mco);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+.stat_anual_icon {
+  width: 80px;
+  height: 80px;
+  background: var(--bg4);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 2.5vh;
+  color: var(--mco);
+  font-size: 2.5rem;
+  transition: transform var(--tr_m);
+}
+
+.stat_anual_card:hover .stat_anual_icon {
+  transform: rotateY(180deg);
+}
+
+.stat_anual_card h3 {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 2.5vh;
+}
+
+.stat_anual_bar {
+  width: 100%;
+  height: 16px;
+  background: var(--bg);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2vh;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat_bar_fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mco), var(--bg2));
+  border-radius: 8px;
+  width: 0;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat_bar_fill.animate {
+  width: var(--width);
+}
+
+.stat_anual_numero {
+  font-size: var(--fz_l1);
+  color: var(--mco);
+  font-weight: 800;
+}
+
+/* ==================== MODAL LOGRO ==================== */
+.modal_logro_body {
+  max-width: 750px;
+  background: var(--wb);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.modal_logro_header {
+  position: relative;
+  padding: 4vh 3vw 3vh;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal_logro_icon_wrapper {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal_logro_icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--wb);
+  font-size: 3rem;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+}
+
+.modal_logro_destacado {
+  position: absolute;
+  top: 2vh;
+  right: 2vw;
+  background: var(--warning);
+  color: var(--wb);
+  padding: 1vh 2vw;
+  border-radius: 10px;
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5vh;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.modal_logro_body_content {
+  padding: 4vh 4vw;
+}
+
+.modal_logro_tipo {
+  display: inline-block;
+  padding: 1vh 2vw;
+  border-radius: 10px;
+  color: var(--wb);
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2vh;
+}
+
+.modal_logro_titulo {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 2vh;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.modal_logro_descripcion {
+  font-size: var(--fz_m4);
+  color: var(--txe);
+  line-height: 1.8;
+  margin-bottom: 4vh;
+  text-align: center;
+}
+
+.modal_logro_detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  margin-bottom: 4vh;
+}
+
+.detalle_item {
+  display: flex;
+  align-items: center;
+  gap: 2vh;
+  padding: 2vh 2vw;
+  background: var(--bg);
+  border-radius: 12px;
+  transition: all var(--tr_f);
+}
+
+.detalle_item:hover {
+  transform: translateX(5px);
+}
+
+.detalle_item i {
+  font-size: 1.8rem;
+  color: var(--mco);
+  min-width: 30px;
+}
+
+.detalle_item > div {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.detalle_label {
+  font-size: var(--fz_s4);
+  color: var(--txe);
+  margin-bottom: 0.5vh;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detalle_valor {
+  font-size: var(--fz_m4);
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.modal_logro_acciones {
+  display: flex;
+  gap: 2vh;
+}
+
+.btn_logro {
+  flex: 1;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: var(--fz_m2);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_m);
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1vh;
+  border: 2px solid transparent;
+}
+
+.btn_verificar {
+  background: var(--mco);
+  color: var(--txa);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 30%, transparent);
+}
+
+.btn_compartir {
+  background: var(--bg1);
+  color: var(--tx);
+  border-color: var(--bg5);
+  backdrop-filter: blur(10px);
+}
+
+.btn_logro:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.btn_verificar:hover {
+  filter: brightness(1.1);
+}
+
+.wi_modal_close {
+  position: absolute;
+  top: 1.5vh;
+  right: 1.5vw;
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: var(--tx3);
+  cursor: pointer;
+  z-index: 10;
+  line-height: 1;
+  padding: 0;
+}
+.wi_modal_close:hover {
+  color: var(--mco);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+  .hero_stats_logros {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .logros_grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats_grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero_stats_logros {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .stat_logro {
+    padding: 1.5rem 1rem;
+  }
+
+  .stat_logro i {
+    font-size: 1.8rem;
+  }
+
+  .stat_numero {
+    font-size: var(--fz_l2);
+  }
+
+  .stat_texto {
+    font-size: var(--fz_s3);
+  }
+
+  .logros_grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros_tipos {
+    gap: 1vh;
+  }
+
+  .tipo_btn {
+    min-width: 110px;
+    padding: 1.5vh 2vw;
+  }
+
+  .modal_logro_acciones {
+    flex-direction: column;
+  }
+
+  .modal_logro_body_content {
+    padding: 3vh 2vw;
+  }
+}
+</style>
+
+<script>
+  import { showi, herowi, abrirModal, cerrarModal, wicopy } from '../lib/widev.js';
+
+  const LOGROS = [
+    { id: 1, titulo: 'Bachiller en Ingeniería Empresarial y de Sistemas', descripcion: 'Graduado con formación integral en gestión empresarial y desarrollo tecnológico. Especializado en diseño web y programación de aplicaciones.', tipo: 'academico', institucion: 'Universidad San Ignacio de Loyola', fecha: '2025-07-02', imagen: 'https://media.licdn.com/dms/image/v2/D4E2DAQH59UQuEfdISA/profile-treasury-image-shrink_800_800/B4EZjK6S9_HIAc-/0/1755750937389?e=1777770000&v=beta&t=wJ6_Oqgx9ObgCGilnHvPxHwf_hT1tnQjj3dt1hydbCw', url: 'https://www.linkedin.com/in/wildertaype/', destacado: true, icono: 'fas fa-user-graduate', color: '#4CAF50' },
+    { id: 2, titulo: '60+ Proyectos Completados', descripcion: 'Desarrollé y desplegué más de 60 proyectos web y móviles profesionales para diversos clientes y plataformas.', tipo: 'hito', institucion: 'Freelance / Personal', fecha: '2025-12-31', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: '/proyectos', destacado: true, icono: 'fas fa-rocket', color: '#2196F3' },
+    { id: 3, titulo: 'Certificación de Udemy', descripcion: 'Certificación que avala conocimientos sólidos y habilidades prácticas en desarrollo.', tipo: 'certificado', institucion: 'Udemy', fecha: '2023-10-15', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://www.udemy.com/certificate/UC-a377f9f2-e979-442a-b0bf-05affc89c734/', destacado: false, icono: 'fas fa-certificate', color: '#FF9800' },
+    { id: 4, titulo: 'Perfil Profesional en GitHub', descripcion: 'Desarrollador activo compartiendo código, proyectos reales y contribuyendo al ecosistema open source.', tipo: 'hito', institucion: 'GitHub', fecha: '2024-05-10', imagen: 'https://i.postimg.cc/GL5RgcrL/dscto-orig.png', url: 'https://github.com/wtaype', destacado: false, icono: 'fab fa-github', color: '#6e5494' }
+  ];
+
+  const MESES_L = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const fmtFull = (f: string) => { 
+    const d = new Date(f + 'T00:00:00'); 
+    return `${d.getDate()} de ${MESES_L[d.getMonth()]} de ${d.getFullYear()}`; 
+  };
+  const tipoLabel = (t: string) => ({ certificado: 'Certificado', academico: 'Académico', hito: 'Hito' }[t] || t);
+
+  const mostrarModal = (l: any) => {
+    const content = document.querySelector('.modal_logro_content');
+    if (!content) return;
+    
+    content.innerHTML = `
+      <div class="modal_logro_header">
+        <div class="modal_logro_icon_wrapper" style="background:${l.color}15">
+          <div class="modal_logro_icon" style="background:${l.color}"><i class="${l.icono}"></i></div>
+        </div>
+        ${l.destacado ? '<div class="modal_logro_destacado"><i class="fas fa-star"></i> Logro Destacado</div>' : ''}
+      </div>
+      <div class="modal_logro_body_content">
+        <span class="modal_logro_tipo" style="background:${l.color}">${tipoLabel(l.tipo)}</span>
+        <h2 class="modal_logro_titulo">${l.titulo}</h2>
+        <p class="modal_logro_descripcion">${l.descripcion}</p>
+        <div class="modal_logro_detalles">
+          <div class="detalle_item"><i class="fas fa-building"></i><div><span class="detalle_label">Institución</span>       <span class="detalle_valor">${l.institucion}</span></div></div>
+          <div class="detalle_item"><i class="fas fa-calendar"></i><div><span class="detalle_label">Fecha de obtención</span><span class="detalle_valor">${fmtFull(l.fecha)}</span></div></div>
+          <div class="detalle_item"><i class="fas fa-tag"></i>     <div><span class="detalle_label">Categoría</span>         <span class="detalle_valor">${tipoLabel(l.tipo)}</span></div></div>
+        </div>
+        ${l.url ? `
+        <div class="modal_logro_acciones">
+          <a href="${l.url}" target="_blank" class="btn_logro btn_verificar"><i class="fas fa-external-link-alt"></i> Verificar Logro</a>
+          <button class="btn_logro btn_compartir" data-url="${l.url}"><i class="fas fa-share-alt"></i> Compartir</button>
+        </div>` : ''}
+      </div>`;
+
+    // Compartir URL desde el modal
+    const shareBtn = content.querySelector('.btn_compartir');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', function(this: HTMLElement) {
+        const url = this.dataset.url;
+        if (url) wicopy(url, this as any, '¡Enlace copiado! 📋');
+      });
+    }
+
+    abrirModal('modalLogro');
+  };
+
+  const initLogros = () => {
+    // Filtros por tipo
+    document.querySelectorAll('.tipo_btn').forEach(btn => {
+      btn.addEventListener('click', function(this: HTMLElement) {
+        document.querySelectorAll('.tipo_btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const tipo = this.dataset.tipo;
+        document.querySelectorAll('.logro_card').forEach((card: any) => {
+          if (tipo === 'all' || card.dataset.tipo === tipo) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Abrir modal desde card o "Ver más"
+    document.querySelectorAll('.logro_card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const id = parseInt(card.getAttribute('data-logro') || '0');
+        const logro = LOGROS.find(x => x.id === id);
+        if (logro) mostrarModal(logro);
+      });
+    });
+
+    // Botón de cerrar modal
+    const closeBtn = document.querySelector('.wi_modal_close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        cerrarModal('modalLogro');
+      });
+    }
+
+    // Animar las barras de progreso cuando entran en la vista
+    const statsSec = document.getElementById('statsAnuales');
+    if (statsSec) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            document.querySelectorAll('.stat_bar_fill').forEach((bar: any, idx) => {
+              setTimeout(() => {
+                bar.classList.add('animate');
+              }, idx * 200);
+            });
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.1 });
+      observer.observe(statsSec);
+    }
+
+    // Animar cards stagger al entrar en vista
+    const cards = document.querySelectorAll('.logro_card');
+    const cardsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          cards.forEach((card, idx) => {
+            setTimeout(() => {
+              card.classList.add('visible');
+            }, idx * 80);
+          });
+          cardsObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.05 });
+    
+    const grid = document.getElementById('logrosGrid');
+    if (grid) {
+      cardsObserver.observe(grid);
+    } else {
+      cards.forEach(card => card.classList.add('visible'));
+    }
+
+    if (typeof herowi === 'function') herowi();
+    if (typeof showi === 'function') showi();
+  };
+
+  document.addEventListener('astro:page-load', initLogros);
+</script>

@@ -1,0 +1,752 @@
+---
+// src/pages/mensajes.astro
+import Layout from '../layouts/Layout.astro';
+import { app } from '../wii.js';
+---
+
+<!-- Guardia de Renderizado Inicial: Redirigir de inmediato si no hay token local para evitar parpadeos -->
+<script is:inline>localStorage.wiSmile||location.replace('/')</script>
+
+<style is:global>
+  /* ==================== CONTAINER ==================== */
+  .wm_container { 
+    max-width: 750px; 
+    margin: 2rem auto; 
+    height: 82vh; 
+    display: flex; 
+    flex-direction: column; 
+    background: var(--wb); 
+    border-radius: 1.25rem; 
+    overflow: hidden; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    border: 1px solid var(--brd);
+  }
+
+  /* ==================== HEADER ==================== */
+  .wm_header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 1.25rem 1.75rem; 
+    background: linear-gradient(135deg, var(--mco), #7c3aed); 
+    color: var(--txa); 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+    z-index: 10;
+  }
+  .wm_info { display: flex; align-items: center; gap: 1rem }
+  .wm_avatar { 
+    width: 44px; 
+    height: 44px; 
+    border-radius: 50%; 
+    border: 2px solid rgba(255,255,255,0.85); 
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .wm_text h1 { font-size: var(--fz_m4); font-weight: 700; color: var(--txa); margin: 0; letter-spacing: -0.02em; }
+  .wm_text p { font-size: var(--fz_s4); color: rgba(255,255,255,0.85); margin: 2px 0 0 }
+  .wm_status { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+    background: rgba(255,255,255,0.12); 
+    backdrop-filter: blur(4px);
+    padding: 0.45rem 1rem; 
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .wm_dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); animation: wmPulse 2s infinite }
+  .wm_dot.active { background: #4ade80; box-shadow: 0 0 8px #4ade80; animation: none }
+  .wm_dot.error { background: #ef4444; animation: none }
+  @keyframes wmPulse { 0%,100% { opacity: 1; transform: scale(1) } 50% { opacity: .5; transform: scale(.9) } }
+  .wm_dotxt { font-size: var(--fz_s4); color: var(--txa); font-weight: 600 }
+
+  /* ==================== CHAT ==================== */
+  .wm_chat { 
+    flex: 1; 
+    overflow-y: auto; 
+    padding: 1.5rem; 
+    background: var(--bg); 
+    scrollbar-width: thin; 
+    scrollbar-color: var(--mco) var(--bg4); 
+    display: flex; 
+    flex-direction: column;
+  }
+  .wm_chat::-webkit-scrollbar { width: 4px }
+  .wm_chat::-webkit-scrollbar-thumb { background: rgba(124, 58, 237, 0.3); border-radius: 10px }
+  .wm_chat::-webkit-scrollbar-thumb:hover { background: var(--mco) }
+
+  /* DATE SEPARATOR */
+  .wm_sep { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 1rem 0; 
+    position: sticky; 
+    top: 0; 
+    z-index: 5;
+  }
+  .wm_sep span { 
+    background: var(--wb); 
+    color: var(--tx2); 
+    font-size: var(--fz_s4); 
+    font-weight: 600; 
+    padding: 0.35rem 0.9rem; 
+    border-radius: 50px; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
+    border: 1px solid var(--brd);
+  }
+
+  /* EMPTY */
+  .wm_loading, .wm_empty { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    flex: 1; 
+    gap: 1.25rem; 
+    color: var(--tx2); 
+    text-align: center;
+    padding: 2rem;
+  }
+  .wm_loading i { font-size: 3rem; color: var(--mco) }
+  
+  .wm_empty_icon_wrap {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--wb);
+    border: 1px solid var(--brd);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  }
+  .wm_empty i { font-size: 2rem; color: var(--mco); opacity: 0.85; }
+  .wm_empty p { font-size: var(--fz_m4); font-weight: 700; color: var(--tx); margin: 0; }
+  .wm_empty span { font-size: var(--fz_m1); color: var(--tx2); max-width: 280px; line-height: 1.4; }
+
+  /* SUGGESTIONS */
+  .wm_suggestions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .wm_sug_btn {
+    background: var(--wb);
+    border: 1px solid var(--brd);
+    color: var(--tx);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: var(--fz_s4);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  }
+  .wm_sug_btn:hover {
+    background: var(--mco);
+    color: var(--txa);
+    border-color: var(--mco);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+  }
+
+  /* MESSAGE ITEM */
+  .wm_item { 
+    display: flex; 
+    align-items: flex-end; 
+    gap: 0.75rem; 
+    margin-bottom: 0.85rem; 
+    animation: wmSlide .3s cubic-bezier(0.4, 0, 0.2, 1); 
+    cursor: pointer; 
+    position: relative; 
+    transition: all .25s;
+  }
+  @keyframes wmSlide { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: translateY(0) } }
+  
+  .wm_item.sent { justify-content: flex-end; }
+  .wm_item.received { justify-content: flex-start; }
+
+  .wm_item.sent:hover { transform: translateX(-4px) }
+  .wm_item.received:hover { transform: translateX(4px) }
+
+  /* Avatar in chat list */
+  .wm_chat_avatar { 
+    width: 34px; 
+    height: 34px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 1px solid var(--brd); 
+    flex-shrink: 0; 
+    margin-bottom: 1px;
+  }
+
+  .wm_bubble { 
+    max-width: 75%; 
+    padding: 0.9rem 1.25rem; 
+    box-shadow: 0 3px 10px rgba(0,0,0,0.02); 
+    transition: all .25s cubic-bezier(0.4, 0, 0.2, 1); 
+    position: relative; 
+    overflow: hidden; 
+  }
+  
+  .wm_item.sent .wm_bubble { 
+    background: linear-gradient(135deg, var(--mco), #7c3aed); 
+    border-radius: 1.25rem 1.25rem 0.2rem 1.25rem; 
+    color: var(--txa); 
+  }
+  .wm_item.received .wm_bubble { 
+    background: var(--wb); 
+    border-radius: 1.25rem 1.25rem 1.25rem 0.2rem; 
+    color: var(--tx1); 
+    border: 1px solid var(--brd);
+  }
+
+  .wm_item:hover .wm_bubble { 
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06); 
+    transform: translateY(-1px);
+  }
+  
+  .wm_txt { font-size: var(--fz_m2); line-height: 1.5; word-wrap: break-word; white-space: pre-wrap; margin: 0 0 0.4rem }
+  .wm_item.sent .wm_txt { color: var(--txa); }
+  .wm_item.received .wm_txt { color: var(--tx); }
+
+  .wm_foot { display: flex; justify-content: flex-end; align-items: center; gap: 0.4rem }
+  
+  .wm_time { font-size: var(--fz_s3); font-weight: 500 }
+  .wm_item.sent .wm_time { color: rgba(255,255,255,0.7); }
+  .wm_item.received .wm_time { color: var(--tx3); }
+
+  .wm_check { font-size: var(--fz_s4); color: rgba(255,255,255,0.75) }
+  
+  /* Copy Toast Overlay */
+  .wm_copy_badge {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(1px);
+    color: #4ade80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: var(--fz_m1);
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 2;
+  }
+  .wm_copy_badge.show {
+    opacity: 1;
+  }
+
+  /* DELETE BUTTON */
+  .wm_del { 
+    width: 32px; 
+    height: 32px; 
+    background: var(--wb); 
+    border: 1px solid var(--brd); 
+    border-radius: 50%; 
+    color: #ef4444; 
+    font-size: 11px; 
+    cursor: pointer; 
+    transition: all 0.2s ease; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0; 
+    opacity: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+  .wm_item.sent .wm_del { order: -1; }
+  .wm_item:hover .wm_del { opacity: 1 }
+  .wm_del:hover { background: #ef4444; color: white; border-color: #ef4444; transform: scale(1.1) }
+  .wm_item.deleting { animation: wmDelete .25s ease-out forwards }
+  @keyframes wmDelete { to { opacity: 0; transform: translateX(100%); height: 0; margin: 0 } }
+
+  /* ==================== INPUT ==================== */
+  .wm_input { 
+    display: flex; 
+    gap: 1rem; 
+    padding: 1.25rem; 
+    align-items: center; 
+    background: var(--wb); 
+    border-top: 1px solid var(--brd) 
+  }
+  .wm_wrap { 
+    flex: 1; 
+    position: relative; 
+    background: var(--bg); 
+    border: 1px solid var(--brd); 
+    border-radius: 1rem; 
+    transition: all .25s 
+  }
+  .wm_wrap:focus-within { 
+    border-color: var(--mco); 
+    background: var(--wb);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08) 
+  }
+  #wmNuevo { 
+    width: 100%; 
+    padding: 0.9rem 1.25rem 2.25rem; 
+    background: transparent; 
+    border: none; 
+    color: var(--tx); 
+    font-size: var(--fz_m2); 
+    font-family: inherit; 
+    outline: none; 
+    resize: none; 
+    line-height: 1.5; 
+    min-height: 40px; 
+    max-height: 150px;
+    box-sizing: border-box;
+  }
+  #wmNuevo::placeholder { color: var(--tx3) }
+  .wm_count { 
+    position: absolute; 
+    bottom: 0.6rem; 
+    right: 1rem; 
+    font-size: var(--fz_s4); 
+    color: var(--tx3); 
+    pointer-events: none; 
+    background: transparent; 
+    padding: 2px 6px; 
+  }
+  #wmEnviar { 
+    width: 44px; 
+    height: 44px; 
+    background: var(--mco); 
+    border: none; 
+    border-radius: 50%; 
+    color: var(--txa); 
+    font-size: 14px; 
+    cursor: pointer; 
+    transition: all .2s; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+  }
+  #wmEnviar:hover:not(:disabled) { transform: scale(1.06) translateY(-1px); box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35) }
+  #wmEnviar:active:not(:disabled) { transform: scale(0.98) translateY(0); }
+  #wmEnviar:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+
+  /* ==================== MODAL ==================== */
+  .wm_modal { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.55); 
+    backdrop-filter: blur(4px); 
+    display: none; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 9999; 
+    opacity: 0; 
+    transition: all .3s 
+  }
+  .wm_modal.show { display: flex; opacity: 1 }
+  
+  .wm_modal_body { 
+    background: var(--wb); 
+    padding: 3rem 2.25rem; 
+    border-radius: 1.25rem; 
+    text-align: center; 
+    max-width: 360px; 
+    width: 90%; 
+    box-shadow: 0 20px 48px rgba(0,0,0,0.12); 
+    border: 1px solid var(--brd);
+    transform: scale(.9); 
+    transition: transform .25s 
+  }
+  .wm_modal.show .wm_modal_body { transform: scale(1) }
+  .wm_modal_body > i { 
+    font-size: 3rem; 
+    color: #ef4444; 
+    margin-bottom: 1.25rem; 
+    display: block;
+    animation: wmIcoPulse 1.5s infinite alternate;
+  }
+  @keyframes wmIcoPulse { from { transform: scale(0.95); opacity: 0.9; } to { transform: scale(1.05); opacity: 1; } }
+  
+  .wm_modal_body h3 { font-size: var(--fz_l1); font-weight: 700; color: var(--tx); margin: 0 0 0.5rem }
+  .wm_modal_body p { font-size: var(--fz_m1); color: var(--tx2); margin: 0 0 2rem }
+  .wm_modal_acts { display: flex; gap: 0.75rem }
+  
+  .wm_cancel, .wm_confirm { 
+    flex: 1; 
+    padding: 0.75rem 1.25rem; 
+    border: none; 
+    border-radius: 0.75rem; 
+    font-size: var(--fz_m2); 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all .2s 
+  }
+  .wm_cancel { background: var(--bg); color: var(--tx) }
+  .wm_cancel:hover { background: var(--bg4) }
+  .wm_confirm { background: #ef4444; color: white }
+  .wm_confirm:hover { background: #dc2626; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(239,68,68,0.25) }
+
+  /* ==================== RESPONSIVE ==================== */
+  @media (max-width: 768px) {
+    .wm_container { height: 85vh; margin: 1rem auto; border-radius: 1rem; }
+    .wm_header { padding: 1rem 1.25rem }
+    .wm_avatar { width: 38px; height: 38px }
+    .wm_text h1 { font-size: var(--fz_m3) }
+    .wm_text p { font-size: var(--fz_s4) }
+    .wm_status { padding: 0.35rem 0.75rem }
+    .wm_dotxt { font-size: var(--fz_s4) }
+    .wm_chat { padding: 1rem }
+    .wm_item { margin-bottom: 0.75rem }
+    .wm_bubble { padding: 0.8rem 1.1rem }
+    .wm_txt { font-size: var(--fz_m1) }
+    .wm_input { padding: 1rem }
+    #wmNuevo { padding: 0.8rem 1rem 2rem; font-size: var(--fz_m1) }
+    #wmEnviar { width: 40px; height: 40px }
+  }
+  @media (max-width: 480px) {
+    .wm_text h1 { font-size: var(--fz_m2) }
+    .wm_status { display: none }
+    .wm_modal_body { padding: 2.25rem 1.5rem }
+    .wm_modal_acts { flex-direction: column }
+  }
+</style>
+
+<Layout title="Mis Mensajes" name={app} robots="noindex, nofollow">
+  <div class="wm_container">
+    <div class="wm_header">
+      <div class="wm_info">
+        <img src="/smile.avif" alt={app} class="wm_avatar" />
+        <div class="wm_text">
+          <h1>Mis Mensajes</h1>
+          <p id="wmHeaderWelcome">Cargando...</p>
+        </div>
+      </div>
+      <div class="wm_status">
+        <span class="wm_dot"></span>
+        <span class="wm_dotxt">Conectando...</span>
+      </div>
+    </div>
+
+    <div class="wm_chat" id="wmChat">
+      <div class="wm_loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando mensajes...</p>
+      </div>
+    </div>
+
+    <div class="wm_input">
+      <div class="wm_wrap">
+        <textarea id="wmNuevo" placeholder="Escribe un mensaje..." rows="1" maxlength="500"></textarea>
+        <span class="wm_count" id="wmCount">0/500</span>
+      </div>
+      <button id="wmEnviar" disabled><i class="fas fa-paper-plane"></i></button>
+    </div>
+
+    <div class="wm_modal" id="wmEliminar">
+      <div class="wm_modal_body">
+        <i class="fas fa-trash-alt"></i>
+        <h3>¿Eliminar mensaje?</h3>
+        <p>Esta acción no se puede deshacer</p>
+        <div class="wm_modal_acts">
+          <button class="wm_cancel" id="wmCancel">Cancelar</button>
+          <button class="wm_confirm" id="wmConfirm">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { db } from '../lib/firebase.js';
+  import { collection, query, where, orderBy, limit, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+  import { protegerRuta } from '../lib/auth.js';
+  import { Notificacion, wicopy, getls, Saludar, wiTip, Mensaje } from '../lib/widev.js';
+
+  let msgs: any[] = [];
+  let pendiente: string | null = null;
+  let enviando = false;
+  let unsubscribe: any = null;
+  let currentUserId = '';
+
+  const CACHE = 'wi_mensajes_cache';
+  const LIMIT = 50;
+
+  const _save = (d: any) => { try { localStorage.setItem(CACHE, JSON.stringify(d)); } catch (_) {} };
+  const _cache = (): any[] => { try { return JSON.parse(localStorage.getItem(CACHE) || '[]'); } catch (_) { return []; } };
+  const _scroll = () => { const el = document.getElementById('wmChat'); if (el) requestAnimationFrame(() => el.scrollTop = el.scrollHeight); };
+
+  const _status = (ok: boolean) => {
+    const dot = document.querySelector('.wm_dot');
+    const dotxt = document.querySelector('.wm_dotxt');
+    if (dot && dotxt) {
+      dot.className = `wm_dot ${ok ? 'active' : 'error'}`;
+      dotxt.textContent = ok ? 'Online' : 'Offline';
+    }
+  };
+
+  const toMs = (v: any) => {
+    if (!v) return null;
+    if (v.seconds) return v.seconds * 1000;
+    const dateObj = new Date(v);
+    return isNaN(dateObj.getTime()) ? null : dateObj.getTime();
+  };
+
+  const _dateLabel = (creado: any) => {
+    if (!creado) return 'Hoy';
+    const d = new Date(creado);
+    const hoy = new Date().toDateString();
+    const ayer = new Date(Date.now() - 864e5).toDateString();
+    const ds = d.toDateString();
+    return ds === hoy ? 'Hoy' : ds === ayer ? 'Ayer' : d.toLocaleDateString('es', { day: 'numeric', month: 'long' });
+  };
+
+  const _hora = (creado: any) => creado ? new Date(creado).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }) : 'Ahora';
+  const _esc = (t: string) => String(t || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[c] || c));
+  const _empty = (ico: string, txt: string, sub: string) => `
+    <div class="wm_empty">
+      <i class="fas ${ico}"></i>
+      <p>${txt}</p>
+      <span>${sub}</span>
+    </div>
+  `;
+
+  const _htmlList = (list: any[]): string => {
+    if (!list?.length) return _empty('fa-comment-dots', 'Sin mensajes aún', 'Escribe tu primer mensaje 👇');
+    let lastLabel = '';
+    return list.map((m: any) => {
+      const label = _dateLabel(m.creado);
+      const sep = label !== lastLabel ? `<div class="wm_sep"><span>${label}</span></div>` : '';
+      lastLabel = label;
+
+      const isSent = m.userId === currentUserId;
+      const itemClass = isSent ? 'wm_item sent' : 'wm_item received';
+      const delButton = isSent ? `<button class="wm_del" data-id="${m.id}" data-witip="Eliminar"><i class="fas fa-trash"></i></button>` : '';
+
+      return `${sep}<div class="${itemClass}" data-id="${m.id}">
+        ${!isSent ? `<img src="/smile.avif" alt="Soporte" class="wm_chat_avatar" />` : ''}
+        <div class="wm_bubble" data-witip="Click para copiar">
+          <p class="wm_txt">${_esc(m.mensaje).replace(/\n/g, '<br>')}</p>
+          <div class="wm_foot">
+            <span class="wm_time">${_hora(m.creado)}</span>
+            ${isSent ? `<i class="fas fa-check-double wm_check"></i>` : ''}
+          </div>
+        </div>
+        ${delButton}
+      </div>`;
+    }).join('');
+  };
+
+  const _enviar = async (email: string) => {
+    if (enviando) return;
+    const ta = document.getElementById('wmNuevo') as HTMLTextAreaElement;
+    const nota = ta?.value.trim();
+    if (!nota) return;
+    enviando = true;
+
+    const wiUser = getls('wiSmile') || {};
+    const newDocRef = doc(collection(db, 'mensajes'));
+    const id = newDocRef.id;
+
+    if (ta) { ta.value = ''; ta.style.height = 'auto'; ta.focus(); }
+    const count = document.getElementById('wmCount'); if (count) count.textContent = '0/500';
+    const btn = document.getElementById('wmEnviar') as HTMLButtonElement; if (btn) btn.disabled = true;
+
+    try {
+      await setDoc(newDocRef, {
+        id,
+        userId: currentUserId,
+        usuario: wiUser.nombre || wiUser.usuario || email,
+        email,
+        mensaje: nota,
+        pin: false,
+        creado: serverTimestamp(),
+        actualizado: serverTimestamp()
+      });
+      _status(true);
+      Notificacion('Mensaje enviado', 'success', 1200);
+    } catch (e) {
+      console.error(e);
+      Notificacion('Error al guardar', 'error');
+    } finally {
+      enviando = false;
+    }
+  };
+
+  const _eliminar = async () => {
+    if (!pendiente) return;
+    const id = pendiente;
+    pendiente = null;
+    document.getElementById('wmEliminar')?.classList.remove('show');
+
+    const backup = [...msgs];
+    msgs = msgs.filter(m => m.id !== id);
+    _save(msgs);
+
+    const card = document.querySelector(`.wm_item[data-id="${id}"]`);
+    if (card) card.classList.add('deleting');
+
+    setTimeout(() => {
+      const chat = document.getElementById('wmChat');
+      if (chat) chat.innerHTML = _htmlList(msgs);
+    }, 250);
+
+    try {
+      await deleteDoc(doc(db, 'mensajes', id));
+      Notificacion('Eliminado', 'success', 1200);
+    } catch (e) {
+      console.error(e);
+      msgs = backup;
+      _save(msgs);
+      const chat = document.getElementById('wmChat');
+      if (chat) chat.innerHTML = _htmlList(msgs);
+      Notificacion('Error al eliminar', 'error');
+    }
+  };
+
+  let eventListeners: { target: EventTarget; type: string; handler: EventListener }[] = [];
+  const listen = (target: EventTarget, type: string, handler: EventListener) => {
+    target.addEventListener(type, handler);
+    eventListeners.push({ target, type, handler });
+  };
+
+  const cleanup = () => {
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    eventListeners.forEach(({ target, type, handler }) => target.removeEventListener(type, handler));
+    eventListeners = [];
+    msgs = [];
+    pendiente = null;
+    enviando = false;
+  };
+
+  const setupEvents = (userEmail: string) => {
+    const tx = document.getElementById('wmNuevo') as HTMLTextAreaElement;
+    const count = document.getElementById('wmCount');
+    const btn = document.getElementById('wmEnviar') as HTMLButtonElement;
+
+    if (tx && count && btn) {
+      listen(tx, 'input', () => {
+        count.textContent = `${tx.value.length}/500`;
+        btn.disabled = !tx.value.trim();
+        tx.style.height = 'auto';
+        tx.style.height = `${Math.min(tx.scrollHeight, 150)}px`;
+      });
+      listen(tx, 'keydown', (e: Event) => {
+        const keyEvent = e as KeyboardEvent;
+        if (keyEvent.key === 'Enter' && !keyEvent.shiftKey) {
+          keyEvent.preventDefault();
+          _enviar(userEmail);
+        }
+      });
+    }
+
+    if (btn) listen(btn, 'click', () => _enviar(userEmail));
+
+    const chatEl = document.getElementById('wmChat');
+    if (chatEl) {
+      listen(chatEl, 'click', (e: Event) => {
+        const target = e.target as HTMLElement;
+
+        const item = target.closest('.wm_item') as HTMLElement;
+        if (!item) return;
+
+        if (target.closest('.wm_del')) {
+          e.stopPropagation();
+          pendiente = (target.closest('.wm_del') as HTMLElement).dataset.id || null;
+          document.getElementById('wmEliminar')?.classList.add('show');
+          return;
+        }
+
+        const id = item.dataset.id;
+        const msg = msgs.find(m => m.id === id);
+        if (!msg) return;
+        wicopy(msg.mensaje);
+        Mensaje('Mensaje copiado', 'success');
+
+        item.classList.add('copied');
+        setTimeout(() => item.classList.remove('copied'), 800);
+      });
+    }
+
+    const btnCancel = document.getElementById('wmCancel');
+    if (btnCancel) listen(btnCancel, 'click', () => { document.getElementById('wmEliminar')?.classList.remove('show'); pendiente = null; });
+
+    const modal = document.getElementById('wmEliminar');
+    if (modal) listen(modal, 'click', (e: Event) => { if (e.target === modal) { modal.classList.remove('show'); pendiente = null; } });
+
+    const btnConfirm = document.getElementById('wmConfirm');
+    if (btnConfirm) listen(btnConfirm, 'click', _eliminar);
+  };
+
+  const initMensajes = async () => {
+    cleanup();
+    wiTip();
+
+    const u = await protegerRuta(['usuario', 'editor', 'gestor', 'admin']);
+    if (!u) return;
+
+    const userEmail = u.email;
+    const display = u.nombre || u.usuario || u.email || '';
+    currentUserId = u.id || '';
+
+    const welcome = document.getElementById('wmHeaderWelcome');
+    if (welcome) welcome.innerHTML = `${Saludar()} <strong>${display}</strong>`;
+
+    setupEvents(userEmail);
+
+    const initialCache = _cache();
+    const chat = document.getElementById('wmChat');
+    if (chat) chat.innerHTML = _htmlList(initialCache);
+    _scroll();
+
+    _status(false);
+
+    const q = query(
+      collection(db, 'mensajes'),
+      where('userId', '==', currentUserId),
+      limit(LIMIT)
+    );
+
+    unsubscribe = onSnapshot(q, (snap) => {
+      msgs = snap.docs.map(doc => {
+        const data = doc.data({ serverTimestamps: 'estimate' });
+        return {
+          id: doc.id,
+          ...data,
+          creado: toMs(data.creado)
+        };
+      });
+      msgs.sort((a, b) => (a.creado || Date.now()) - (b.creado || Date.now()));
+      _save(msgs);
+      const chatEl = document.getElementById('wmChat');
+      if (chatEl) chatEl.innerHTML = _htmlList(msgs);
+      _status(true);
+      _scroll();
+    }, (error) => {
+      console.error('[mensajes] onSnapshot error:', error);
+      _status(false);
+      const cache = _cache();
+      const chatEl = document.getElementById('wmChat');
+      if (chatEl && cache.length) {
+        msgs = cache;
+        chatEl.innerHTML = _htmlList(msgs);
+        Notificacion('Caché local', 'warning', 2000);
+      } else if (chatEl) {
+        chatEl.innerHTML = _empty('fa-wifi-slash', 'Sin conexión', 'Verifica tu internet');
+      }
+    });
+  };
+
+  document.addEventListener('astro:page-load', initMensajes);
+  document.addEventListener('astro:before-preparation', cleanup);
+</script>

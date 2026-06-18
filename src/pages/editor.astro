@@ -1,0 +1,1146 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app } from '../wii.js';
+---
+
+<style is:global>
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+.ed_container {
+  display: flex;
+  flex-direction: column;
+  gap: 3vh;
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  padding: 2vh 0 6vh;
+  animation: smw_entry 0.6s ease-out;
+}
+
+/* Header Premium */
+.ed_header {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  padding: 3.5vh 4vw;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.015);
+}
+
+.ed_header_glow {
+  position: absolute;
+  top: -20%; right: -10%; width: 40%; height: 140%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--mco) 10%, transparent) 0%, transparent 70%);
+  filter: blur(60px); z-index: 0;
+}
+
+.ed_header_content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3vh;
+  flex-wrap: wrap;
+}
+
+.ed_welcome_box {
+  display: flex;
+  align-items: center;
+  gap: 2.5vh;
+}
+
+.ed_welcome_av {
+  width: 8vh;
+  height: 8vh;
+  background: var(--mco);
+  color: var(--bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m3);
+  font-weight: 800;
+  box-shadow: 0 0 15px color-mix(in srgb, var(--mco) 25%, transparent);
+}
+
+.ed_welcome_txt h1 {
+  font-size: var(--fz_l1);
+  font-weight: 800;
+  color: var(--tx1);
+  letter-spacing: -1px;
+}
+
+.ed_welcome_txt h1 strong {
+  color: var(--mco);
+}
+
+.ed_welcome_txt p {
+  font-size: var(--fz_s2);
+  color: var(--tx3);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.ed_header_actions {
+  display: flex;
+  gap: 1.5vh;
+  align-items: center;
+}
+
+/* KPIs Grid */
+.ed_kpi_grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2vh;
+}
+
+@media (max-width: 1024px) {
+  .ed_kpi_grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .ed_kpi_grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ed_kpi_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 16px;
+  padding: 2.5vh;
+  display: flex;
+  align-items: center;
+  gap: 2vh;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01);
+  transition: all 0.3s;
+}
+
+.ed_kpi_card:hover {
+  transform: translateY(-2px);
+  border-color: var(--brd2);
+}
+
+.ed_kpi_icon {
+  width: 6vh;
+  height: 6vh;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m2);
+}
+
+.ed_kpi_icon.total { background: color-mix(in srgb, var(--mco) 10%, transparent); color: var(--mco); }
+.ed_kpi_icon.active { background: color-mix(in srgb, var(--success) 10%, transparent); color: var(--success); }
+.ed_kpi_icon.drafts { background: color-mix(in srgb, var(--tx3) 10%, transparent); color: var(--tx2); }
+.ed_kpi_icon.pins { background: color-mix(in srgb, var(--warning) 10%, transparent); color: var(--warning); }
+
+.ed_kpi_info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ed_kpi_label {
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  color: var(--tx3);
+  text-transform: uppercase;
+}
+
+.ed_kpi_val {
+  font-size: var(--fz_m5);
+  font-weight: 800;
+  color: var(--tx1);
+}
+
+/* Card Principal listado */
+.ed_card_main {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  padding: 3vh;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01);
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+}
+
+.ed_card_title_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--brd);
+  padding-bottom: 1.5vh;
+  flex-wrap: wrap;
+  gap: 1.5vh;
+}
+
+.ed_card_title_row h2 {
+  font-size: var(--fz_m3);
+  font-weight: 800;
+  color: var(--tx1);
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+}
+
+.ed_card_title_row h2 i {
+  color: var(--mco);
+}
+
+/* Controles de Búsqueda y Filtro */
+.ed_filters_row {
+  display: flex;
+  gap: 2vh;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ed_search_wrapper {
+  flex-grow: 1;
+  position: relative;
+}
+
+.ed_search_wrapper i {
+  position: absolute;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--tx3);
+}
+
+.ed_search_input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 12px;
+  padding: 0.7rem 1rem 0.7rem 2.8rem;
+  font-size: var(--fz_m1);
+  color: var(--tx);
+  outline: none;
+  transition: 0.3s;
+}
+
+.ed_search_input:focus {
+  border-color: var(--mco);
+  background: var(--wb);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mco) 15%, transparent);
+}
+
+.ed_filter_tags {
+  display: flex;
+  gap: 1vh;
+}
+
+.ed_filter_btn {
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  color: var(--tx2);
+  padding: 0.45rem 1rem;
+  border-radius: 99px;
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.ed_filter_btn:hover {
+  background: var(--bg4);
+  color: var(--tx1);
+}
+
+.ed_filter_btn.active {
+  background: var(--tx1);
+  color: var(--wb);
+  border-color: var(--tx1);
+}
+
+/* Tabla Desktop */
+.ed_table_wrapper {
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid var(--brd);
+  background: var(--wb);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015);
+}
+
+.ed_table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ed_table th {
+  background: linear-gradient(to bottom, var(--bg4), var(--bg5));
+  color: var(--tx2);
+  font-weight: 700;
+  font-size: var(--fz_s3);
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid var(--brd);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ed_table td {
+  padding: 1.3rem 1.4rem;
+  border-bottom: 1px solid var(--brd);
+  vertical-align: middle;
+  font-size: var(--fz_m1);
+  color: var(--tx1);
+  transition: background 0.2s ease;
+}
+
+.ed_table tr:last-child td {
+  border-bottom: none;
+}
+
+.ed_table tr {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ed_table tr:hover td {
+  background: color-mix(in srgb, var(--mco) 2%, var(--wb));
+}
+
+.ed_post_cell {
+  display: flex;
+  align-items: center;
+  gap: 2.2vh;
+  min-width: 280px;
+}
+
+.ed_post_thumb {
+  width: 11vh;
+  height: 7.2vh;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--brd);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: transform 0.3s ease;
+}
+
+.ed_table tr:hover .ed_post_thumb {
+  transform: scale(1.05);
+}
+
+.ed_post_title_info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ed_post_title {
+  font-weight: 700;
+  color: var(--tx1);
+  text-decoration: none;
+  line-height: 1.35;
+  transition: color 0.2s ease;
+}
+
+.ed_post_title:hover {
+  color: var(--mco);
+}
+
+.ed_post_url {
+  font-size: var(--fz_s4);
+  color: var(--tx3);
+  font-family: monospace;
+}
+
+.ed_badge_cat {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.ed_badge_status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 99px;
+  border: 1px solid transparent;
+  letter-spacing: 0.3px;
+}
+
+.ed_badge_status.public {
+  background: color-mix(in srgb, var(--success) 10%, transparent);
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 15%, transparent);
+}
+
+.ed_badge_status.draft {
+  background: color-mix(in srgb, var(--tx3) 10%, transparent);
+  color: var(--tx3);
+  border-color: color-mix(in srgb, var(--tx3) 15%, transparent);
+}
+
+.ed_badge_status.pinned {
+  background: color-mix(in srgb, var(--warning) 10%, transparent);
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 15%, transparent);
+}
+
+/* Métricas */
+.ed_metrics_cell {
+  display: flex;
+  gap: 1.2vh;
+  align-items: center;
+}
+
+.ed_metric_item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.ed_metric_item.views {
+  background: color-mix(in srgb, var(--mco) 8%, transparent);
+  color: var(--mco);
+  border-color: color-mix(in srgb, var(--mco) 12%, transparent);
+}
+
+.ed_metric_item.likes {
+  background: color-mix(in srgb, #fe0149 8%, transparent);
+  color: #fe0149;
+  border-color: color-mix(in srgb, #fe0149 12%, transparent);
+}
+
+.ed_actions_col {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.ed_btn_icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--brd);
+  background: var(--wb);
+  color: var(--tx2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_s2);
+  cursor: pointer;
+  transition: 0.25s;
+  text-decoration: none;
+}
+
+.ed_btn_icon:hover {
+  background: var(--bg4);
+  color: var(--tx1);
+  border-color: var(--brd2);
+}
+
+.ed_btn_icon.btn_edit:hover {
+  color: var(--mco);
+  border-color: color-mix(in srgb, var(--mco) 30%, transparent);
+}
+
+.ed_btn_icon.btn_delete:hover {
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 30%, transparent);
+}
+
+/* Vista Móvil */
+.ed_mobile_list {
+  display: none;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+@media (max-width: 768px) {
+  .ed_table_wrapper {
+    display: none !important;
+  }
+  .ed_mobile_list {
+    display: flex;
+  }
+}
+
+.ed_card_item {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 16px;
+  padding: 2.5vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.005);
+}
+
+.ed_mob_header {
+  display: flex;
+  gap: 2vh;
+  align-items: center;
+}
+
+.ed_mob_thumb {
+  width: 8vh;
+  height: 5.5vh;
+  border-radius: 6px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--brd);
+  flex-shrink: 0;
+}
+
+.ed_mob_title_box {
+  flex-grow: 1;
+}
+
+.ed_mob_title {
+  font-size: var(--fz_m1);
+  font-weight: 700;
+  color: var(--tx1);
+  line-height: 1.3;
+  display: block;
+}
+
+.ed_mob_meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--brd);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Estado Vacío */
+.ed_empty_state {
+  text-align: center;
+  padding: 8vh 0;
+  color: var(--tx3);
+}
+
+.ed_empty_state i {
+  font-size: 3rem;
+  opacity: 0.15;
+  margin-bottom: 1.5rem;
+}
+
+.ed_empty_state h3 {
+  font-size: var(--fz_m2);
+  color: var(--tx2);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.ed_empty_state p {
+  font-size: var(--fz_s2);
+  color: var(--tx3);
+}
+
+/* Modales */
+.ed_modal_overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.ed_modal_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  width: 90%;
+  max-width: 440px;
+  padding: 3.5vh;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  animation: smw_fall 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ed_modal_title {
+  font-size: var(--fz_m3);
+  font-weight: 800;
+  color: var(--tx1);
+  letter-spacing: -0.5px;
+}
+
+.ed_modal_text {
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.6;
+}
+
+.ed_modal_text strong {
+  color: var(--tx1);
+}
+
+.ed_modal_actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.ed_btn {
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.50rem;
+  text-decoration: none;
+}
+
+.ed_btn.btn_sec {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  color: var(--tx2);
+}
+.ed_btn.btn_sec:hover {
+  background: var(--bg4);
+  color: var(--tx1);
+}
+
+.ed_btn.btn_pri {
+  background: var(--mco);
+  color: var(--txa);
+  border: none;
+  box-shadow: 0 6px 12px color-mix(in srgb, var(--mco) 20%, transparent);
+}
+.ed_btn.btn_pri:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--mco) 30%, transparent);
+}
+
+.ed_btn.btn_danger {
+  background: var(--error);
+  color: var(--wb);
+  border: none;
+  box-shadow: 0 6px 12px color-mix(in srgb, var(--error) 20%, transparent);
+}
+.ed_btn.btn_danger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--error) 30%, transparent);
+}
+
+.dpn {
+  display: none !important;
+}
+</style>
+
+<Layout title="Dashboard de Redacción" robots="noindex, nofollow">
+  <div class="ed_container">
+    
+    <div id="ed_card" style="display: flex; flex-direction: column; gap: 3vh;">
+      
+      <!-- ══ ENCABEZADO ══ -->
+      <header class="ed_header">
+        <div class="ed_header_glow"></div>
+        <div class="ed_header_content">
+          <div class="ed_welcome_box">
+            <div class="ed_welcome_av" id="ed_av">?</div>
+            <div class="ed_welcome_txt">
+              <h1 id="ed_saludo">Cargando...</h1>
+              <p id="ed_role_lbl"><i class="fas fa-pen-nib"></i> Escritor</p>
+            </div>
+          </div>
+          <div class="ed_header_actions">
+            <a href="/nuevo" class="ed_btn btn_pri"><i class="fas fa-plus"></i> Nueva Historia</a>
+            <a href="/gestor" class="ed_btn btn_sec dpn" id="ed_btn_gestor"><i class="fas fa-shield-alt"></i> Panel Gestor</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- ══ KPIS REDACCIÓN ══ -->
+      <div class="ed_kpi_grid">
+        <div class="ed_kpi_card">
+          <div class="ed_kpi_icon total"><i class="fas fa-book"></i></div>
+          <div class="ed_kpi_info">
+            <span class="ed_kpi_label">Mis Historias</span>
+            <span class="ed_kpi_val" id="kpi_total">0</span>
+          </div>
+        </div>
+        <div class="ed_kpi_card">
+          <div class="ed_kpi_icon active"><i class="fas fa-globe"></i></div>
+          <div class="ed_kpi_info">
+            <span class="ed_kpi_label">Públicas</span>
+            <span class="ed_kpi_val" id="kpi_active">0</span>
+          </div>
+        </div>
+        <div class="ed_kpi_card">
+          <div class="ed_kpi_icon drafts"><i class="fas fa-file-signature"></i></div>
+          <div class="ed_kpi_info">
+            <span class="ed_kpi_label">Borradores</span>
+            <span class="ed_kpi_val" id="kpi_drafts">0</span>
+          </div>
+        </div>
+        <div class="ed_kpi_card">
+          <div class="ed_kpi_icon pins"><i class="fas fa-thumbtack"></i></div>
+          <div class="ed_kpi_info">
+            <span class="ed_kpi_label">Fijados (Pins)</span>
+            <span class="ed_kpi_val" id="kpi_pins">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TABLA DE PUBLICACIONES ══ -->
+      <div class="ed_card_main">
+        <div class="ed_card_title_row">
+          <h2><i class="fas fa-align-left"></i> Administrar Contenido</h2>
+          <span style="font-size: var(--fz_s3); color:var(--tx3); font-weight: 500;" id="list_count_lbl">0 artículos encontrados</span>
+        </div>
+
+        <!-- Controles de búsqueda y filtros -->
+        <div class="ed_filters_row">
+          <div class="ed_search_wrapper">
+            <i class="fas fa-search"></i>
+            <input 
+              type="text" 
+              id="ed_search" 
+              class="ed_search_input" 
+              placeholder="Buscar por título..." 
+              autocomplete="off"
+            />
+          </div>
+          <div class="ed_filter_tags">
+            <button class="ed_filter_btn active" data-filter="todos">Todos</button>
+            <button class="ed_filter_btn" data-filter="activo">Públicos</button>
+            <button class="ed_filter_btn" data-filter="borrador">Borradores</button>
+          </div>
+        </div>
+
+        <!-- LISTADOS (Desktop Table / Mobile Cards) -->
+        <div id="ed_list_container">
+          
+          <!-- Vista Desktop -->
+          <div class="ed_table_wrapper">
+            <table class="ed_table">
+              <thead>
+                <tr>
+                  <th>Artículo</th>
+                  <th>Categoría</th>
+                  <th>Métricas</th>
+                  <th>Estado</th>
+                  <th>Publicado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="ed_table_body">
+                <tr>
+                  <td colspan="5" style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--mco); margin-bottom: 1rem;"></i>
+                    <p style="color: var(--tx3); font-weight: 500;">Cargando tu espacio de trabajo...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Vista Móvil -->
+          <div class="ed_mobile_list" id="ed_mobile_list">
+            <div style="text-align: center; padding: 3rem; width: 100%;">
+              <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--mco); margin-bottom: 1rem;"></i>
+              <p style="color: var(--tx3); font-weight: 500;">Cargando tu espacio de trabajo...</p>
+            </div>
+          </div>
+
+          <!-- Estado Vacío -->
+          <div class="ed_empty_state dpn" id="ed_empty">
+            <i class="fas fa-feather"></i>
+            <h3>Sin resultados</h3>
+            <p id="ed_empty_desc">Aún no has redactado ninguna historia en {app}. ¡Crea tu primer post!</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ══ MODAL DE CONFIRMACIÓN DE BORRADO ══ -->
+  <div class="ed_modal_overlay dpn" id="delete_modal">
+    <div class="ed_modal_card">
+      <h3 class="ed_modal_title">¿Eliminar artículo?</h3>
+      <p class="ed_modal_text">
+        ¿Estás seguro de que deseas eliminar la historia <strong id="delete_post_title">historia</strong>?
+        <br /><br />
+        Esta acción es permanente y no se podrá deshacer. El artículo será retirado inmediatamente del blog público de {app}.
+      </p>
+      <div class="ed_modal_actions">
+        <button class="ed_btn btn_sec" id="delete_btn_cancel">Cancelar</button>
+        <button class="ed_btn btn_danger" id="delete_btn_confirm">Sí, Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+</Layout>
+
+<script>
+  import { app } from '../wii.js';
+  import { db } from '../lib/firebase.js';
+  import { collection, query, getDocs, orderBy, doc, deleteDoc } from 'firebase/firestore';
+  import { protegerRuta } from '../lib/auth.js';
+  import { getNombre, Saludar, Notificacion, getls, savels, wiDate } from '../lib/widev.js';
+
+  let u: any = null;
+  let posts: any[] = [];
+  let filterState: 'todos' | 'activo' | 'borrador' = 'todos';
+  let busqueda = '';
+  let activeDeletePost: any = null;
+
+  const getCatColor = (cat: string) => {
+    const c = (cat || '').toLowerCase();
+    if (c === 'cv') return '#ff3849';
+    if (c === 'ats') return '#0EBEFF';
+    if (c === 'entrevistas') return '#25b62a';
+    if (c === 'teletrabajo') return '#6a00f5';
+    if (c === 'marca personal' || c === 'buscar trabajo' || c === 'empleo') return '#ffa726';
+    return 'var(--mco)';
+  };
+
+  const getFiltered = () => {
+    return posts.filter(p => {
+      // 1. Filtro por Estado
+      if (filterState === 'activo') {
+        if (p.activo !== true) return false;
+      } else if (filterState === 'borrador') {
+        if (p.activo === true) return false;
+      }
+
+      // 2. Filtro por Buscador
+      if (busqueda.trim()) {
+        const queryStr = busqueda.toLowerCase().trim();
+        const titStr = (p.titulo || '').toLowerCase();
+        if (!titStr.includes(queryStr)) return false;
+      }
+
+      return true;
+    });
+  };
+
+  const updateKPIs = () => {
+    const total = posts.length;
+    const active = posts.filter(p => p.activo === true).length;
+    const drafts = posts.filter(p => p.activo !== true).length;
+    const pins = posts.filter(p => !!p.pin).length;
+
+    const lblTotal = document.getElementById('kpi_total');
+    const lblActive = document.getElementById('kpi_active');
+    const lblDrafts = document.getElementById('kpi_drafts');
+    const lblPins = document.getElementById('kpi_pins');
+
+    if (lblTotal) lblTotal.textContent = String(total);
+    if (lblActive) lblActive.textContent = String(active);
+    if (lblDrafts) lblDrafts.textContent = String(drafts);
+    if (lblPins) lblPins.textContent = String(pins);
+  };
+
+  const renderPosts = () => {
+    const list = getFiltered();
+    const tableBody = document.getElementById('ed_table_body');
+    const mobileList = document.getElementById('ed_mobile_list');
+    const emptySec = document.getElementById('ed_empty');
+    const countLbl = document.getElementById('list_count_lbl');
+
+    if (countLbl) {
+      countLbl.textContent = `${list.length} artículo${list.length === 1 ? '' : 's'} encontrado${list.length === 1 ? '' : 's'}`;
+    }
+
+    if (list.length === 0) {
+      if (tableBody) tableBody.innerHTML = '';
+      if (mobileList) mobileList.innerHTML = '';
+      if (emptySec) {
+        emptySec.classList.remove('dpn');
+        const emptyDesc = document.getElementById('ed_empty_desc');
+        if (emptyDesc) {
+          if (busqueda.trim()) {
+            emptyDesc.textContent = 'Ninguna de tus historias coincide con la búsqueda.';
+          } else {
+            emptyDesc.textContent = 'Aún no has redactado ninguna historia en ' + app + '. ¡Crea tu primer post!';
+          }
+        }
+      }
+      return;
+    }
+
+    if (emptySec) emptySec.classList.add('dpn');
+
+    // ── VISTA DESKTOP (TABLA) ──
+    if (tableBody) {
+      tableBody.innerHTML = list.map(p => {
+        const thumb = p.imagen || 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=300';
+        const dateStr = wiDate(null).get(p.creado, 'completo');
+        const catColor = getCatColor(p.categoria);
+        
+        let statusHtml = '';
+        if (p.pin) {
+          statusHtml = `<span class="ed_badge_status pinned"><i class="fas fa-thumbtack"></i> Pin</span>`;
+        } else if (p.activo) {
+          statusHtml = `<span class="ed_badge_status public"><i class="fas fa-globe"></i> Público</span>`;
+        } else {
+          statusHtml = `<span class="ed_badge_status draft"><i class="fas fa-file"></i> Borrador</span>`;
+        }
+
+        const metricsHtml = `
+          <div class="ed_metrics_cell">
+            <span class="ed_metric_item views" title="Vistas">
+              <i class="fas fa-eye"></i> ${p.vistas || 0}
+            </span>
+            <span class="ed_metric_item likes" title="Me encanta">
+              <i class="fas fa-heart"></i> ${p.likes || 0}
+            </span>
+          </div>
+        `;
+
+        return `
+          <tr id="row_${p.id}">
+            <td>
+              <div class="ed_post_cell">
+                <div class="ed_post_thumb" style="background-image: url('${thumb}')"></div>
+                <div class="ed_post_title_info">
+                  <a href="/${p.slug || p.id}" target="_blank" class="ed_post_title">${p.titulo || 'Sin título'}</a>
+                  <span class="ed_post_url">/${p.slug || p.id}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="ed_badge_cat" style="background: color-mix(in srgb, ${catColor} 10%, transparent); color: ${catColor}; border: 1px solid color-mix(in srgb, ${catColor} 20%, transparent);">${p.categoria || 'General'}</span>
+            </td>
+            <td>
+              ${metricsHtml}
+            </td>
+            <td>
+              ${statusHtml}
+            </td>
+            <td>
+              <span style="font-size:0.82rem;color:var(--tx2);font-weight:700;font-family:monospace;">${dateStr}</span>
+            </td>
+            <td>
+              <div class="ed_actions_col">
+                <a href="/nuevo?edit=${p.slug || p.id}" class="ed_btn_icon btn_edit" title="Editar historia"><i class="fas fa-pen"></i></a>
+                <button class="ed_btn_icon btn_delete" data-id="${p.id}" title="Eliminar historia"><i class="fas fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ── VISTA MÓVIL (TARJETAS) ──
+    if (mobileList) {
+      mobileList.innerHTML = list.map(p => {
+        const thumb = p.imagen || 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=300';
+        const dateStr = wiDate(null).get(p.creado, 'completo');
+        const catColor = getCatColor(p.categoria);
+        
+        let statusHtml = '';
+        if (p.pin) {
+          statusHtml = `<span class="ed_badge_status pinned"><i class="fas fa-thumbtack"></i> Pin</span>`;
+        } else if (p.activo) {
+          statusHtml = `<span class="ed_badge_status public"><i class="fas fa-globe"></i> Público</span>`;
+        } else {
+          statusHtml = `<span class="ed_badge_status draft"><i class="fas fa-file"></i> Borrador</span>`;
+        }
+
+        return `
+          <div class="ed_card_item" id="row_mob_${p.id}">
+            <div class="ed_mob_header">
+              <div class="ed_mob_thumb" style="background-image: url('${thumb}')"></div>
+              <div class="ed_mob_title_box">
+                <a href="/${p.slug || p.id}" target="_blank" class="ed_mob_title">${p.titulo || 'Sin título'}</a>
+                <div style="display:flex; gap:1vh; margin-top:0.35rem; flex-wrap:wrap; align-items:center;">
+                  <span class="ed_badge_cat" style="background: color-mix(in srgb, ${catColor} 10%, transparent); color: ${catColor}; border: 1px solid color-mix(in srgb, ${catColor} 20%, transparent);">${p.categoria || 'General'}</span>
+                  ${statusHtml}
+                </div>
+              </div>
+            </div>
+            
+            <div class="ed_mob_metrics" style="display:flex; gap:1vh; margin-top:0.5rem; border-top:1px dashed var(--brd); padding-top:0.5rem;">
+              <span class="ed_metric_item views" style="font-size:0.75rem;"><i class="fas fa-eye"></i> ${p.vistas || 0}</span>
+              <span class="ed_metric_item likes" style="font-size:0.75rem;"><i class="fas fa-heart"></i> ${p.likes || 0}</span>
+            </div>
+
+            <div class="ed_mob_meta">
+              <div>
+                <small style="font-size:0.75rem;color:var(--tx3);display:block;">Publicado:</small>
+                <small style="font-size:0.78rem;color:var(--tx2);font-weight:700;display:block;font-family:monospace;">${dateStr}</small>
+              </div>
+              <div class="ed_actions_col">
+                <a href="/nuevo?edit=${p.slug || p.id}" class="ed_btn_icon btn_edit"><i class="fas fa-pen"></i></a>
+                <button class="ed_btn_icon btn_delete" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  };
+
+  const handleBorrarPost = async () => {
+    if (!activeDeletePost) return;
+    const p = activeDeletePost;
+
+    const modal = document.getElementById('delete_modal');
+    if (modal) modal.classList.add('dpn');
+
+    try {
+      // 1. Borrar de Firestore
+      await deleteDoc(doc(db, 'blog', p.id));
+
+      // 2. Limpiar cache local del post y blog
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem(`wi_post_${p.slug || p.id}`);
+        Object.keys(localStorage)
+          .filter(k => k.startsWith('wi_blogs') || k.startsWith('wi_draft_edit_' + (p.slug || p.id)))
+          .forEach(k => localStorage.removeItem(k));
+      }
+
+      // 3. Remover de la lista en memoria y re-renderizar
+      posts = posts.filter(item => item.id !== p.id);
+      updateKPIs();
+      renderPosts();
+      Notificacion('Artículo eliminado permanentemente', 'success');
+    } catch(e) {
+      console.error(e);
+      Notificacion('Error al intentar eliminar el artículo', 'error');
+    } finally {
+      activeDeletePost = null;
+    }
+  };
+
+  const setupEvents = () => {
+    // Escuchar clics en el botón de borrar
+    document.addEventListener('click', (e: Event) => {
+      const target = e.target as HTMLElement;
+      
+      const btnDel = target.closest('.btn_delete');
+      if (btnDel) {
+        const id = btnDel.getAttribute('data-id');
+        const p = posts.find(item => item.id === id);
+        if (p) {
+          activeDeletePost = p;
+          const lblTitle = document.getElementById('delete_post_title');
+          const modal = document.getElementById('delete_modal');
+          if (lblTitle) lblTitle.textContent = `"${p.titulo || 'Sin título'}"`;
+          if (modal) modal.classList.remove('dpn');
+        }
+      }
+    });
+
+    // Cancelar/Confirmar borrado
+    const btnCancel = document.getElementById('delete_btn_cancel');
+    const btnConfirm = document.getElementById('delete_btn_confirm');
+    const modal = document.getElementById('delete_modal');
+
+    if (btnCancel && modal) {
+      btnCancel.addEventListener('click', () => {
+        modal.classList.add('dpn');
+        activeDeletePost = null;
+      });
+    }
+
+    if (btnConfirm) {
+      btnConfirm.addEventListener('click', handleBorrarPost);
+    }
+
+    // Buscador
+    const searchInp = document.getElementById('ed_search');
+    if (searchInp) {
+      searchInp.addEventListener('input', (e: Event) => {
+        busqueda = (e.target as HTMLInputElement).value;
+        renderPosts();
+      });
+    }
+
+    // Filtros
+    const filters = document.querySelectorAll('.ed_filter_btn');
+    filters.forEach(btn => {
+      btn.addEventListener('click', (e: Event) => {
+        filters.forEach(b => b.classList.remove('active'));
+        const activeBtn = e.currentTarget as HTMLElement;
+        activeBtn.classList.add('active');
+        filterState = (activeBtn.getAttribute('data-filter') as any) || 'todos';
+        renderPosts();
+      });
+    });
+  };
+
+  const init = async () => {
+    u = await protegerRuta(['editor', 'gestor', 'admin']);
+    if (!u) return;
+
+    // Iniciales
+    const iniciales = `${(u.nombre || '?')[0]}${(u.apellidos || '')[0] || ''}`.toUpperCase();
+    const avEl = document.getElementById('ed_av');
+    if (avEl) avEl.textContent = iniciales;
+
+    // Saludo
+    const saludoEl = document.getElementById('ed_saludo');
+    if (saludoEl) saludoEl.innerHTML = `${Saludar()} <strong>${getNombre(u.nombre || u.usuario || '')}</strong>`;
+
+    // Role Label
+    const roleLbl = document.getElementById('ed_role_lbl');
+    if (roleLbl) {
+      if (u.rol === 'admin') roleLbl.innerHTML = '<i class="fas fa-crown"></i> Administrador';
+      else if (u.rol === 'gestor') roleLbl.innerHTML = '<i class="fas fa-shield-alt"></i> Gestor Editorial';
+      else roleLbl.innerHTML = '<i class="fas fa-pen-fancy"></i> Editor de ' + app;
+    }
+
+    // Botón Gestor si rol es gestor o admin
+    const btnGestor = document.getElementById('ed_btn_gestor');
+    if (btnGestor && (u.rol === 'gestor' || u.rol === 'admin')) {
+      btnGestor.classList.remove('dpn');
+    }
+
+    const loader = document.getElementById('ed_loader');
+    const card = document.getElementById('ed_card');
+
+    try {
+      // 1. Consultar posts de Firestore de forma unificada (Trabajo en equipo)
+      const q = query(collection(db, 'blog'), orderBy('creado', 'desc'));
+      const snap = await getDocs(q);
+      posts = snap.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          creado: data.creado
+        };
+      });
+
+      updateKPIs();
+      renderPosts();
+      setupEvents();
+    } catch(e) {
+      console.error(e);
+      Notificacion('Error cargando base de datos', 'error');
+    }
+  };
+
+  document.addEventListener('astro:page-load', init);
+</script>

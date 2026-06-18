@@ -1,0 +1,1516 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app, id } from '../wii.js';
+---
+
+<style is:global>
+@import "../lib/blog/post.css";
+
+/* ── 1. WRAP & HEAD ──────────────────────────────── */
+.nu_wrap {
+  margin: 0 auto;
+  padding: 0 1vh;
+}
+.nu_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2vh;
+  padding-bottom: 1.5vh;
+  border-bottom: 1px solid var(--brd);
+  flex-wrap: wrap;
+  gap: 1vh;
+}
+.nu_head_left h1 {
+  font-size: var(--fz_l2);
+  font-weight: 800;
+  color: var(--tx1);
+  display: flex;
+  align-items: center;
+  gap: 0.8vh;
+  margin: 0;
+}
+.nu_head_left h1 i { color: var(--mco); }
+.nu_head_left p { color: var(--tx3); font-size: var(--fz_m2); margin: 0.3vh 0 0; }
+.nu_head_right { display: flex; gap: 0.8vh; align-items: center; }
+
+/* ── 2. LAYOUT 2 COLUMNAS ────────────────────────── */
+.nu_layout {
+  display: grid;
+  grid-template-columns: 1fr 26%;
+  gap: 2vw;
+  align-items: start;
+}
+.nu_left, .nu_right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+}
+
+/* ── 3. CARDS ────────────────────────────────────── */
+.nu_card {
+  background: var(--wb);
+  border-radius: 1.8vh;
+  padding: 3vh;
+  border: 1px solid var(--brd);
+  box-shadow: 0 4px 12px rgba(0,0,0,.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.nu_card_title {
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  color: var(--tx1);
+  display: flex;
+  align-items: center;
+  gap: 0.6vh;
+  padding-bottom: 0.8vh;
+  margin-bottom: 0.4vh;
+}
+.nu_card_title i { color: var(--mco); }
+.nu_hint {
+  color: var(--tx3);
+  font-size: var(--fz_s3);
+  font-weight: 400;
+}
+.nu_card_title_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.8vh;
+  margin-bottom: 0.4vh;
+  flex-wrap: wrap;
+  gap: 0.5vh;
+}
+.nu_card_title_row > span {
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  color: var(--tx1);
+  display: flex;
+  align-items: center;
+  gap: 0.6vh;
+}
+.nu_card_title_row > span i { color: var(--mco); }
+.nu_counter {
+  text-align: right;
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+}
+.nu_content_footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.6vh;
+  border-top: 1px solid var(--brd);
+}
+.nu_content_footer span {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  display: flex;
+  align-items: center;
+  gap: 0.4vh;
+}
+.nu_content_footer i { color: var(--mco); }
+
+/* Input título grande */
+.nu_titulo_inp {
+  font-size: var(--fz_m5);
+  font-weight: 700;
+  padding: 1.2vh 1.5vh;
+  border-radius: 1vh;
+}
+
+/* Base global de Inputs (Estilo Perfil) */
+.nu_card input[type="text"],
+.nu_card input[type="url"],
+.nu_card textarea {
+  width: 100%;
+  padding: 1.2vh 1.5vh;
+  border: 2px solid var(--bg4);
+  border-radius: 1vh;
+  background: var(--bg);
+  color: var(--tx);
+  font-family: var(--ff_P);
+  font-size: var(--fz_m1);
+  transition: all .3s;
+}
+.nu_card input[type="text"]:focus,
+.nu_card input[type="url"]:focus,
+.nu_card textarea:focus {
+  border-color: var(--mco);
+  outline: none;
+  background: var(--wb);
+}
+
+/* Rejilla para SEO (Resumen y Keywords) */
+.nu_grid_seo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5vw;
+}
+
+@media (max-width: 900px) {
+  .nu_grid_seo { grid-template-columns: 1fr; }
+}
+
+/* ── 4. SLUG EDITABLE ────────────────────────────── */
+.nu_slug_box {
+  display: flex;
+  align-items: center;
+  background: var(--bg4);
+  border: 1px solid var(--brd);
+  border-radius: 0.7vh;
+  overflow: hidden;
+  transition: border-color var(--tr_f);
+  margin-top: 1.5vh;
+}
+.nu_slug_label {
+  display: flex;
+  align-items: center;
+  gap: 0.4vh;
+  padding: 0.8vh 1vh;
+  font-size: var(--fz_s4);
+  font-weight: 600;
+  color: var(--mco);
+  white-space: nowrap;
+  border-right: 1px solid var(--brd);
+  background: var(--bg5);
+}
+.nu_slug_box input {
+  flex: 1;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font-family: 'Courier New', monospace;
+  font-size: var(--fz_m1);
+  color: var(--tx1);
+  font-weight: 600;
+  padding: 0.8vh 1vh;
+  box-shadow: none !important;
+}
+.nu_slug_btn {
+  padding: 0.8vh 1.2vh;
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--brd);
+  color: var(--tx3);
+  cursor: pointer;
+  transition: all var(--tr_f);
+  border-radius: 0;
+}
+.nu_slug_btn:hover { background: var(--mco); color: var(--txa); }
+.nu_slug_status {
+  font-size: var(--fz_s4);
+  display: flex;
+  align-items: center;
+  gap: 0.4vh;
+  min-height: 2vh;
+  padding: 0 0.3vh;
+  transition: all var(--tr_f);
+  margin-top: 0.5vh;
+}
+.nu_slug_status.ok { color: var(--success); }
+.nu_slug_status.err { color: var(--error); }
+
+/* ── 5. TOOLBAR HTML ─────────────────────────────── */
+.nu_toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5vh;
+  padding: 0.6vh;
+  background: var(--bg4);
+  border-radius: 0.6vh;
+  border: 1px solid var(--brd);
+  margin-bottom: 1vh;
+}
+.nu_toolbar_grp {
+  display: flex;
+  gap: 0.4vh;
+}
+.nu_toolbar_grp.border_right {
+  border-right: 1px solid var(--brd);
+  padding-right: 0.6vh;
+  margin-right: 0.2vh;
+}
+.nu_toolbar_grp.border_left {
+  border-left: 1px solid var(--brd);
+  padding-left: 0.6vh;
+  margin-left: 0.2vh;
+}
+.nu_tool_h3_span {
+  font-size: 0.85em;
+  font-weight: bold;
+}
+.nu_tool .fa-briefcase { color: var(--mco); }
+.nu_tool .fa-lightbulb { color: #FFC107; }
+.nu_tool .fa-chart-line { color: #0edeFF; }
+.nu_tool .fa-user-tie { color: #e0a910; }
+.nu_tool .fa-heart { color: #fe0149; }
+.nu_tool .fa-star { color: #FFB636; }
+.nu_tool .fa-circle-check { color: #3cd741; }
+.nu_tool .fa-circle-xmark { color: #ff3849; }
+
+.nu_tool {
+  width: 3.6vh;
+  height: 3.6vh;
+  padding: 0;
+  background: var(--wb);
+  color: var(--tx2);
+  border: 1px solid var(--brd);
+  border-radius: 0.5vh;
+  font-size: var(--fz_m1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+.nu_tool:hover {
+  background: var(--mco);
+  color: var(--txa);
+  border-color: var(--mco);
+  transform: translateY(-0.2vh);
+}
+
+/* ── 6. EDITOR & PREVIEW ─────────────────────────── */
+.nu_editor_tabs {
+  display: flex;
+  gap: 0.4vh;
+}
+.nu_tab {
+  padding: 0.5vh 1.2vh;
+  background: var(--bg4);
+  color: var(--tx3);
+  border: 1px solid var(--brd);
+  border-radius: 0.6vh;
+  font-size: var(--fz_s4);
+  cursor: pointer;
+  transition: all var(--tr_f);
+  display: flex;
+  align-items: center;
+  gap: 0.4vh;
+}
+.nu_tab.active, .nu_tab:hover {
+  background: var(--mco);
+  color: var(--txa);
+  border-color: var(--mco);
+}
+.nu_code {
+  font-family: 'Courier New', monospace;
+  font-size: var(--fz_s4);
+  background: var(--bg);
+  color: var(--txe);
+  min-height: 36vh;
+  line-height: 1.7;
+  resize: vertical;
+  border-radius: 0.6vh;
+}
+.nu_html_prev {
+  min-height: 20vh;
+  padding: 1.5vh;
+  background: var(--wb);
+  border-radius: 1vh;
+  border: 1px solid var(--brd);
+  color: var(--tx);
+  line-height: 1.9;
+  font-size: var(--fz_m2);
+  overflow-y: auto;
+  margin-top: 1vh;
+  overflow-wrap: break-word;
+}
+.nu_image_input_group {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  margin-bottom: 1.5vh;
+}
+.nu_image_input_group.no_margin {
+  margin-bottom: 0;
+}
+.nu_image_field_label {
+  font-size: var(--fz_s4);
+  color: var(--tx2);
+  font-weight: 600;
+}
+
+/* ── 7. IMAGEN DESTACADA ─────────────────────────── */
+.nu_img_prev {
+  position: relative;
+  margin-top: 0.5vh;
+  border-radius: 1vh;
+  overflow: hidden;
+  border: 1px solid var(--brd);
+}
+.nu_img_prev img {
+  width: 100%;
+  height: 20vh;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+}
+.nu_img_clear {
+  position: absolute;
+  top: 0.8vh;
+  right: 0.8vh;
+  width: 3.5vh;
+  height: 3.5vh;
+  padding: 0;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: var(--fz_m2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+.nu_img_clear:hover { background: var(--error); }
+
+/* ── 8. SUGERENCIAS Y CHIPS (Categorías y Tags) ──────────────────────────── */
+.nu_sug_box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6vh;
+  margin-top: 0.8vh;
+}
+.nu_sug_chip {
+  padding: 0.4vh 1vh;
+  background: var(--bg4);
+  border: 1px solid var(--brd);
+  border-radius: 5vh;
+  font-size: var(--fz_s4);
+  color: var(--tx3);
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+.nu_sug_chip:hover {
+  background: color-mix(in srgb, var(--mco) 10%, transparent);
+  border-color: var(--mco);
+  color: var(--mco);
+}
+
+/* ── 9. TAGS CHIPS ───────────────────────────────── */
+.nu_tags_box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5vh;
+  min-height: 2vh;
+  padding: 0.4vh 0;
+}
+.nu_tag_chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4vh;
+  padding: 0.4vh 1vh;
+  background: var(--bg5);
+  color: var(--mco);
+  border-radius: 2vh;
+  font-size: var(--fz_s4);
+  font-weight: 600;
+  border: 1px solid var(--mco);
+}
+.nu_tag_rm {
+  cursor: pointer;
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  transition: color var(--tr_f);
+  padding: 0;
+}
+.nu_tag_rm:hover { color: var(--error); }
+
+/* ── 10. CHECKS & PUBLICAR ───────────────────────── */
+.nu_card_publish { border: 2px solid var(--mco); }
+.nu_card_publish .nu_card_title { color: var(--mco); }
+.nu_publish_opts { display: flex; flex-direction: column; gap: 0.6vh; }
+.nu_check_l {
+  display: flex !important;
+  align-items: center;
+  gap: 0.8vh;
+  cursor: pointer;
+  padding: 1.2vh 1.5vh;
+  background: var(--wb);
+  border-radius: 1vh;
+  border: 2px solid var(--bg4);
+  transition: all var(--tr_f);
+  margin: 0;
+}
+.nu_check_l:hover { background: var(--bg5); border-color: var(--mco); }
+.nu_check_l input { width: auto; }
+.nu_check_l span {
+  display: flex;
+  align-items: center;
+  gap: 0.5vh;
+  font-size: var(--fz_m1);
+  font-weight: 500;
+  color: var(--tx1);
+}
+.nu_check_l i { color: var(--mco); }
+
+/* ── 11. BOTONES ─────────────────────────────────── */
+.nu_btn_submit {
+  padding: 1.2vh 2.5vh;
+  background: var(--mco);
+  color: var(--txa);
+  border: none;
+  border-radius: 0.8vh;
+  font-size: var(--fz_m3);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--tr_m);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6vh;
+  box-shadow: 0 0.4vh 1.5vh var(--bg5);
+}
+.nu_btn_submit:hover { transform: translateY(-0.3vh); box-shadow: 0 0.8vh 2vh var(--bg5); }
+.nu_btn_full { width: 100%; margin-top: 0.5vh; }
+.nu_btn_outline {
+  padding: 1vh 1.8vh;
+  background: transparent;
+  color: var(--mco);
+  border: 1.5px solid var(--mco);
+  border-radius: 0.8vh;
+  font-size: var(--fz_m2);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_f);
+  display: flex;
+  align-items: center;
+  gap: 0.5vh;
+}
+.nu_btn_outline:hover { background: var(--mco); color: var(--txa); }
+
+/* ── 12. AUTOR INFO ──────────────────────────────── */
+.nu_autor_info {
+  display: flex;
+  align-items: center;
+  gap: 1.2vh;
+  padding: 0.8vh;
+  background: var(--bg4);
+  border-radius: 0.8vh;
+}
+.nu_autor_av i {
+  font-size: var(--fz_x1);
+  color: var(--mco);
+  opacity: 0.7;
+}
+.nu_autor_info strong {
+  display: block;
+  font-size: var(--fz_m2);
+  color: var(--tx1);
+}
+.nu_autor_info span {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+}
+
+/* ── 13. ACCESO RESTRINGIDO ──────────────────────── */
+.nu_err { gap: 2vh; min-height: 50vh; color: var(--tx3); }
+.nu_err i { font-size: var(--fz_x3); color: var(--mco); opacity: 0.5; }
+.nu_err h2 { font-size: var(--fz_l2); color: var(--tx1); }
+.nu_btn {
+  padding: 1.2vh 3vh;
+  background: var(--mco);
+  color: var(--txa);
+  border-radius: 1vh;
+  font-weight: 600;
+  font-size: var(--fz_m3);
+  transition: all var(--tr_f);
+  display: flex;
+  align-items: center;
+  gap: 0.6vh;
+}
+.nu_btn:hover { transform: translateY(-0.2vh); }
+
+/* ── 14. RESPONSIVE ──────────────────────────────── */
+@media (max-width: 900px) {
+  .nu_layout { grid-template-columns: 1fr; }
+  .nu_right { order: -1; }
+  .nu_card_publish { display: none; } /* ya hay botón en el head */
+  .nu_wrap { padding: 1vh 0 6vh; }
+}
+@media (max-width: 600px) {
+  .nu_head { flex-direction: column; align-items: flex-start; }
+  .nu_cats_grid { grid-template-columns: 1fr 1fr 1fr; }
+  .nu_code { min-height: 28vh; }
+}
+.nu_counter_box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  margin-top: 0.6vh;
+}
+.nu_status_msg {
+  font-weight: 600;
+  font-size: var(--fz_s3);
+  transition: color var(--tr_f);
+}
+.nu_status_msg.warning { color: var(--warning); }
+.nu_status_msg.success { color: var(--success); }
+.nu_status_msg.error { color: var(--error); }
+</style>
+
+<Layout title="Nueva publicación" name={app} robots="noindex, nofollow">
+  <div class="nu_wrap">
+    <div class="nu_head">
+      <div class="nu_head_left">
+        <h1 id="nu_main_title"><i class="fas fa-laptop-code"></i> Nueva publicación</h1>
+        <p id="nu_edit_info"></p>
+      </div>
+      <div class="nu_head_right">
+        <a href="/blog" id="nu_view_post_btn" class="nu_btn_outline dpn" title="Ver post"><i class="fas fa-eye"></i> Ver</a>
+        <button type="submit" form="nu_form" id="nu_submit" class="nu_btn_submit"><i class="fas fa-paper-plane"></i> <span id="nu_btn_lbl">Publicar</span></button>
+      </div>
+    </div>
+    
+    <form id="nu_form" autocomplete="off">
+      <div class="nu_layout">
+        <div class="nu_left">
+          
+          <div class="nu_card">
+            <div class="nu_card_title"><i class="fas fa-heading"></i> Título</div>
+            <input id="nu_titulo" type="text" class="nu_titulo_inp" placeholder="Escribe un título impactante... (Mínimo: 35, Máximo: 47)" maxlength="47" required/>
+            <div class="nu_counter_box">
+              <span id="nu_titulo_msg" class="nu_status_msg"></span>
+              <span><span id="nu_titulo_cnt">0</span>/47</span>
+            </div>
+            <div class="nu_slug_box">
+              <span class="nu_slug_label"><i class="fas fa-link"></i> <span id="nu_domain_lbl">{id}.vercel.app/</span></span>
+              <input id="nu_slug_inp" type="text" placeholder="novedades-ia" maxlength="32" spellcheck="false"/>
+            </div>
+            <div class="nu_counter_box">
+              <span id="nu_slug_msg" class="nu_status_msg"></span>
+              <span><span id="nu_slug_cnt">0</span>/32</span>
+            </div>
+            <div id="nu_slug_status" class="nu_slug_status"></div>
+          </div>
+          
+          <div class="nu_grid_seo">
+            <div class="nu_card">
+              <div class="nu_card_title"><i class="fas fa-align-left"></i> Resumen (Meta Description)</div>
+              <textarea id="nu_resumen" rows="3" maxlength="150" placeholder="Describe en pocas palabras... (Mínimo: 100, Máximo: 150)"></textarea>
+              <div class="nu_counter_box">
+                <span id="nu_resumen_msg" class="nu_status_msg"></span>
+                <span><span id="nu_resumen_cnt">0</span>/150</span>
+              </div>
+            </div>
+            <div class="nu_card">
+              <div class="nu_card_title"><i class="fas fa-search"></i> Palabras Clave (Meta Keywords)</div>
+              <textarea id="nu_keywords" rows="3" maxlength="100" placeholder={`ia, programacion, javascript, python, frontend, ${id}...`}></textarea>
+              <div class="nu_counter_box">
+                <span id="nu_keywords_msg" class="nu_status_msg"></span>
+                <span><span id="nu_keywords_cnt">0</span>/5 palabras clave</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="nu_card nu_card_editor">
+            <div class="nu_card_title_row">
+              <span><i class="fas fa-code"></i> Contenido Markdown</span>
+              <div class="nu_editor_tabs">
+                <button type="button" class="nu_tab active" data-tab="edit"><i class="fas fa-code"></i> Editor</button>
+                <button type="button" class="nu_tab" data-tab="prev"><i class="fas fa-eye"></i> Preview</button>
+              </div>
+            </div>
+            <div class="nu_toolbar">
+              <div class="nu_toolbar_grp border_right">
+                <button type="button" class="nu_tool" data-tag="**texto**" title="Negrita"><i class="fas fa-bold"></i></button>
+                <button type="button" class="nu_tool" data-tag="*texto*" title="Cursiva"><i class="fas fa-italic"></i></button>
+                <button type="button" class="nu_tool" data-tag="~~texto~~" title="Tachado"><i class="fas fa-strikethrough"></i></button>
+              </div>
+              <div class="nu_toolbar_grp border_right">
+                <button type="button" class="nu_tool" data-tag="## Título H2" title="Subtítulo (H2)"><i class="fas fa-heading"></i></button>
+                <button type="button" class="nu_tool" data-tag="### Título H3" title="Sección (H3)"><span class="nu_tool_h3_span">H3</span></button>
+              </div>
+              <div class="nu_toolbar_grp border_right">
+                <button type="button" class="nu_tool" data-tag="- item" title="Lista"><i class="fas fa-list-ul"></i></button>
+                <button type="button" class="nu_tool" data-tag="- [ ] tarea" title="Checklist"><i class="fas fa-check-square"></i></button>
+                <button type="button" class="nu_tool" data-tag="> cita" title="Citar"><i class="fas fa-quote-right"></i></button>
+                <button type="button" class="nu_tool" data-tag="&#10;---&#10;" title="Separador"><i class="fas fa-minus"></i></button>
+              </div>
+              <div class="nu_toolbar_grp">
+                <button type="button" class="nu_tool" data-tag="`código`" title="Código"><i class="fas fa-code"></i></button>
+                <button type="button" class="nu_tool" data-tag="![desc](url)" title="Imagen"><i class="fas fa-image"></i></button>
+                <button type="button" class="nu_tool" data-tag="[texto](url)" title="Enlace"><i class="fas fa-link"></i></button>
+              </div>
+              <div class="nu_toolbar_grp border_left">
+                <button type="button" class="nu_tool" data-tag=":maletin:" title="Maletín Profesional"><i class="fas fa-briefcase"></i></button>
+                <button type="button" class="nu_tool" data-tag=":foco:" title="Idea / Foco"><i class="fas fa-lightbulb"></i></button>
+                <button type="button" class="nu_tool" data-tag=":grafico:" title="Gráfico de Crecimiento"><i class="fas fa-chart-line"></i></button>
+                <button type="button" class="nu_tool" data-tag=":usuario:" title="Profesional / Empleo"><i class="fas fa-user-tie"></i></button>
+                <button type="button" class="nu_tool" data-tag=":corazon:" title="Corazón"><i class="fas fa-heart"></i></button>
+                <button type="button" class="nu_tool" data-tag=":estrella:" title="Estrella"><i class="fas fa-star"></i></button>
+                <button type="button" class="nu_tool" data-tag=":si:" title="Check Verde"><i class="fas fa-circle-check"></i></button>
+                <button type="button" class="nu_tool" data-tag=":no:" title="X Roja"><i class="fas fa-circle-xmark"></i></button>
+              </div>
+            </div>
+            <textarea id="nu_contenido" class="nu_code" rows="18" placeholder="Escribe tu artículo en Markdown...&#10;&#10;## Tendencias de Inteligencia Artificial en 2026&#10;&#10;Las nuevas tecnologías de IA están..."></textarea>
+            <div id="nu_prev_html" class="nu_html_prev dpn po_contenido"></div>
+            <div class="nu_content_footer">
+              <span id="nu_palabras" class="nu_hint"><i class="fas fa-font"></i> 0 palabras</span>
+              <span id="nu_lectura" class="nu_hint"><i class="fas fa-clock"></i> 1 min</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="nu_right">
+          
+          <div class="nu_card nu_card_publish">
+            <div class="nu_card_title"><i class="fas fa-rocket"></i> <span id="nu_card_pub_lbl">Publicar</span></div>
+            <div class="nu_publish_opts">
+              <label class="nu_check_l"><input type="checkbox" id="nu_activo" checked/><span><i class="fas fa-globe"></i> Público</span></label>
+              <label class="nu_check_l"><input type="checkbox" id="nu_pin"/><span><i class="fas fa-thumbtack"></i> Pin</span></label>
+            </div>
+            <button type="submit" form="nu_form" id="nu_submit_btn_aside" class="nu_btn_submit nu_btn_full"><i class="fas fa-paper-plane"></i> <span id="nu_btn_lbl_aside">Publicar</span></button>
+          </div>
+
+          <div class="nu_card">
+            <div class="nu_card_title"><i class="fas fa-folder"></i> Categoría</div>
+            <input id="nu_cat_inp" type="text" placeholder="Escribe una categoría" maxlength="30" required/>
+          </div>
+
+          <div class="nu_card">
+            <div class="nu_card_title"><i class="fas fa-tags"></i> Tags</div>
+            <input id="nu_tags_inp" type="text" placeholder="Escribe tags con comas"/>
+            <div id="nu_tags_box" class="nu_tags_box"></div>
+          </div>
+
+          <div class="nu_card">
+            <div class="nu_card_title"><i class="fas fa-image"></i> Imágenes</div>
+            <div class="nu_image_input_group">
+              <label class="nu_image_field_label"><i class="fas fa-compress"></i> Miniatura (Inicio-Blog)</label>
+              <input id="nu_img" type="url" placeholder="https://... (Sugerido: 334x208px)" required/>
+              <div id="nu_img_prev" class="nu_img_prev dpn"><img id="nu_img_el" src="" alt=""/><button type="button" id="nu_img_clear" class="nu_img_clear" title="Quitar"><i class="fas fa-xmark"></i></button></div>
+            </div>
+            <div class="nu_image_input_group no_margin">
+              <label class="nu_image_field_label"><i class="fas fa-panorama"></i> ImagenTop (Post)</label>
+              <input id="nu_img_top" type="url" placeholder="https://... (Sugerido: 1180x425px)"/>
+              <div id="nu_img_top_prev" class="nu_img_prev dpn"><img id="nu_img_top_el" src="" alt=""/><button type="button" id="nu_img_top_clear" class="nu_img_clear" title="Quitar"><i class="fas fa-xmark"></i></button></div>
+            </div>
+          </div>
+
+          <div class="nu_card nu_card_autor">
+            <div class="nu_card_title"><i class="fas fa-user-pen"></i> Autor</div>
+            <div class="nu_autor_info">
+              <div class="nu_autor_av"><i class="fas fa-user-circle"></i></div>
+              <div>
+                <strong id="nu_autor_nombre">Anónimo</strong>
+                <span id="nu_autor_email"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>
+</Layout>
+
+<script>
+  import { db } from '../lib/firebase.js';
+  import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+  import { protegerRuta } from '../lib/auth.js';
+  import { wiSpin, Notificacion, Mensaje, getls, savels } from '../lib/widev.js';
+  import { linkweb } from '../wii.js';
+
+  let tags: string[] = [];
+  let sT: any, iT: any, iT2: any;
+  let isEdit = false;
+  let editSlug: string | null = null;
+  let draftTimer: any = null;
+  let eventListeners: { target: EventTarget; type: string; handler: EventListener }[] = [];
+
+  const COL = 'blog';
+
+  const toSlug = (s: string) => s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\b(el|la|los|las|de|del|en|un|una|y|a|con|por|para|que|es|se)\b/g,' ')
+    .replace(/[^a-z0-9\s_-]/g,'').replace(/\s+/g,'-').replace(/[-_]{2,}/g,'-').replace(/^[-_]|[-_]$/g,'').slice(0,50);
+
+  const countWords = (html: string) => {
+    const t = html.replace(/<[^>]*>/g,' ').split(/\s+/).filter(Boolean);
+    return { words: t.length, min: Math.max(1, Math.ceil(t.length/200)) };
+  };
+
+  const getEditSlug = () => new URLSearchParams(window.location.search).get('edit') || null;
+
+  const listen = (target: EventTarget, type: string, handler: EventListener) => {
+    target.addEventListener(type, handler);
+    eventListeners.push({ target, type, handler });
+  };
+
+  const cleanup = () => {
+    clearTimeout(draftTimer);
+    clearTimeout(iT);
+    clearTimeout(iT2);
+    eventListeners.forEach(({ target, type, handler }) => {
+      target.removeEventListener(type, handler);
+    });
+    eventListeners = [];
+    tags = [];
+    isEdit = false;
+    editSlug = null;
+  };
+
+  const toMs = (v: any) => {
+    if (!v) return null;
+    if (v.seconds) return v.seconds * 1000;
+    const dateObj = new Date(v);
+    return isNaN(dateObj.getTime()) ? null : dateObj.getTime();
+  };
+
+  const ser = (d: any) => {
+    if (!d) return null;
+    return {
+      ...d,
+      resumen: d.descripcion || '',
+      keywords: d.metaSEO?.keywords || '',
+      contenidoMd: d.contenidoMD || '',
+      tiempoLectura: d.lecturaTM || '',
+      creado: toMs(d.creado),
+      actualizado: toMs(d.actualizado)
+    };
+  };
+
+  const getPost = async (slug: string, force = false) => {
+    if (!force) { const c = getls(`wi_post_${slug}`); if (c) return { data: c, fromCache: true }; }
+    const docSnap = await getDoc(doc(db, 'blog', slug));
+    if (!docSnap.exists()) return null;
+    const mapped = ser({ id: docSnap.id, ...docSnap.data() });
+    savels(`wi_post_${slug}`, mapped, 12);
+    return { data: mapped, fromCache: false };
+  };
+
+  const clearPostCache = (s: string) => { if (typeof localStorage !== 'undefined') localStorage.removeItem(`wi_post_${s}`); };
+  const clearBlogCache = () => { if (typeof localStorage !== 'undefined') Object.keys(localStorage).filter(k => k.startsWith('wi_blogs')).forEach(k => localStorage.removeItem(k)); };
+
+  const wiSanihtml = (html: string) => {
+    if (!html) return '';
+    let str = html.toString();
+    str = str.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    str = str.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+    str = str.replace(/(\bon[a-z]+\s*=\s*"[^"]*")/gi, '');
+    str = str.replace(/(\bon[a-z]+\s*=\s*'[^']*')/gi, '');
+    str = str.replace(/(\bon[a-z]+\s*=\s*[^\s>]+)/gi, '');
+    str = str.replace(/<\/?(iframe|embed|object|applet)\b[^>]*>/gi, '');
+    str = str.replace(/href\s*=\s*(['"]?)\s*javascript:[^>]*\1/gi, 'href="#"');
+    return str;
+  };
+
+  const CUSTOM_ICONS: Record<string, string> = {
+    'corazon': '<i class="fas fa-heart po_ico_red"></i>',
+    'heart': '<i class="fas fa-heart po_ico_red"></i>',
+    'estrella': '<i class="fas fa-star po_ico_yellow"></i>',
+    'star': '<i class="fas fa-star po_ico_yellow"></i>',
+    'si': '<i class="fas fa-circle-check po_ico_green"></i>',
+    'check': '<i class="fas fa-circle-check po_ico_green"></i>',
+    'no': '<i class="fas fa-circle-xmark po_ico_red"></i>',
+    'times': '<i class="fas fa-circle-xmark po_ico_red"></i>',
+    'maletin': '<i class="fas fa-briefcase po_ico_mco"></i>',
+    'briefcase': '<i class="fas fa-briefcase po_ico_mco"></i>',
+    'foco': '<i class="fas fa-lightbulb po_ico_yellow"></i>',
+    'idea': '<i class="fas fa-lightbulb po_ico_yellow"></i>',
+    'lightbulb': '<i class="fas fa-lightbulb po_ico_yellow"></i>',
+    'grafico': '<i class="fas fa-chart-line po_ico_cyan"></i>',
+    'chart': '<i class="fas fa-chart-line po_ico_cyan"></i>',
+    'usuario': '<i class="fas fa-user-tie po_ico_gold"></i>',
+    'user': '<i class="fas fa-user-tie po_ico_gold"></i>',
+    'cruz': '<i class="fas fa-cross po_ico_mco"></i>',
+    'cross': '<i class="fas fa-cross po_ico_mco"></i>',
+    'biblia': '<i class="fas fa-book-bible po_ico_mco"></i>',
+    'bible': '<i class="fas fa-book-bible po_ico_mco"></i>',
+    'oracion': '<i class="fas fa-hands-praying po_ico_gold"></i>',
+    'pray': '<i class="fas fa-hands-praying po_ico_gold"></i>',
+    'paloma': '<i class="fas fa-dove po_ico_cyan"></i>',
+    'dove': '<i class="fas fa-dove po_ico_cyan"></i>',
+    'alerta': '<i class="fas fa-triangle-exclamation po_ico_warning"></i>',
+    'warning': '<i class="fas fa-triangle-exclamation po_ico_warning"></i>',
+    'info': '<i class="fas fa-circle-info po_ico_cyan"></i>'
+  };
+
+  const mdToHtml = (md: string) => {
+    if (!md) return '';
+    let html = md
+      .replace(/^## (.*?)(?:\s*\{\#([a-zA-Z0-9_-]+)\})?\s*$/gim, (match, title, id) => {
+        return id ? `<h2 id="${id}">${title.trim()}</h2>` : `<h2>${title.trim()}</h2>`;
+      })
+      .replace(/^### (.*?)(?:\s*\{\#([a-zA-Z0-9_-]+)\})?\s*$/gim, (match, title, id) => {
+        return id ? `<h3 id="${id}">${title.trim()}</h3>` : `<h3>${title.trim()}</h3>`;
+      })
+      .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+      .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+      .replace(/~~(.*?)~~/gim, '<del>$1</del>')
+      .replace(/`([^`]+)`/gim, '<code>$1</code>')
+      .replace(/!\[(.*?)\]\((.*?)\)/gim, '<figure class="po_figure"><img alt="$1" src="$2" /><figcaption class="po_figcaption">$1</figcaption></figure>')
+      .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/^---/gim, '<hr class="po_hr"/>');
+
+    // Reemplazar iconos personalizados con estilos
+    Object.keys(CUSTOM_ICONS).forEach(key => {
+      const regex = new RegExp(`:${key}:`, 'gim');
+      html = html.replace(regex, CUSTOM_ICONS[key]);
+    });
+
+    // Soporte para iconos Font Awesome genéricos
+    html = html
+      .replace(/:fa-([a-z0-9-]+):/gim, '<i class="fas fa-$1"></i>')
+      .replace(/:far-([a-z0-9-]+):/gim, '<i class="far fa-$1"></i>')
+      .replace(/:fab-([a-z0-9-]+):/gim, '<i class="fab fa-$1"></i>');
+
+    const lines = html.split('\n');
+    const result: string[] = [];
+    let inList = false;
+    let inTable = false;
+
+    lines.forEach(line => {
+      const trimLine = line.trim();
+
+      // Table parsing logic
+      if (trimLine.startsWith('|') && trimLine.endsWith('|')) {
+        if (!inTable) {
+          result.push('<div class="po_table_wrap"><table>');
+          inTable = true;
+        }
+        if (trimLine.match(/^\|?[\s\-\|:]+\|?$/)) return;
+        
+        const cells = trimLine.split('|').filter((c, i, a) => (i > 0 && i < a.length - 1));
+        const isHeader = inTable && result[result.length-1].includes('<table>');
+        const tag = isHeader ? 'th' : 'td';
+        result.push('<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>');
+        return;
+      } else if (inTable) {
+        result.push('</table></div>');
+        inTable = false;
+      }
+
+      // List parsing logic
+      const listMatch = line.match(/^[\-\*]\s+(.*)$/);
+      if (listMatch) {
+        if (!inList) { result.push('<ul>'); inList = true; }
+        let text = listMatch[1];
+        if (text.startsWith('[ ] ')) text = '<input type="checkbox" class="po_todo_check" disabled> ' + text.slice(4);
+        else if (text.startsWith('[x] ')) text = '<input type="checkbox" class="po_todo_check" checked disabled> ' + text.slice(4);
+        result.push(`<li>${text}</li>`);
+      } else {
+        if (inList) { result.push('</ul>'); inList = false; }
+        if (trimLine === '') return;
+        if (!line.match(/^<(h2|h3|ul|ol|li|blockquote|img|hr|div|table|tr|th|td|figure|figcaption)/)) {
+          result.push(`<p>${line}</p>`);
+        } else {
+          result.push(line);
+        }
+      }
+    });
+
+    if (inTable) result.push('</table></div>');
+    if (inList) result.push('</ul>');
+    return result.join('\n');
+  };
+
+  const getDraftKey = () => isEdit ? 'wi_draft_edit_' + editSlug : 'wi_draft_new';
+
+  const saveDraft = () => {
+    const key = getDraftKey();
+    const draft = {
+      titulo: (document.getElementById('nu_titulo') as HTMLInputElement)?.value || '',
+      slug: (document.getElementById('nu_slug_inp') as HTMLInputElement)?.value || '',
+      resumen: (document.getElementById('nu_resumen') as HTMLTextAreaElement)?.value || '',
+      keywords: (document.getElementById('nu_keywords') as HTMLTextAreaElement)?.value || '',
+      cat: (document.getElementById('nu_cat_inp') as HTMLInputElement)?.value || '',
+      img: (document.getElementById('nu_img') as HTMLInputElement)?.value || '',
+      imgTop: (document.getElementById('nu_img_top') as HTMLInputElement)?.value || '',
+      content: (document.getElementById('nu_contenido') as HTMLTextAreaElement)?.value || '',
+      tags
+    };
+    localStorage.setItem(key, JSON.stringify(draft));
+  };
+
+  const triggerDraftSave = () => {
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(saveDraft, 1000);
+  };
+
+  const updCount = () => {
+    const val = (document.getElementById('nu_contenido') as HTMLTextAreaElement)?.value || '';
+    const { words, min } = countWords(val);
+    const wordsEl = document.getElementById('nu_palabras');
+    const readingEl = document.getElementById('nu_lectura');
+    if (wordsEl) wordsEl.innerHTML = `<i class="fas fa-font"></i> ${words} palabras`;
+    if (readingEl) readingEl.innerHTML = `<i class="fas fa-clock"></i> ${min} min`;
+  };
+
+  const renderTags = () => {
+    const box = document.getElementById('nu_tags_box');
+    if (box) {
+      box.innerHTML = tags.map((t, i) => `
+        <span class="nu_tag_chip">#${t} <i class="fas fa-xmark nu_tag_rm" data-i="${i}"></i></span>
+      `).join('');
+    }
+  };
+
+  const cargarSugerencias = () => {
+    try {
+      const setCats = new Set<string>(), setTags = new Set<string>();
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith('wi_blogs') || k.startsWith('wi_post_'))) {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            let list: any[] = [];
+            try {
+              const parsed = JSON.parse(raw);
+              const arr = parsed.value ?? parsed;
+              list = Array.isArray(arr) ? arr : (arr ? [arr] : []);
+            } catch (_) {}
+            list.forEach(p => {
+              if (p.categoria) setCats.add(p.categoria);
+              if (p.tags && Array.isArray(p.tags)) p.tags.forEach((t: any) => setTags.add(t));
+            });
+          }
+        }
+      }
+      const defaultCats = ['IA', 'Programación', 'Frontend', 'Backend', 'Portafolio', 'Herramientas', 'Ciberseguridad', 'Astro'];
+      const defaultTags = ['ia', 'webdev', 'javascript', 'typescript', 'react', 'nextjs', 'astro', 'python', 'portfolio', 'css', 'firebase', 'software'];
+      
+      const catsToRender = setCats.size > 0 ? Array.from(setCats) : defaultCats;
+      const tagsToRender = setTags.size > 0 ? Array.from(setTags) : defaultTags;
+
+    } catch (e) {
+      console.warn('No se pudieron cargar sugerencias', e);
+    }
+  };
+
+  const setupEvents = (u: any) => {
+    const form = document.getElementById('nu_form');
+    const slugInp = document.getElementById('nu_slug_inp') as HTMLInputElement;
+    const titleInp = document.getElementById('nu_titulo') as HTMLInputElement;
+    const resumenInp = document.getElementById('nu_resumen') as HTMLTextAreaElement;
+    const keywordsInp = document.getElementById('nu_keywords') as HTMLTextAreaElement;
+
+    const updateTituloCounter = () => {
+      const cnt = document.getElementById('nu_titulo_cnt');
+      const msg = document.getElementById('nu_titulo_msg');
+      if (titleInp && cnt && msg) {
+        const len = titleInp.value.length;
+        cnt.textContent = String(len);
+        if (len === 0) {
+          msg.textContent = '';
+          msg.className = 'nu_status_msg';
+        } else if (len < 35) {
+          msg.textContent = `Te faltan ${35 - len} para tener un título ideal (Mínimo: 35)`;
+          msg.className = 'nu_status_msg warning';
+        } else {
+          msg.textContent = `Excelente título de ${len}/47`;
+          msg.className = 'nu_status_msg success';
+        }
+      }
+    };
+
+    const updateSlugCounter = () => {
+      const cnt = document.getElementById('nu_slug_cnt');
+      const msg = document.getElementById('nu_slug_msg');
+      if (slugInp && cnt && msg) {
+        const len = slugInp.value.length;
+        cnt.textContent = String(len);
+        if (len === 0) {
+          msg.textContent = '';
+          msg.className = 'nu_status_msg';
+        } else if (len < 11) {
+          msg.textContent = `Te faltan ${11 - len} para tener un enlace ideal (Mínimo: 11)`;
+          msg.className = 'nu_status_msg warning';
+        } else if (len <= 32) {
+          msg.textContent = `Excelente enlace de ${len}/32`;
+          msg.className = 'nu_status_msg success';
+        } else {
+          msg.textContent = `Te pasaste por ${len - 32}. Máximo: 32`;
+          msg.className = 'nu_status_msg error';
+        }
+      }
+    };
+
+    const updateResumenCounter = () => {
+      const cnt = document.getElementById('nu_resumen_cnt');
+      const msg = document.getElementById('nu_resumen_msg');
+      if (resumenInp && cnt && msg) {
+        const len = resumenInp.value.length;
+        cnt.textContent = String(len);
+        if (len === 0) {
+          msg.textContent = '';
+          msg.className = 'nu_status_msg';
+        } else if (len < 100) {
+          msg.textContent = `Te faltan ${100 - len} para tener una descripción ideal (Mínimo: 100)`;
+          msg.className = 'nu_status_msg warning';
+        } else if (len <= 150) {
+          msg.textContent = `Excelente descripción de ${len}/150`;
+          msg.className = 'nu_status_msg success';
+        } else {
+          msg.textContent = `Te pasaste por ${len - 150}. Máximo: 150`;
+          msg.className = 'nu_status_msg error';
+        }
+      }
+    };
+
+    const updateKeywordsCounter = () => {
+      const cnt = document.getElementById('nu_keywords_cnt');
+      const msg = document.getElementById('nu_keywords_msg');
+      if (keywordsInp && cnt && msg) {
+        const val = keywordsInp.value.trim();
+        const kwArr = val ? val.split(',').map(k => k.trim()).filter(Boolean) : [];
+        const count = kwArr.length;
+        cnt.textContent = String(count);
+        if (count === 0) {
+          msg.textContent = '';
+          msg.className = 'nu_status_msg';
+        } else if (count < 3) {
+          msg.textContent = `Te faltan ${3 - count} para tener una densidad ideal (Mínimo: 3)`;
+          msg.className = 'nu_status_msg warning';
+        } else if (count <= 5) {
+          msg.textContent = `Excelente densidad de ${count}/5`;
+          msg.className = 'nu_status_msg success';
+        } else {
+          msg.textContent = `Te pasaste por ${count - 5}. Máximo: 5`;
+          msg.className = 'nu_status_msg error';
+        }
+      }
+    };
+
+    if (titleInp) listen(titleInp, 'input', updateTituloCounter);
+    if (slugInp) listen(slugInp, 'input', updateSlugCounter);
+    if (resumenInp) listen(resumenInp, 'input', updateResumenCounter);
+    if (keywordsInp) listen(keywordsInp, 'input', updateKeywordsCounter);
+
+    if (form) {
+      listen(form, 'input', triggerDraftSave);
+      
+      listen(form, 'submit', async (e: Event) => {
+        e.preventDefault();
+        const activeBtn = document.activeElement as HTMLButtonElement;
+        const btnSelector = (activeBtn && activeBtn.id === 'nu_submit_btn_aside') ? '#nu_submit_btn_aside' : '#nu_submit';
+        
+        let catVal = (document.getElementById('nu_cat_inp') as HTMLInputElement).value.trim();
+        if (catVal) catVal = catVal.charAt(0).toUpperCase() + catVal.slice(1).toLowerCase();
+
+        const titulo = (document.getElementById('nu_titulo') as HTMLInputElement).value.trim();
+        const resumen = (document.getElementById('nu_resumen') as HTMLTextAreaElement).value.trim();
+        const keywords = (document.getElementById('nu_keywords') as HTMLTextAreaElement).value.trim();
+        const img = (document.getElementById('nu_img') as HTMLInputElement).value.trim();
+        const imgTop = (document.getElementById('nu_img_top') as HTMLInputElement).value.trim();
+        const contenidoMD = (document.getElementById('nu_contenido') as HTMLTextAreaElement).value.trim();
+        const slug = slugInp.value.trim();
+        const contenido = wiSanihtml(mdToHtml(contenidoMD));
+
+        if (!titulo || !resumen || !catVal || !img || !contenidoMD) {
+          Notificacion('Completa los campos obligatorios', 'warning');
+          return;
+        }
+        if (contenidoMD.length < 10) {
+          Notificacion('Contenido muy corto', 'warning');
+          return;
+        }
+        if (!slug || slug.length < 3) {
+          Notificacion('Slug inválido', 'warning');
+          return;
+        }
+
+        const slugStatus = document.getElementById('nu_slug_status');
+        if (!isEdit && slugStatus && slugStatus.classList.contains('err')) {
+          Notificacion('Slug no disponible', 'error');
+          return;
+        }
+
+        wiSpin(btnSelector, true, isEdit ? 'Guardando...' : 'Publicando...');
+
+        try {
+          const min = countWords(contenido).min;
+          const readTime = `${min} min`;
+
+          if (isEdit && editSlug) {
+            await updateDoc(doc(db, 'blog', editSlug), {
+              activo: (document.getElementById('nu_activo') as HTMLInputElement).checked,
+              pin: (document.getElementById('nu_pin') as HTMLInputElement).checked,
+              titulo,
+              descripcion: resumen,
+              categoria: catVal,
+              contenido,
+              contenidoMD,
+              imagen: img,
+              imagenTop: imgTop,
+              tags,
+              lecturaTM: readTime,
+              metaSEO: { keywords },
+              actualizado: serverTimestamp()
+            });
+            
+            clearPostCache(editSlug);
+            clearBlogCache();
+             Mensaje('¡Publicación actualizada!', 'success');
+            setTimeout(() => window.location.href = `/${editSlug}`, 1200);
+          } else {
+            const docSnap = await getDoc(doc(db, 'blog', slug));
+            if (docSnap.exists()) {
+              wiSpin(btnSelector, false);
+              Notificacion('Slug existente', 'warning');
+              return;
+            }
+            await setDoc(doc(db, 'blog', slug), {
+              slug,
+              activo: (document.getElementById('nu_activo') as HTMLInputElement).checked,
+              pin: (document.getElementById('nu_pin') as HTMLInputElement).checked,
+              usuario: u.usuario,
+              email: u.email,
+              userId: u.id,
+              autor: u.nombre || u.usuario,
+              titulo,
+              descripcion: resumen,
+              contenido,
+              contenidoMD,
+              categoria: catVal,
+              imagen: img,
+              imagenTop: imgTop,
+              tags,
+              vistas: 0,
+              likes: 0,
+              lecturaTM: readTime,
+              metaSEO: { keywords },
+              creado: serverTimestamp(),
+              actualizado: serverTimestamp()
+            });
+            
+            clearBlogCache();
+            localStorage.removeItem(getDraftKey());
+             Mensaje('¡Publicación creada! 🚀✨', 'success');
+            setTimeout(() => window.location.href = `/${slug}`, 1200);
+          }
+        } catch (err) {
+          console.error(err);
+          Notificacion(isEdit ? 'Error al guardar' : 'Error al publicar', 'error');
+          wiSpin(btnSelector, false);
+        }
+      });
+    }
+
+    // Slug generation on keypress/change disabled (now completed manually)
+
+    if (slugInp && !isEdit) {
+      listen(slugInp, 'input', () => {
+        slugInp.value = slugInp.value.replace(/[^a-z0-9_-]/gi, s => s === ' ' ? '-' : '').toLowerCase().replace(/[-_]{2,}/g, '-');
+        const slugStatus = document.getElementById('nu_slug_status');
+        const v = slugInp.value;
+        if (slugStatus) {
+          if (v) {
+            slugStatus.innerHTML = '<i class="fas fa-pen"></i> Escribiendo...';
+            slugStatus.className = 'nu_slug_status';
+          } else {
+            slugStatus.innerHTML = '';
+            slugStatus.className = 'nu_slug_status';
+          }
+        }
+      });
+
+      listen(slugInp, 'change', async () => {
+        const v = slugInp.value;
+        const slugStatus = document.getElementById('nu_slug_status');
+        if (!slugStatus) return;
+        if (!v) { slugStatus.innerHTML = ''; slugStatus.className = 'nu_slug_status'; return; }
+        if (v.length < 3) {
+          slugStatus.innerHTML = '<i class="fas fa-exclamation"></i> Muy corto';
+          slugStatus.className = 'nu_slug_status err';
+          return;
+        }
+        slugStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        slugStatus.className = 'nu_slug_status';
+        try {
+          const docSnap = await getDoc(doc(db, 'blog', v));
+          if (docSnap.exists()) {
+            slugStatus.innerHTML = '<i class="fas fa-xmark"></i> Ya existe';
+            slugStatus.className = 'nu_slug_status err';
+          } else {
+            slugStatus.innerHTML = '<i class="fas fa-check"></i> OK';
+            slugStatus.className = 'nu_slug_status ok';
+          }
+        } catch (_) {
+          slugStatus.innerHTML = '';
+        }
+      });
+
+      // Reset slug button listener removed (button removed from UI)
+    }
+
+    // Character counter for resumen is handled automatically in setupEvents
+
+    // Content area change
+    const contentArea = document.getElementById('nu_contenido');
+    if (contentArea) {
+      listen(contentArea, 'input', updCount);
+    }
+
+    // Image previews
+    const imgInp = document.getElementById('nu_img') as HTMLInputElement;
+    if (imgInp) {
+      listen(imgInp, 'input', () => {
+        clearTimeout(iT);
+        iT = setTimeout(() => {
+          const val = imgInp.value.trim();
+          const prev = document.getElementById('nu_img_prev');
+          const el = document.getElementById('nu_img_el') as HTMLImageElement;
+          if (!val) { prev?.classList.add('dpn'); return; }
+          if (el && prev) {
+            el.src = val;
+            el.onload = () => prev.classList.remove('dpn');
+            el.onerror = () => prev.classList.add('dpn');
+          }
+        }, 600);
+      });
+    }
+
+    const imgClear = document.getElementById('nu_img_clear');
+    if (imgClear && imgInp) {
+      listen(imgClear, 'click', () => {
+        imgInp.value = '';
+        imgInp.dispatchEvent(new Event('input'));
+      });
+    }
+
+    const imgTopInp = document.getElementById('nu_img_top') as HTMLInputElement;
+    if (imgTopInp) {
+      listen(imgTopInp, 'input', () => {
+        clearTimeout(iT2);
+        iT2 = setTimeout(() => {
+          const val = imgTopInp.value.trim();
+          const prev = document.getElementById('nu_img_top_prev');
+          const el = document.getElementById('nu_img_top_el') as HTMLImageElement;
+          if (!val) { prev?.classList.add('dpn'); return; }
+          if (el && prev) {
+            el.src = val;
+            el.onload = () => prev.classList.remove('dpn');
+            el.onerror = () => prev.classList.add('dpn');
+          }
+        }, 600);
+      });
+    }
+
+    const imgTopClear = document.getElementById('nu_img_top_clear');
+    if (imgTopClear && imgTopInp) {
+      listen(imgTopClear, 'click', () => {
+        imgTopInp.value = '';
+        imgTopInp.dispatchEvent(new Event('input'));
+      });
+    }
+
+    // Tags list input keydown
+    const tagsInp = document.getElementById('nu_tags_inp') as HTMLInputElement;
+    if (tagsInp) {
+      listen(tagsInp, 'keydown', (e: Event) => {
+        const keyEvent = e as KeyboardEvent;
+        if (keyEvent.key === 'Enter' || keyEvent.key === ',') {
+          keyEvent.preventDefault();
+          const items = tagsInp.value.toLowerCase().split(',').map(t => t.trim().replace(/\s+/g, '_')).filter(Boolean);
+          items.forEach(t => {
+            if (!tags.includes(t) && tags.length < 8) tags.push(t);
+          });
+          renderTags();
+          tagsInp.value = '';
+          saveDraft();
+        }
+      });
+    }
+
+    // Markdown tools toolbar functionality
+    const tools = document.querySelectorAll('.nu_tool');
+    tools.forEach(tool => {
+      listen(tool, 'click', () => {
+        const tag = tool.getAttribute('data-tag');
+        if (!tag || !contentArea) return;
+        const ta = contentArea as HTMLTextAreaElement;
+        const s = ta.selectionStart;
+        const e = ta.selectionEnd;
+        const selection = ta.value.substring(s, e) || 'texto';
+        let ins = tag.replace('texto', selection).replace('cita', selection);
+        if (tag.includes('- item')) ins = '- item\n- item2'; // default item list
+        ta.value = ta.value.substring(0, s) + ins + ta.value.substring(e);
+        ta.focus();
+        ta.selectionStart = s;
+        ta.selectionEnd = s + ins.length;
+        updCount();
+        saveDraft();
+      });
+    });
+
+    // Editor Tabs (Edit / Preview)
+    const tabs = document.querySelectorAll('.nu_tab');
+    tabs.forEach(tab => {
+      listen(tab, 'click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const mode = tab.getAttribute('data-tab');
+        const prevHtml = document.getElementById('nu_prev_html');
+        const textarea = document.getElementById('nu_contenido');
+        if (mode === 'prev' && prevHtml && textarea) {
+          prevHtml.innerHTML = wiSanihtml(mdToHtml((textarea as HTMLTextAreaElement).value));
+          prevHtml.classList.remove('dpn');
+          textarea.classList.add('dpn');
+        } else if (prevHtml && textarea) {
+          prevHtml.classList.add('dpn');
+          textarea.classList.remove('dpn');
+        }
+      });
+    });
+
+    // Chip removals and suggestions click delegation
+    listen(document, 'click', (e: Event) => {
+      const target = e.target as HTMLElement;
+      
+      // Remove tag
+      const tagRm = target.closest('.nu_tag_rm');
+      if (tagRm) {
+        const idx = parseInt(tagRm.getAttribute('data-i') || '0');
+        tags.splice(idx, 1);
+        renderTags();
+        saveDraft();
+        return;
+      }
+
+      // Suggest category and tag click handlers removed
+    });
+  };
+
+  const initDashboard = async () => {
+    cleanup();
+
+    const u = await protegerRuta(['usuario', 'editor', 'gestor', 'admin']);
+    if (!u) return;
+
+    // Actualizar datos del Autor
+    const autorNombreEl = document.getElementById('nu_autor_nombre');
+    const autorEmailEl = document.getElementById('nu_autor_email');
+    if (autorNombreEl) autorNombreEl.textContent = u.nombre || u.usuario || 'Anónimo';
+    if (autorEmailEl) autorEmailEl.textContent = u.email || '';
+
+    // Cargar dominio en label del slug
+    const domainLblEl = document.getElementById('nu_domain_lbl');
+    if (domainLblEl) domainLblEl.textContent = linkweb.replace('https://','').replace('http://','') + '/';
+
+    editSlug = getEditSlug();
+    isEdit = !!editSlug;
+
+    // Adaptar títulos en edición
+    const mainTitleEl = document.getElementById('nu_main_title');
+    const editInfoEl = document.getElementById('nu_edit_info');
+    const submitBtnEl = document.getElementById('nu_submit');
+    const submitBtnAsideEl = document.getElementById('nu_submit_btn_aside');
+    const btnLblEl = document.getElementById('nu_btn_lbl');
+    const btnLblAsideEl = document.getElementById('nu_btn_lbl_aside');
+    const cardPubLblEl = document.getElementById('nu_card_pub_lbl');
+    const slugInp = document.getElementById('nu_slug_inp') as HTMLInputElement;
+    const viewPostBtnEl = document.getElementById('nu_view_post_btn');
+
+    if (isEdit) {
+      if (mainTitleEl) mainTitleEl.innerHTML = `<i class="fas fa-pen"></i> Editar publicación`;
+      if (editInfoEl) editInfoEl.innerHTML = `Editando: <strong>${editSlug}</strong> ✏️`;
+      if (btnLblEl) btnLblEl.textContent = 'Guardar';
+      if (btnLblAsideEl) btnLblAsideEl.textContent = 'Guardar cambios';
+      if (cardPubLblEl) cardPubLblEl.textContent = 'Actualizar';
+      if (slugInp) slugInp.readOnly = true;
+      if (viewPostBtnEl) {
+        viewPostBtnEl.classList.remove('dpn');
+        viewPostBtnEl.setAttribute('href', `/${editSlug}`);
+      }
+      
+      const resetSlugBtn = document.getElementById('nu_slug_reset');
+      if (resetSlugBtn) resetSlugBtn.remove();
+      const slugStatusEl = document.getElementById('nu_slug_status');
+      if (slugStatusEl) slugStatusEl.innerHTML = '<span class="ok"><i class="fas fa-lock"></i> Slug bloqueado (edición)</span>';
+    }
+
+    cargarSugerencias();
+    setupEvents(u);
+
+    // Rellenar formulario (Edición o Draft)
+    if (isEdit && editSlug) {
+      try {
+        const result = await getPost(editSlug, true);
+        if (result?.data) {
+          const p = result.data;
+          (document.getElementById('nu_titulo') as HTMLInputElement).value = p.titulo || '';
+          slugInp.value = p.slug || p.id || '';
+          (document.getElementById('nu_resumen') as HTMLTextAreaElement).value = p.resumen || '';
+          (document.getElementById('nu_keywords') as HTMLTextAreaElement).value = p.keywords || '';
+          (document.getElementById('nu_contenido') as HTMLTextAreaElement).value = p.contenidoMd || p.contenido || '';
+          (document.getElementById('nu_cat_inp') as HTMLInputElement).value = p.categoria || '';
+          (document.getElementById('nu_img') as HTMLInputElement).value = p.imagen || '';
+          (document.getElementById('nu_img_top') as HTMLInputElement).value = p.imagenTop || '';
+          (document.getElementById('nu_activo') as HTMLInputElement).checked = p.activo !== false;
+          (document.getElementById('nu_pin') as HTMLInputElement).checked = !!p.pin;
+
+          tags = Array.isArray(p.tags) ? [...p.tags] : [];
+          renderTags();
+
+          if (p.imagen) {
+            const imgEl = document.getElementById('nu_img_el') as HTMLImageElement;
+            const prevEl = document.getElementById('nu_img_prev');
+            if (imgEl && prevEl) { imgEl.src = p.imagen; prevEl.classList.remove('dpn'); }
+          }
+          if (p.imagenTop) {
+            const imgTopEl = document.getElementById('nu_img_top_el') as HTMLImageElement;
+            const prevTopEl = document.getElementById('nu_img_top_prev');
+            if (imgTopEl && prevTopEl) { imgTopEl.src = p.imagenTop; prevTopEl.classList.remove('dpn'); }
+          }
+
+          // Counters will be triggered at the end of initDashboard
+          updCount();
+        }
+      } catch (err) {
+        console.error('Error al cargar post en edición:', err);
+        Notificacion('Error cargando post', 'error');
+      }
+    } else {
+      // Intentar cargar draft guardado
+      try {
+        const draftKey = getDraftKey();
+        const d = JSON.parse(localStorage.getItem(draftKey) || 'null');
+        if (d) {
+          (document.getElementById('nu_titulo') as HTMLInputElement).value = d.titulo || '';
+          if (slugInp) slugInp.value = d.slug || '';
+          (document.getElementById('nu_resumen') as HTMLTextAreaElement).value = d.resumen || '';
+          (document.getElementById('nu_keywords') as HTMLTextAreaElement).value = d.keywords || '';
+          (document.getElementById('nu_cat_inp') as HTMLInputElement).value = d.cat || '';
+          (document.getElementById('nu_contenido') as HTMLTextAreaElement).value = d.content || '';
+          
+          const imgInp = document.getElementById('nu_img') as HTMLInputElement;
+          const imgTopInp = document.getElementById('nu_img_top') as HTMLInputElement;
+          if (imgInp) imgInp.value = d.img || '';
+          if (imgTopInp) imgTopInp.value = d.imgTop || '';
+
+          if (d.img) {
+            const imgEl = document.getElementById('nu_img_el') as HTMLImageElement;
+            const prevEl = document.getElementById('nu_img_prev');
+            if (imgEl && prevEl) { imgEl.src = d.img; prevEl.classList.remove('dpn'); }
+          }
+          if (d.imgTop) {
+            const imgTopEl = document.getElementById('nu_img_top_el') as HTMLImageElement;
+            const prevTopEl = document.getElementById('nu_img_top_prev');
+            if (imgTopEl && prevTopEl) { imgTopEl.src = d.imgTop; prevTopEl.classList.remove('dpn'); }
+          }
+
+          if (d.tags) { tags = d.tags; renderTags(); }
+          
+          updCount();
+        }
+      } catch (_) {}
+    }
+
+    // Trigger initial counter updates after populating values
+    ['nu_titulo', 'nu_slug_inp', 'nu_resumen', 'nu_keywords'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.dispatchEvent(new Event('input'));
+    });
+  };
+
+  document.addEventListener('astro:page-load', initDashboard);
+  document.addEventListener('astro:before-preparation', cleanup);
+</script>

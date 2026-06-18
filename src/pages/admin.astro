@@ -1,0 +1,703 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app, version, lanzamiento, by, linkweb, titulo } from '../wii.js';
+---
+
+<!-- Guardia de Renderizado Inicial: Redirigir de inmediato si no hay token local para evitar parpadeos -->
+<script is:inline>
+  if (!localStorage.getItem('wiSmile')) {
+    window.location.replace('/');
+  }
+</script>
+
+<style is:global>
+  /* =========================================================================
+     CSS PREMIUM
+     ========================================================================= */
+  .am_page {
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    animation: amFade .4s cubic-bezier(.2, .8, .2, 1);
+    width: 100%;
+    padding: 2vh 0 6vh;
+    font-family: var(--ff_P);
+  }
+  @keyframes amFade {
+    from { opacity: 0; transform: translateY(15px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── HERO ── */
+  .am_hero {
+    background: linear-gradient(135deg, #020617 0%, #0f172a 60%, #1e1b4b 100%);
+    border-radius: 2vh;
+    padding: 4.5vh 4vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3vh;
+    box-shadow: 0 1.5vh 4vh rgba(2,6,23,0.4);
+    position: relative;
+    overflow: hidden;
+    color: #f8fafc;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  /* Glow detrás */
+  .am_hero::before {
+    content: ''; position: absolute; right: -4vh; top: -4vh;
+    width: 40vh; height: 40vh;
+    background: radial-gradient(circle at center, rgba(245,158,11,0.18) 0%, rgba(139,92,246,0.12) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  /* Shimmer animado */
+  .am_hero::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
+    background-size: 200% 100%;
+    animation: amShimmer 4s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes amShimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .am_hero_left {
+    display: flex; align-items: center; gap: 3vh;
+    position: relative; z-index: 1; flex: 1; min-width: 0;
+  }
+  .am_hero_icon {
+    width: 9vh; height: 9vh; border-radius: 2.5vh;
+    background: rgba(245,158,11,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4vh; color: #fbbf24; flex-shrink: 0;
+    border: 1px solid rgba(245,158,11,0.3);
+    box-shadow: 0 0 4vh rgba(245,158,11,0.2);
+  }
+  .am_hero_txt { flex: 1; display: flex; flex-direction: column; gap: 0.5vh; min-width: 0; }
+  .am_badge {
+    display: inline-flex; align-items: center; gap: 0.6vh;
+    padding: 0.4vh 1.2vh; border-radius: 1vh; align-self: flex-start;
+    background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3);
+    font-size: var(--fz_s4); font-weight: 800; color: #fcd34d;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5vh;
+  }
+  .am_hero_title {
+    font-size: var(--fz_l1);
+    font-weight: 800; margin: 0; line-height: 1.1;
+  }
+  .am_hero_sub {
+    font-size: var(--fz_m1); color: #94a3b8; margin: 0; font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .am_hero_sub strong { color: #fbbf24; font-weight: 700; }
+
+  .am_hero_right {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: 1.5vh; flex-shrink: 0;
+  }
+  .am_hero_meta {
+    display: flex; gap: 1vh; flex-wrap: wrap; justify-content: flex-end;
+  }
+  .am_hero_tag {
+    font-size: var(--fz_s4); font-weight: 700; color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    padding: 0.3vh 1.2vh; border-radius: 1vh;
+    display: flex; align-items: center; gap: 0.5vh;
+  }
+  .am_btn_sync {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    color: #020617; border: none; border-radius: 1.2vh;
+    padding: 1.4vh 3vh; font-size: var(--fz_m1); font-weight: 800; cursor: pointer;
+    transition: all 0.2s; box-shadow: 0 1vh 2.5vh rgba(245,158,11,0.35);
+    display: flex; align-items: center; gap: 0.8vh; white-space: nowrap;
+  }
+  .am_btn_sync:hover {
+    transform: translateY(-0.3vh);
+    box-shadow: 0 1.5vh 4vh rgba(245,158,11,0.45);
+  }
+
+  /* ── SECTION TITLE ── */
+  .am_sec_header {
+    display: flex; align-items: center; gap: 1.2vh;
+    font-size: var(--fz_m2); font-weight: 800; color: var(--tx); margin: 0.5vh 0 0;
+  }
+  .am_sec_header i { font-size: var(--fz_m3); color: #f59e0b; }
+  .am_sec_h2 { font-size: var(--fz_m3); font-weight: 800; color: var(--tx); margin: 0; }
+
+  /* ── KPIs GRID — 6 columnas ── */
+  .am_grid_6 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2vh;
+  }
+  .am_kpi {
+    background: var(--wb); border: 1px solid var(--brd); border-radius: 2vh;
+    padding: 2.5vh 2vh; display: flex; flex-direction: column; gap: 1.5vh;
+    box-shadow: 0 1vh 2vh var(--bg5); transition: all 0.25s;
+    position: relative; overflow: hidden; cursor: default;
+  }
+  .am_kpi:hover { transform: translateY(-0.5vh); box-shadow: 0 1.5vh 4vh var(--bg5); }
+  .am_kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--c); opacity: 0.85;
+  }
+  .am_kpi::after {
+    content: ''; position: absolute; top: -2vh; right: -2vh;
+    width: 10vh; height: 10vh;
+    background: radial-gradient(circle at center, color-mix(in srgb, var(--c) 8%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+
+  .am_kpi_head { display: flex; align-items: center; gap: 1.2vh; }
+  .am_ki_ico {
+    width: 5vh; height: 5vh; border-radius: 1.2vh;
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+    color: var(--c); display: flex; align-items: center; justify-content: center;
+    font-size: 2vh; flex-shrink: 0;
+  }
+  .am_ki_label { font-size: var(--fz_s4); font-weight: 800; color: var(--tx3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .am_ki_val {
+    font-size: var(--fz_l2);
+    font-weight: 800; color: var(--tx); line-height: 1;
+  }
+  .am_ki_trend { font-size: var(--fz_s4); font-weight: 600; color: var(--tx3); display: flex; align-items: center; gap: 0.5vh; }
+  .am_ki_trend i { color: var(--c); }
+
+  /* ── ESTADO PLATAFORMA — 3 cards ── */
+  .am_status_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2vh;
+  }
+  .am_status_card {
+    background: var(--wb); border: 1px solid var(--brd); border-radius: 2vh;
+    padding: 2.5vh; display: flex; flex-direction: column; gap: 1.5vh;
+    box-shadow: 0 0.5vh 2vh var(--bg5);
+  }
+  .am_status_head {
+    display: flex; align-items: center; gap: 1vh;
+    font-size: var(--fz_s2); font-weight: 800; color: var(--tx);
+    border-bottom: 1px solid var(--brd); padding-bottom: 1.2vh;
+  }
+  .am_status_head i { color: #f59e0b; font-size: var(--fz_m1); }
+
+  /* ── Collection list ── */
+  .am_col_list {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 0.8vh;
+  }
+  .am_col_list li {
+    display: flex; align-items: center; gap: 1vh;
+    font-size: var(--fz_s3);
+  }
+  .am_col_dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .am_col_list code {
+    font-family: monospace; font-size: var(--fz_s3);
+    color: var(--tx); font-weight: 700; flex: 1;
+    background: var(--bg5); padding: 0.15em 0.5em; border-radius: 0.4vh;
+  }
+  .am_col_list em {
+    font-style: normal; color: var(--tx3); font-size: var(--fz_s4);
+    white-space: nowrap;
+  }
+
+  /* ── Plan & Role bars ── */
+  .am_plan_bar { display: flex; flex-direction: column; gap: 1.1vh; }
+  .am_plan_row {
+    display: flex; align-items: center; gap: 1vh;
+  }
+  .am_plan_lbl {
+    font-size: var(--fz_s4); font-weight: 700; color: var(--tx3);
+    width: 55px; flex-shrink: 0; text-align: right;
+  }
+  .am_plan_track {
+    flex: 1; height: 7px; background: var(--brd);
+    border-radius: 999px; overflow: hidden;
+  }
+  .am_plan_fill {
+    height: 100%; width: var(--w, 0%);
+    border-radius: 999px;
+    transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .am_plan_num {
+    font-size: var(--fz_s4); font-weight: 800; color: var(--tx);
+    width: 28px; text-align: right; flex-shrink: 0;
+  }
+
+  /* ── Info list ── */
+  .am_info_list {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 0.85vh;
+  }
+  .am_info_list li {
+    display: grid;
+    grid-template-columns: 1.5em 1fr auto;
+    align-items: center; gap: 0.8vh;
+    font-size: var(--fz_s3);
+    padding-bottom: 0.75vh;
+    border-bottom: 1px solid var(--brd);
+  }
+  .am_info_list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .am_info_list i { color: #f59e0b; text-align: center; }
+  .am_info_list span { color: var(--tx3); font-weight: 600; }
+  .am_info_list strong { color: var(--tx); font-weight: 800; text-align: right; }
+  .am_info_list a { color: #38bdf8; text-decoration: none; font-weight: 800; }
+  .am_info_list a:hover { text-decoration: underline; }
+
+  /* ── QUICK ACCESS ── */
+  .am_quick_grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 1.5vh;
+  }
+  .am_quick_card {
+    background: var(--wb); border: 1px solid var(--brd); border-radius: 1.5vh;
+    padding: 2vh 1vh;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 0.8vh;
+    text-decoration: none; transition: all 0.25s;
+    box-shadow: 0 0.3vh 1vh var(--bg5); cursor: pointer;
+  }
+  .am_quick_card:hover {
+    background: var(--bg4); transform: translateY(-3px);
+    box-shadow: 0 1vh 2.5vh var(--bg5);
+    border-color: #f59e0b;
+  }
+  .am_quick_card i {
+    font-size: 2.5vh; color: #f59e0b; transition: transform 0.2s;
+  }
+  .am_quick_card:hover i { transform: scale(1.15); }
+  .am_quick_card span {
+    font-size: var(--fz_s4); font-weight: 700; color: var(--tx3);
+    text-align: center; line-height: 1.2;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1200px) {
+    .am_grid_6 { grid-template-columns: repeat(3, 1fr); }
+    .am_quick_grid { grid-template-columns: repeat(4, 1fr); }
+    .am_status_grid { grid-template-columns: 1fr 1fr; }
+    .am_status_card:last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 900px) {
+    .am_grid_6 { grid-template-columns: repeat(2, 1fr); }
+    .am_status_grid { grid-template-columns: 1fr; }
+    .am_status_card:last-child { grid-column: auto; }
+  }
+  @media (max-width: 640px) {
+    .am_hero { flex-direction: column; align-items: stretch; }
+    .am_hero_right { align-items: stretch; text-align: center; }
+    .am_hero_meta { justify-content: center; }
+    .am_hero_left { flex-direction: column; text-align: center; }
+    .am_hero_icon { align-self: center; }
+    .am_badge { align-self: center; }
+    .am_grid_6 { grid-template-columns: 1fr 1fr; }
+    .am_quick_grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 400px) {
+    .am_quick_grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<Layout title="Consola de Administración" robots="noindex, nofollow">
+  <div class="am_page">
+
+    <!-- ══ HERO ══ -->
+    <div class="am_hero">
+      <div class="am_hero_left">
+        <div class="am_hero_icon"><i class="fas fa-shield-halved"></i></div>
+        <div class="am_hero_txt">
+          <div class="am_badge"><i class="fas fa-key"></i> Admin Master</div>
+          <h1 class="am_hero_title">Centro de Control</h1>
+          <p class="am_hero_sub" id="am_saludo">Cargando...</p>
+        </div>
+      </div>
+      <div class="am_hero_right">
+        <div class="am_hero_meta">
+          <span class="am_hero_tag"><i class="fas fa-code-branch"></i> {version}</span>
+          <span class="am_hero_tag"><i class="fas fa-user-pen"></i> {by}</span>
+        </div>
+        <button class="am_btn_sync" id="am_btn_refresh">
+          <i class="fas fa-sync-alt"></i> Sincronizar
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ KPIs (6 columnas en fila) ══ -->
+    <div class="am_grid_6">
+
+      <!-- Usuarios -->
+      <div class="am_kpi" style="--c:#38bdf8">
+        <div class="am_kpi_head">
+          <div class="am_ki_ico"><i class="fas fa-users"></i></div>
+          <span class="am_ki_label">Usuarios</span>
+        </div>
+        <div class="am_ki_val" id="am_n_users">—</div>
+        <div class="am_ki_trend"><i class="fas fa-user-plus"></i> Registros totales</div>
+      </div>
+
+      <!-- Activos -->
+      <div class="am_kpi" style="--c:#22c55e">
+        <div class="am_kpi_head">
+          <div class="am_ki_ico"><i class="fas fa-circle-check"></i></div>
+          <span class="am_ki_label">Activos</span>
+        </div>
+        <div class="am_ki_val" id="am_n_activos">—</div>
+        <div class="am_ki_trend"><i class="fas fa-toggle-on"></i> Habilitados</div>
+      </div>
+
+      <!-- Notas -->
+      <div class="am_kpi" style="--c:#f59e0b">
+        <div class="am_kpi_head">
+          <div class="am_ki_ico"><i class="fas fa-book"></i></div>
+          <span class="am_ki_label">Notas</span>
+        </div>
+        <div class="am_ki_val" id="am_n_notas">—</div>
+        <div class="am_ki_trend"><i class="fas fa-sticky-note"></i> Recordatorios</div>
+      </div>
+
+      <!-- Tareas (Word) -->
+      <div class="am_kpi" style="--c:#ec4899">
+        <div class="am_kpi_head">
+          <div class="am_ki_ico"><i class="fas fa-file-word"></i></div>
+          <span class="am_ki_label">Tareas</span>
+        </div>
+        <div class="am_ki_val" id="am_n_tareas">—</div>
+        <div class="am_ki_trend"><i class="fas fa-file-invoice"></i> Documentos</div>
+      </div>
+
+      <!-- Blog -->
+      <div class="am_kpi" style="--c:#8b5cf6">
+        <div class="am_kpi_head">
+          <div class="am_ki_ico"><i class="fas fa-newspaper"></i></div>
+          <span class="am_ki_label">Blog</span>
+        </div>
+        <div class="am_ki_val" id="am_n_blog">—</div>
+        <div class="am_ki_trend"><i class="fas fa-pen-nib"></i> Historias</div>
+      </div>
+
+      <!-- Chat -->
+      <div class="am_kpi" style="--c:#06b6d4">
+        <div class="am_kpi_head">
+          <div class="am_ki_ico"><i class="fas fa-comments"></i></div>
+          <span class="am_ki_label">Chat</span>
+        </div>
+        <div class="am_ki_val" id="am_n_chat">—</div>
+        <div class="am_ki_trend"><i class="fas fa-message"></i> Soporte técnico</div>
+      </div>
+
+    </div>
+
+    <!-- ══ ESTADO DE LA PLATAFORMA ══ -->
+    <div class="am_sec_header">
+      <i class="fas fa-database"></i>
+      <h2 class="am_sec_h2">Estado de la Plataforma</h2>
+    </div>
+
+    <div class="am_status_grid">
+
+      <!-- Colecciones en Firestore -->
+      <div class="am_status_card">
+        <div class="am_status_head">
+          <i class="fas fa-layer-group"></i>
+          <span>Colecciones en Firestore</span>
+        </div>
+        <ul class="am_col_list">
+          <li><span class="am_col_dot" style="background:#38bdf8"></span><code>smiles</code><em>Perfiles usuarios</em></li>
+          <li><span class="am_col_dot" style="background:#22c55e"></span><code>configwii</code><em>Seguridad 2FA</em></li>
+          <li><span class="am_col_dot" style="background:#f59e0b"></span><code>notas</code><em>Tablero de notas</em></li>
+          <li><span class="am_col_dot" style="background:#ec4899"></span><code>word</code><em>Documentos tareas</em></li>
+          <li><span class="am_col_dot" style="background:#8b5cf6"></span><code>blog</code><em>Historias publicadas</em></li>
+          <li><span class="am_col_dot" style="background:#06b6d4"></span><code>mensajes</code><em>Chat de soporte</em></li>
+        </ul>
+      </div>
+
+      <!-- Distribución de Planes y Roles -->
+      <div class="am_status_card">
+        <div class="am_status_head">
+          <i class="fas fa-crown"></i>
+          <span>Distribución de Planes</span>
+        </div>
+        <div class="am_plan_bar">
+          <div class="am_plan_row">
+            <span class="am_plan_lbl">Free</span>
+            <div class="am_plan_track">
+              <div class="am_plan_fill" id="am_bar_free" style="--w:0%;background:#64748b"></div>
+            </div>
+            <span class="am_plan_num" id="am_cnt_free">—</span>
+          </div>
+          <div class="am_plan_row">
+            <span class="am_plan_lbl">Pro</span>
+            <div class="am_plan_track">
+              <div class="am_plan_fill" id="am_bar_pro" style="--w:0%;background:#38bdf8"></div>
+            </div>
+            <span class="am_plan_num" id="am_cnt_pro">—</span>
+          </div>
+          <div class="am_plan_row">
+            <span class="am_plan_lbl">VIP</span>
+            <div class="am_plan_track">
+              <div class="am_plan_fill" id="am_bar_vip" style="--w:0%;background:linear-gradient(90deg,#f59e0b,#8b5cf6)"></div>
+            </div>
+            <span class="am_plan_num" id="am_cnt_vip">—</span>
+          </div>
+        </div>
+
+        <div class="am_status_head" style="margin-top:2vh">
+          <i class="fas fa-user-tag"></i>
+          <span>Distribución de Roles</span>
+        </div>
+        <div class="am_plan_bar">
+          <div class="am_plan_row">
+            <span class="am_plan_lbl">Usuario</span>
+            <div class="am_plan_track"><div class="am_plan_fill" id="am_bar_rol_usuario" style="--w:0%;background:#3b82f6"></div></div>
+            <span class="am_plan_num" id="am_cnt_rol_usuario">—</span>
+          </div>
+          <div class="am_plan_row">
+            <span class="am_plan_lbl">Editor</span>
+            <div class="am_plan_track"><div class="am_plan_fill" id="am_bar_rol_editor" style="--w:0%;background:#10b981"></div></div>
+            <span class="am_plan_num" id="am_cnt_rol_editor">—</span>
+          </div>
+          <div class="am_plan_row">
+            <span class="am_plan_lbl">Gestor</span>
+            <div class="am_plan_track"><div class="am_plan_fill" id="am_bar_rol_gestor" style="--w:0%;background:#f97316"></div></div>
+            <span class="am_plan_num" id="am_cnt_rol_gestor">—</span>
+          </div>
+          <div class="am_plan_row">
+            <span class="am_plan_lbl">Admin</span>
+            <div class="am_plan_track"><div class="am_plan_fill" id="am_bar_rol_admin" style="--w:0%;background:#8b5cf6"></div></div>
+            <span class="am_plan_num" id="am_cnt_rol_admin">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info del Proyecto -->
+      <div class="am_status_card">
+        <div class="am_status_head">
+          <i class="fas fa-info-circle"></i>
+          <span>Info del Proyecto</span>
+        </div>
+        <ul class="am_info_list">
+          <li><i class="fas fa-briefcase"></i><span>App</span><strong>{app}</strong></li>
+          <li><i class="fas fa-code-branch"></i><span>Versión</span><strong>{version}</strong></li>
+          <li><i class="fas fa-calendar-check"></i><span>Lanzamiento</span><strong>{lanzamiento}</strong></li>
+          <li><i class="fas fa-user-pen"></i><span>Developer</span><strong>{by}</strong></li>
+          <li><i class="fas fa-link"></i><span>Web</span><strong><a href={linkweb} target="_blank" rel="noopener">{titulo}</a></strong></li>
+          <li><i class="fas fa-bolt"></i><span>Backend</span><strong>Firebase Firestore</strong></li>
+          <li><i class="fas fa-microchip"></i><span>Build</span><strong>Astro + Vite</strong></li>
+          <li><i class="fas fa-palette"></i><span>UI</span><strong>Vanilla CSS + WiDev</strong></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- ══ ACCESO RÁPIDO ══ -->
+    <div class="am_sec_header">
+      <i class="fas fa-bolt"></i>
+      <h2 class="am_sec_h2">Acceso Rápido</h2>
+    </div>
+
+    <div class="am_quick_grid">
+      <a href="/smile" class="am_quick_card">
+        <i class="fas fa-gauge-high"></i><span>Dashboard</span>
+      </a>
+      <a href="/usuarios" class="am_quick_card">
+        <i class="fas fa-users-cog"></i><span>Usuarios</span>
+      </a>
+      <a href="/mensajes" class="am_quick_card">
+        <i class="fas fa-comments"></i><span>Chat</span>
+      </a>
+      <a href="/blog" class="am_quick_card">
+        <i class="fas fa-newspaper"></i><span>Blog</span>
+      </a>
+      <a href="/notas" class="am_quick_card">
+        <i class="fas fa-book-open"></i><span>Notas</span>
+      </a>
+      <a href="/plan" class="am_quick_card">
+        <i class="fas fa-file-word"></i><span>Tareas</span>
+      </a>
+      <a href="/perfil" class="am_quick_card">
+        <i class="fas fa-user-gear"></i><span>Perfil</span>
+      </a>
+      <a href="/" class="am_quick_card">
+        <i class="fas fa-arrow-left"></i><span>Volver</span>
+      </a>
+    </div>
+
+  </div>
+</Layout>
+
+<script>
+  import { db } from '../lib/firebase.js';
+  import { collection, query, where, getCountFromServer } from 'firebase/firestore';
+  import { protegerRuta } from '../lib/auth.js';
+  import { Notificacion, Saludar, getls, savels } from '../lib/widev.js';
+
+  let u: any = null;
+  const CACHE_TTL = 3; // 3 horas de caché para stats locales
+
+  // Nombres de las claves en caché
+  const K_USERS = 'am_users';
+  const K_ACTIVOS = 'am_activos';
+  const K_NOTAS = 'am_notas';
+  const K_TAREAS = 'am_tareas';
+  const K_BLOG = 'am_blog';
+  const K_CHAT = 'am_chat';
+  
+  const K_P_FREE = 'am_plan_free';
+  const K_P_PRO = 'am_plan_pro';
+  const K_P_VIP = 'am_plan_vip';
+  
+  const K_R_USR = 'am_rol_usuario';
+  const K_R_EDI = 'am_rol_editor';
+  const K_R_GES = 'am_rol_gestor';
+  const K_R_ADM = 'am_rol_admin';
+
+  // Renderizar valores desde localStorage de inmediato
+  const cargarLocal = () => {
+    const setVal = (id: string, cacheKey: string) => {
+      const v = getls(cacheKey);
+      const el = document.getElementById(id);
+      if (el) el.textContent = v !== null ? String(v) : '—';
+    };
+
+    setVal('am_n_users', K_USERS);
+    setVal('am_n_activos', K_ACTIVOS);
+    setVal('am_n_notas', K_NOTAS);
+    setVal('am_n_tareas', K_TAREAS);
+    setVal('am_n_blog', K_BLOG);
+    setVal('am_n_chat', K_CHAT);
+
+    const tot = getls(K_USERS) || 0;
+    const setBar = (id: string, cacheKey: string) => {
+      const v = getls(cacheKey);
+      const pct = tot > 0 && v !== null ? Math.round((v / tot) * 100) : 0;
+      const cntEl = document.getElementById(`am_cnt_${id}`);
+      const barEl = document.getElementById(`am_bar_${id}`);
+      if (cntEl) cntEl.textContent = v !== null ? String(v) : '—';
+      if (barEl) barEl.style.setProperty('--w', `${pct}%`);
+    };
+
+    setBar('free', K_P_FREE);
+    setBar('pro', K_P_PRO);
+    setBar('vip', K_P_VIP);
+    setBar('rol_usuario', K_R_USR);
+    setBar('rol_editor', K_R_EDI);
+    setBar('rol_gestor', K_R_GES);
+    setBar('rol_admin', K_R_ADM);
+  };
+
+  // Carga asíncrona de base de datos Firebase Firestore
+  const cargarStats = async (forzar = false) => {
+    const btnSync = document.getElementById('am_btn_refresh') as HTMLButtonElement;
+    const syncIcon = btnSync?.querySelector('i');
+
+    if (forzar && syncIcon) {
+      syncIcon.className = 'fas fa-sync-alt fa-spin';
+      if (btnSync) btnSync.disabled = true;
+    }
+
+    try {
+      const runQuery = async (colName: string, ...constraints: any[]) => {
+        try {
+          const colRef = collection(db, colName);
+          const q = query(colRef, ...constraints);
+          const snap = await getCountFromServer(q);
+          return snap.data().count ?? 0;
+        } catch (e) {
+          console.warn(`[admin] error count on ${colName}:`, e);
+          return 0;
+        }
+      };
+
+      // Cargar KPIs de Firestore en paralelo
+      const [
+        users, activos, notas, tareas, blog, chat,
+        free, pro, vip,
+        rUsr, rEdi, rGes, rAdm
+      ] = await Promise.all([
+        runQuery('smiles'),
+        runQuery('smiles', where('activo', '==', true)),
+        runQuery('notas'),
+        runQuery('word'),
+        runQuery('blog'),
+        runQuery('mensajes'),
+        runQuery('smiles', where('plan', '==', 'free')),
+        runQuery('smiles', where('plan', '==', 'pro')),
+        runQuery('smiles', where('plan', '==', 'vip')),
+        runQuery('smiles', where('rol', '==', 'usuario')),
+        runQuery('smiles', where('rol', '==', 'editor')),
+        runQuery('smiles', where('rol', '==', 'gestor')),
+        runQuery('smiles', where('rol', '==', 'admin'))
+      ]);
+
+      // Guardar en cache local
+      savels(K_USERS, users, CACHE_TTL);
+      savels(K_ACTIVOS, activos, CACHE_TTL);
+      savels(K_NOTAS, notas, CACHE_TTL);
+      savels(K_TAREAS, tareas, CACHE_TTL);
+      savels(K_BLOG, blog, CACHE_TTL);
+      savels(K_CHAT, chat, CACHE_TTL);
+      savels(K_P_FREE, free, CACHE_TTL);
+      savels(K_P_PRO, pro, CACHE_TTL);
+      savels(K_P_VIP, vip, CACHE_TTL);
+      savels(K_R_USR, rUsr, CACHE_TTL);
+      savels(K_R_EDI, rEdi, CACHE_TTL);
+      savels(K_R_GES, rGes, CACHE_TTL);
+      savels(K_R_ADM, rAdm, CACHE_TTL);
+
+      // Actualizar DOM
+      cargarLocal();
+
+      if (forzar) {
+        Notificacion('Estadísticas sincronizadas ✅', 'success', 1500);
+      }
+    } catch (err) {
+      console.error(err);
+      Notificacion('Error al sincronizar estadísticas', 'error');
+    } finally {
+      if (syncIcon) syncIcon.className = 'fas fa-sync-alt';
+      if (btnSync) btnSync.disabled = false;
+    }
+  };
+
+  const init = async () => {
+    if (window.location.pathname.replace(/\/$/, '') !== '/admin') return;
+
+    // 2FA Vault Lock Check (Puerta y candado centralizado)
+    if (sessionStorage.getItem('vault_unlocked') !== 'true') {
+      window.location.replace('/verificar');
+      return;
+    }
+
+    u = await protegerRuta(['admin']);
+    if (!u) return;
+
+    // Renderizar saludo personalizado
+    const saludoEl = document.getElementById('am_saludo');
+    if (saludoEl) {
+      const nombre = u.nombre || u.usuario || 'Administrador';
+      saludoEl.innerHTML = `${Saludar()} <strong>${nombre}</strong> · Panel de Control Master ${app}.`;
+    }
+
+    // Cargar caché local inmediato para evitar parpadeos
+    cargarLocal();
+
+    // Cargar datos frescos solo si la caché expiró o no existe
+    if (getls(K_USERS) === null) {
+      await cargarStats(false);
+    }
+
+    // Asignar escuchador de clic al botón refrescar
+    const btnSync = document.getElementById('am_btn_refresh');
+    if (btnSync) {
+      btnSync.addEventListener('click', () => cargarStats(true));
+    }
+  };
+
+  document.addEventListener('astro:page-load', init);
+</script>

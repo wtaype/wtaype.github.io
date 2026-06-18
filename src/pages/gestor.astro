@@ -1,0 +1,1256 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app } from '../wii.js';
+---
+
+<style is:global>
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+.gestor_container {
+  display: flex;
+  flex-direction: column;
+  gap: 3vh;
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  padding: 2vh 0 6vh;
+  animation: smw_entry 0.6s ease-out;
+}
+
+/* Header de la consola */
+.gestor_header_section {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  padding: 3vh 4vw;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01);
+}
+
+.gestor_header_glow {
+  position: absolute;
+  top: -20%; right: -10%; width: 40%; height: 140%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--mco) 12%, transparent) 0%, transparent 70%);
+  filter: blur(60px); z-index: 0;
+}
+
+.gestor_title_box {
+  position: relative;
+  z-index: 1;
+}
+
+.gestor_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: color-mix(in srgb, var(--mco) 10%, transparent);
+  color: var(--mco);
+  padding: 0.4rem 0.8rem;
+  border-radius: 99px;
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  border: 1px solid color-mix(in srgb, var(--mco) 15%, transparent);
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.gestor_title {
+  font-size: var(--fz_l1);
+  font-weight: 800;
+  color: var(--tx1);
+  margin-bottom: 0.4rem;
+  letter-spacing: -1px;
+}
+
+.gestor_subtitle {
+  font-size: var(--fz_m2);
+  color: var(--tx3);
+  line-height: 1.5;
+}
+
+/* Stats Cards Grid */
+.gestor_stats_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2vh;
+}
+
+@media (max-width: 768px) {
+  .gestor_stats_grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gestor_stat_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 16px;
+  padding: 2.5vh 2.5vw;
+  display: flex;
+  align-items: center;
+  gap: 2.5vh;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01);
+  transition: all 0.3s ease;
+}
+
+.gestor_stat_card:hover {
+  transform: translateY(-2px);
+  border-color: var(--brd2);
+}
+
+.gestor_stat_icon {
+  width: 6.5vh;
+  height: 6.5vh;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m4);
+}
+
+.gestor_stat_icon.pending {
+  background: color-mix(in srgb, var(--info) 10%, transparent);
+  color: var(--info);
+}
+
+.gestor_stat_icon.approved {
+  background: color-mix(in srgb, var(--success) 10%, transparent);
+  color: var(--success);
+}
+
+.gestor_stat_icon.rejected {
+  background: color-mix(in srgb, var(--error) 10%, transparent);
+  color: var(--error);
+}
+
+.gestor_stat_info {
+  display: flex;
+  flex-direction: column;
+}
+
+.gestor_stat_label {
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  color: var(--tx3);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.gestor_stat_val {
+  font-size: var(--fz_l2);
+  font-weight: 800;
+  color: var(--tx1);
+  margin-top: 0.2vh;
+}
+
+/* Consola de Control Card */
+.gestor_console_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  padding: 3vh;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.01);
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+}
+
+/* Tabs */
+.gestor_tabs_row {
+  display: flex;
+  border-bottom: 2px solid var(--bg4);
+  gap: 2vh;
+}
+
+.gestor_tab_btn {
+  background: none;
+  border: none;
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  color: var(--tx3);
+  padding: 1.5vh 1vh;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.gestor_tab_btn:hover {
+  color: var(--tx1);
+}
+
+.gestor_tab_btn.active {
+  color: var(--mco);
+}
+
+.gestor_tab_btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 3.5px;
+  background: var(--mco);
+  border-radius: 99px;
+}
+
+.gestor_tab_badge {
+  background: var(--bg4);
+  color: var(--tx2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 99px;
+  font-size: var(--fz_s3);
+  margin-left: 0.4rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.gestor_tab_btn.active .gestor_tab_badge {
+  background: color-mix(in srgb, var(--mco) 15%, transparent);
+  color: var(--mco);
+}
+
+/* Filtros y Buscador */
+.gestor_filters_bar {
+  display: flex;
+  gap: 2vh;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.gestor_search_wrapper {
+  flex-grow: 1;
+  position: relative;
+}
+
+.gestor_search_wrapper i {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--tx3);
+}
+
+.gestor_search_input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 12px;
+  padding: 0.75rem 1rem 0.75rem 2.8rem;
+  font-size: var(--fz_m1);
+  color: var(--tx);
+  outline: none;
+  transition: 0.3s;
+}
+
+.gestor_search_input:focus {
+  border-color: var(--mco);
+  background: var(--wb);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mco) 15%, transparent);
+}
+
+.gestor_quick_filters {
+  display: flex;
+  gap: 1vh;
+}
+
+.gestor_filter_tag {
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  color: var(--tx2);
+  padding: 0.5rem 1rem;
+  border-radius: 99px;
+  font-size: var(--fz_s3);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.gestor_filter_tag:hover {
+  background: var(--bg4);
+  color: var(--tx1);
+}
+
+.gestor_filter_tag.active {
+  background: var(--tx1);
+  color: var(--wb);
+  border-color: var(--tx1);
+}
+
+/* Tabla Desktop */
+.gestor_table_wrapper {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid var(--brd);
+}
+
+.gestor_table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.gestor_table th {
+  background: var(--bg4);
+  color: var(--tx2);
+  font-weight: 700;
+  font-size: var(--fz_s2);
+  padding: 1.5rem 1.2rem;
+  border-bottom: 1px solid var(--brd);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.gestor_table td {
+  padding: 1.2rem;
+  border-bottom: 1px solid var(--brd);
+  vertical-align: top;
+  font-size: var(--fz_m1);
+  color: var(--tx1);
+}
+
+.gestor_table tr:last-child td {
+  border-bottom: none;
+}
+
+.gestor_table tr:hover td {
+  background: var(--bg5);
+}
+
+.gestor_user_info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.gestor_user_name {
+  font-weight: 700;
+  color: var(--tx1);
+}
+
+.gestor_user_sub {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  font-weight: 500;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.gestor_text_block {
+  font-size: var(--fz_s2);
+  color: var(--tx2);
+  line-height: 1.5;
+  white-space: pre-line;
+  max-width: 420px;
+}
+
+.gestor_actions_group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.gestor_btn_action {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--brd);
+  background: var(--wb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_s2);
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.gestor_btn_action.btn_approve {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 30%, transparent);
+}
+.gestor_btn_action.btn_approve:hover {
+  background: var(--success);
+  color: var(--wb);
+}
+
+.gestor_btn_action.btn_reject {
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 30%, transparent);
+}
+.gestor_btn_action.btn_reject:hover {
+  background: var(--error);
+  color: var(--wb);
+}
+
+/* Desplegable de Rechazo */
+.gestor_reject_box {
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.gestor_label_min {
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  color: var(--tx2);
+  text-transform: uppercase;
+}
+
+.gestor_feedback_input {
+  width: 100%;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: var(--fz_s2);
+  color: var(--tx);
+  outline: none;
+  resize: vertical;
+  min-height: 70px;
+}
+
+.gestor_feedback_input:focus {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--error) 15%, transparent);
+}
+
+.gestor_reject_confirm_row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.gestor_btn_sm {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--brd);
+  background: var(--wb);
+}
+
+.gestor_btn_sm.btn_cancel {
+  color: var(--tx2);
+}
+.gestor_btn_sm.btn_cancel:hover {
+  background: var(--bg4);
+}
+
+.gestor_btn_sm.btn_confirm {
+  background: var(--error);
+  color: var(--wb);
+  border-color: var(--error);
+}
+.gestor_btn_sm.btn_confirm:hover {
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--error) 25%, transparent);
+}
+
+/* Badge de Estado */
+.gestor_status_tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--fz_s3);
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 99px;
+  border: 1px solid transparent;
+  width: fit-content;
+}
+
+.gestor_status_tag.aprobado {
+  background: color-mix(in srgb, var(--success) 10%, transparent);
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 15%, transparent);
+}
+
+.gestor_status_tag.rechazado {
+  background: color-mix(in srgb, var(--error) 10%, transparent);
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 15%, transparent);
+}
+
+.gestor_status_tag.pendiente {
+  background: color-mix(in srgb, var(--info) 10%, transparent);
+  color: var(--info);
+  border-color: color-mix(in srgb, var(--info) 15%, transparent);
+}
+
+/* Vista Móvil - Lista de tarjetas */
+.gestor_mobile_only {
+  display: none;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+.gestor_card_item {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 16px;
+  padding: 2.5vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+}
+
+/* Estado Vacío */
+.gestor_empty_state {
+  text-align: center;
+  padding: 8vh 0;
+  color: var(--tx3);
+}
+
+.gestor_empty_state i {
+  font-size: 3rem;
+  opacity: 0.15;
+  margin-bottom: 1.5rem;
+}
+
+.gestor_empty_state h3 {
+  font-size: var(--fz_m2);
+  color: var(--tx2);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.gestor_empty_state p {
+  font-size: var(--fz_s2);
+  color: var(--tx3);
+}
+
+/* Modal Overlay */
+.gestor_modal_overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.gestor_modal_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  width: 90%;
+  max-width: 460px;
+  padding: 3.5vh;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  animation: smw_fall 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.gestor_modal_title {
+  font-size: var(--fz_m3);
+  font-weight: 800;
+  color: var(--tx1);
+  letter-spacing: -0.5px;
+}
+
+.gestor_modal_text {
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.6;
+}
+
+.gestor_modal_text strong {
+  color: var(--tx1);
+}
+
+.gestor_modal_actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.gestor_btn_secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  color: var(--tx2);
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.gestor_btn_secondary:hover {
+  background: var(--bg4);
+  color: var(--tx1);
+}
+
+.gestor_submit_btn {
+  background: var(--mco);
+  color: var(--txa);
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 12px color-mix(in srgb, var(--mco) 20%, transparent);
+  transition: 0.25s;
+}
+
+.gestor_submit_btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--mco) 30%, transparent);
+}
+
+.gestor_submit_btn:active {
+  transform: translateY(0);
+}
+
+/* Clases dinámicas */
+.dpn {
+  display: none !important;
+}
+
+/* Responsividad general */
+@media (max-width: 768px) {
+  .gestor_desktop_only {
+    display: none !important;
+  }
+  .gestor_mobile_only {
+    display: flex;
+  }
+}
+</style>
+
+<Layout title={`Consola de Aprobaciones — ${app}`} robots="noindex, nofollow">
+  <div class="gestor_container">
+
+    <div id="gestor_card" style="display: flex; flex-direction: column; gap: 3vh;">
+      
+      <!-- ══ ENCABEZADO PREMIUM ══ -->
+      <header class="gestor_header_section">
+        <div class="gestor_header_glow"></div>
+        <div class="gestor_title_box">
+          <div class="gestor_badge">
+            <i class="fas fa-shield-alt"></i> Consola Gestora
+          </div>
+          <h1 class="gestor_title">Postulaciones a Editor</h1>
+          <p class="gestor_subtitle">
+            Hola, <strong id="gestor_name">Gestor</strong>. Evalúa y gestiona las solicitudes de ascenso a Editor del equipo de {app}.
+          </p>
+        </div>
+      </header>
+
+      <!-- ══ PANEL DE KPIs ══ -->
+      <div class="gestor_stats_grid">
+        <div class="gestor_stat_card">
+          <div class="gestor_stat_icon pending"><i class="fas fa-hourglass-half"></i></div>
+          <div class="gestor_stat_info">
+            <span class="gestor_stat_label">Pendientes</span>
+            <span class="gestor_stat_val" id="stat_pending">0</span>
+          </div>
+        </div>
+        <div class="gestor_stat_card">
+          <div class="gestor_stat_icon approved"><i class="fas fa-check-circle"></i></div>
+          <div class="gestor_stat_info">
+            <span class="gestor_stat_label">Aprobadas</span>
+            <span class="gestor_stat_val" id="stat_approved">0</span>
+          </div>
+        </div>
+        <div class="gestor_stat_card">
+          <div class="gestor_stat_icon rejected"><i class="fas fa-times-circle"></i></div>
+          <div class="gestor_stat_info">
+            <span class="gestor_stat_label">Rechazadas</span>
+            <span class="gestor_stat_val" id="stat_rejected">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CONSOLA PRINCIPAL ══ -->
+      <div class="gestor_console_card">
+        
+        <!-- Pestañas de estado -->
+        <div class="gestor_tabs_row">
+          <button class="gestor_tab_btn active" id="tab_pending_btn">
+            Pendientes <span class="gestor_tab_badge" id="badge_pending">0</span>
+          </button>
+          <button class="gestor_tab_btn" id="tab_history_btn">
+            Historial <span class="gestor_tab_badge" id="badge_history">0</span>
+          </button>
+        </div>
+
+        <!-- Buscador y Filtros Rápidos -->
+        <div class="gestor_filters_bar">
+          <div class="gestor_search_wrapper">
+            <i class="fas fa-search"></i>
+            <input 
+              type="text" 
+              id="gestor_search" 
+              class="gestor_search_input" 
+              placeholder="Buscar por nombre, @usuario o email..." 
+              autocomplete="off"
+            />
+          </div>
+          
+          <div class="gestor_quick_filters dpn" id="history_filters">
+            <button class="gestor_filter_tag active" data-filter="todos">Todos</button>
+            <button class="gestor_filter_tag" data-filter="aprobado">Aprobadas</button>
+            <button class="gestor_filter_tag" data-filter="rechazado">Rechazadas</button>
+          </div>
+        </div>
+
+        <!-- LISTADOS (Desktop & Mobile) -->
+        <div id="gestor_lists_container">
+          
+          <!-- Vista Desktop -->
+          <div class="gestor_table_wrapper gestor_desktop_only">
+            <table class="gestor_table">
+              <thead>
+                <tr>
+                  <th>Postulante</th>
+                  <th>Motivos de Solicitud</th>
+                  <th>Temática Elegida</th>
+                  <th style="width: 180px;" id="table_actions_header">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="gestor_table_body">
+                <tr>
+                  <td colspan="4" style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--mco); margin-bottom: 1rem;"></i>
+                    <p style="color: var(--tx3); font-weight: 500;">Cargando solicitudes...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Vista Móvil -->
+          <div class="gestor_mobile_only" id="gestor_mobile_list">
+            <div style="text-align: center; padding: 3rem; width: 100%;">
+              <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--mco); margin-bottom: 1rem;"></i>
+              <p style="color: var(--tx3); font-weight: 500;">Cargando solicitudes...</p>
+            </div>
+          </div>
+
+          <!-- Estado Vacío -->
+          <div class="gestor_empty_state dpn" id="gestor_empty">
+            <i class="fas fa-folder-open"></i>
+            <h3 id="empty_title">No hay solicitudes</h3>
+            <p id="empty_desc">No tienes postulaciones pendientes de evaluar por el momento.</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ══ MODAL DE CONFIRMACIÓN DE APROBACIÓN ══ -->
+  <div class="gestor_modal_overlay dpn" id="approve_modal">
+    <div class="gestor_modal_card">
+      <h3 class="gestor_modal_title">Aprobar Postulante</h3>
+      <p class="gestor_modal_text">
+        ¿Estás seguro de que deseas aprobar a <strong id="approve_user_name">usuario</strong> (@<span id="approve_username">usuario</span>)?
+        <br /><br />
+        Esto actualizará su rol a <strong>Editor</strong> en {app} y le permitirá crear, editar y estructurar nuevos posts de blog.
+      </p>
+      <div class="gestor_modal_actions">
+        <button class="gestor_btn_secondary" id="approve_btn_cancel">Cancelar</button>
+        <button class="gestor_submit_btn" id="approve_btn_confirm">Sí, Aprobar</button>
+      </div>
+    </div>
+  </div>
+
+</Layout>
+
+<script>
+  import { app } from '../wii.js';
+  import { db } from '../lib/firebase.js';
+  import { collection, query, orderBy, getDocs, doc, updateDoc } from 'firebase/firestore';
+  import { protegerRuta } from '../lib/auth.js';
+  import { getNombre, Notificacion, getls, savels } from '../lib/widev.js';
+
+  let u: any = null;
+  let solicitudes: any[] = [];
+  let tabActiva: 'pendientes' | 'historial' = 'pendientes';
+  let filtroHistorial: 'todos' | 'aprobado' | 'rechazado' = 'todos';
+  let busqueda = '';
+  let activeRechazoId: string | null = null;
+  let activeApproveSol: any = null;
+
+  const CACHE_TTL = 0.5; // 30 minutos
+  const K_SOLICITUDES_CACHE = 'ge_cache_solicitudes';
+  let eventsSetup = false;
+
+  const formatTime = (ts: any) => {
+    if (!ts) return '—';
+    const date = new Date(ts);
+    if (isNaN(date.getTime())) return '—';
+    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) + 
+           ' a las ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getFiltered = () => {
+    return solicitudes.filter(sol => {
+      // 1. Filtro por Pestaña
+      if (tabActiva === 'pendientes') {
+        if (sol.estado !== 'pendiente') return false;
+      } else {
+        if (sol.estado === 'pendiente') return false;
+        if (filtroHistorial !== 'todos' && sol.estado !== filtroHistorial) return false;
+      }
+
+      // 2. Filtro por Buscador
+      if (busqueda.trim()) {
+        const queryStr = busqueda.toLowerCase().trim();
+        const nomStr = `${sol.nombre || ''} ${sol.apellidos || ''}`.toLowerCase();
+        const userStr = (sol.usuario || '').toLowerCase();
+        const emStr = (sol.email || '').toLowerCase();
+        
+        if (!nomStr.includes(queryStr) && !userStr.includes(queryStr) && !emStr.includes(queryStr)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  };
+
+  const actualizarEstadisticas = () => {
+    const pend = solicitudes.filter(s => s.estado === 'pendiente').length;
+    const aprob = solicitudes.filter(s => s.estado === 'aprobado').length;
+    const rech = solicitudes.filter(s => s.estado === 'rechazado').length;
+
+    const statPend = document.getElementById('stat_pending');
+    const statAprob = document.getElementById('stat_approved');
+    const statRech = document.getElementById('stat_rejected');
+    const badgePend = document.getElementById('badge_pending');
+    const badgeHist = document.getElementById('badge_history');
+
+    if (statPend) statPend.textContent = String(pend);
+    if (statAprob) statAprob.textContent = String(aprob);
+    if (statRech) statRech.textContent = String(rech);
+    if (badgePend) badgePend.textContent = String(pend);
+    if (badgeHist) badgeHist.textContent = String(aprob + rech);
+  };
+
+  const renderConsole = () => {
+    const list = getFiltered();
+    const tableBody = document.getElementById('gestor_table_body');
+    const mobileList = document.getElementById('gestor_mobile_list');
+    const emptySec = document.getElementById('gestor_empty');
+    const actionsHeader = document.getElementById('table_actions_header');
+
+    if (actionsHeader) {
+      actionsHeader.textContent = tabActiva === 'pendientes' ? 'Acciones' : 'Resolución';
+    }
+
+    if (list.length === 0) {
+      if (tableBody) tableBody.innerHTML = '';
+      if (mobileList) mobileList.innerHTML = '';
+      if (emptySec) {
+        emptySec.classList.remove('dpn');
+        const emptyTitle = document.getElementById('empty_title');
+        const emptyDesc = document.getElementById('empty_desc');
+        if (emptyTitle && emptyDesc) {
+          if (tabActiva === 'pendientes') {
+            emptyTitle.textContent = 'No hay solicitudes pendientes';
+            emptyDesc.textContent = 'No tienes postulaciones pendientes de evaluar por el momento.';
+          } else {
+            emptyTitle.textContent = 'Historial vacío';
+            emptyDesc.textContent = 'No se registran postulaciones evaluadas bajo los filtros actuales.';
+          }
+        }
+      }
+      return;
+    }
+
+    if (emptySec) emptySec.classList.add('dpn');
+
+    // ── VISTA DESKTOP (TABLA) ──
+    if (tableBody) {
+      tableBody.innerHTML = list.map(sol => {
+        const nom = `${sol.nombre || ''} ${sol.apellidos || ''}`.trim() || sol.usuario || 'Usuario';
+        const dateStr = formatTime(sol.creado);
+        
+        let actionsHtml = '';
+        if (tabActiva === 'pendientes') {
+          actionsHtml = `
+            <div style="display:flex; flex-direction:column; gap:0.5rem">
+              <div class="gestor_actions_group">
+                <button class="gestor_btn_action btn_approve" data-id="${sol.id}" title="Aprobar Solicitud"><i class="fas fa-check"></i></button>
+                <button class="gestor_btn_action btn_reject" data-id="${sol.id}" title="Rechazar Solicitud"><i class="fas fa-xmark"></i></button>
+              </div>
+              <div class="gestor_reject_box dpn" id="reject_box_${sol.id}">
+                <span class="gestor_label_min">Motivo de Rechazo *</span>
+                <textarea class="gestor_feedback_input" id="feedback_${sol.id}" placeholder="Escribe el motivo del rechazo de forma constructiva..."></textarea>
+                <div class="gestor_reject_confirm_row">
+                  <button class="gestor_btn_sm btn_cancel" data-id="${sol.id}">Cancelar</button>
+                  <button class="gestor_btn_sm btn_confirm" data-id="${sol.id}">Rechazar</button>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          actionsHtml = `
+            <div style="display:flex; flex-direction:column; gap:0.3rem">
+              <span class="gestor_status_tag ${sol.estado}">
+                <i class="fas ${sol.estado === 'aprobado' ? 'fa-check-circle' : (sol.estado === 'pendiente' ? 'fa-hourglass-half' : 'fa-times-circle')}"></i>
+                ${sol.estado}
+              </span>
+              ${sol.respuesta ? `<span style="font-size:0.78rem;color:var(--tx3);display:block;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${sol.respuesta}">"${sol.respuesta}"</span>` : ''}
+            </div>
+          `;
+        }
+
+        return `
+          <tr>
+            <td>
+              <div class="gestor_user_info">
+                <span class="gestor_user_name">${nom}</span>
+                <span class="gestor_user_sub">
+                  <span>@${sol.usuario}</span>
+                  <span>•</span>
+                  <span>${sol.email}</span>
+                </span>
+              </div>
+            </td>
+            <td>
+              <div class="gestor_text_block">${sol.motivo || '—'}</div>
+            </td>
+            <td>
+              <span style="font-size:0.82rem;font-weight:600;color:var(--mco);display:block;max-width:180px;overflow-wrap:break-word">${sol.ejemplos || 'General'}</span>
+              <small style="font-size:0.75rem;color:var(--tx3);display:block;margin-top:0.3rem">${dateStr}</small>
+            </td>
+            <td>
+              ${actionsHtml}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ── VISTA MÓVIL (TARJETAS) ──
+    if (mobileList) {
+      mobileList.innerHTML = list.map(sol => {
+        const nom = `${sol.nombre || ''} ${sol.apellidos || ''}`.trim() || sol.usuario || 'Usuario';
+        const dateStr = formatTime(sol.creado);
+        
+        let actionsHtml = '';
+        if (tabActiva === 'pendientes') {
+          actionsHtml = `
+            <div style="border-top:1px solid var(--brd);padding-top:1rem;margin-top:0.5rem;display:flex;flex-direction:column;gap:0.5rem">
+              <div style="display:flex;gap:0.75rem">
+                <button class="gestor_btn_secondary btn_approve" data-id="${sol.id}" style="flex-grow:1;justify-content:center;background:rgba(40,167,69,0.08);border-color:rgba(40,167,69,0.15);color:var(--success)"><i class="fas fa-check"></i> Aprobar</button>
+                <button class="gestor_btn_secondary btn_reject" data-id="${sol.id}" style="flex-grow:1;justify-content:center;background:rgba(220,53,69,0.08);border-color:rgba(220,53,69,0.15);color:var(--error)"><i class="fas fa-xmark"></i> Rechazar</button>
+              </div>
+              <div class="gestor_reject_box dpn" id="reject_box_mob_${sol.id}">
+                <span class="gestor_label_min">Motivo de Rechazo *</span>
+                <textarea class="gestor_feedback_input" id="feedback_mob_${sol.id}" placeholder="Escribe el motivo del rechazo..."></textarea>
+                <div class="gestor_reject_confirm_row">
+                  <button class="gestor_btn_sm btn_cancel" data-id="${sol.id}">Cancelar</button>
+                  <button class="gestor_btn_sm btn_confirm" data-id="${sol.id}">Rechazar</button>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          actionsHtml = `
+            <div style="border-top:1px solid var(--brd);padding-top:1rem;margin-top:0.5rem;display:flex;flex-direction:column;gap:0.4rem">
+              <span class="gestor_status_tag ${sol.estado}">
+                <i class="fas ${sol.estado === 'aprobado' ? 'fa-check-circle' : (sol.estado === 'pendiente' ? 'fa-hourglass-half' : 'fa-times-circle')}"></i>
+                ${sol.estado}
+              </span>
+              ${sol.respuesta ? `<div class="gestor_text_block" style="font-style:italic;background:var(--bg4);padding:0.5rem;border-radius:6px;margin-top:0.2rem">"${sol.respuesta}"</div>` : ''}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="gestor_card_item">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div class="gestor_user_info">
+                <span class="gestor_user_name">${nom}</span>
+                <span class="gestor_user_sub">@${sol.usuario} • ${sol.email}</span>
+              </div>
+            </div>
+            <div>
+              <span class="gestor_label_min">Motivo</span>
+              <div class="gestor_text_block">${sol.motivo || '—'}</div>
+            </div>
+            <div>
+              <span class="gestor_label_min">Temática y Envío</span>
+              <span style="font-size:0.85rem;font-weight:600;color:var(--mco);display:block">${sol.ejemplos || 'General'}</span>
+              <small style="font-size:0.75rem;color:var(--tx3);display:block;margin-top:0.15rem">${dateStr}</small>
+            </div>
+            ${actionsHtml}
+          </div>
+        `;
+      }).join('');
+    }
+  };
+
+  const handleAprobarOperacion = async () => {
+    if (!activeApproveSol) return;
+    const sol = activeApproveSol;
+    
+    const approveModal = document.getElementById('approve_modal');
+    if (approveModal) approveModal.classList.add('dpn');
+
+    const feedbackText = "¡Felicidades! Tu postulación ha sido evaluada y aprobada con éxito. Ahora cuentas con el rol de Editor oficial de " + app + ". Comienza a escribir artílos profesionales de empleo.";
+
+    try {
+      // 1. Actualizar solicitud a aprobado
+      const solRef = doc(db, 'solicitudes', sol.id);
+      await updateDoc(solRef, {
+        estado: 'aprobado',
+        respuesta: feedbackText,
+        actualizado: new Date().toISOString()
+      });
+
+      // 2. Ascender de forma programática al usuario a Editor en la colección smiles
+      const userRef = doc(db, 'smiles', sol.userId);
+      await updateDoc(userRef, {
+        rol: 'editor',
+        actualizado: new Date().toISOString()
+      });
+
+      // 3. Actualizar memoria local y caché
+      solicitudes = solicitudes.map(s => s.id === sol.id ? { ...s, estado: 'aprobado', respuesta: feedbackText, actualizado: new Date().toISOString() } : s);
+      savels(K_SOLICITUDES_CACHE, solicitudes, CACHE_TTL);
+      actualizarEstadisticas();
+      renderConsole();
+      Notificacion(`@${sol.usuario} ha sido ascendido a Editor 🎉`, 'success');
+    } catch(err: any) {
+      console.error(err);
+      Notificacion('Error al procesar la aprobación', 'error');
+    } finally {
+      activeApproveSol = null;
+    }
+  };
+
+  const handleRechazarOperacion = async (id: string, isMob: boolean) => {
+    const fldId = isMob ? `feedback_mob_${id}` : `feedback_${id}`;
+    const txtArea = document.getElementById(fldId) as HTMLTextAreaElement;
+    const txt = txtArea ? txtArea.value.trim() : '';
+
+    if (!txt) {
+      Notificacion('Por favor, escribe una retroalimentación formativa.', 'warning');
+      return;
+    }
+
+    const sol = solicitudes.find(s => s.id === id);
+    if (!sol) return;
+
+    try {
+      const solRef = doc(db, 'solicitudes', id);
+      await updateDoc(solRef, {
+        estado: 'rechazado',
+        respuesta: txt,
+        actualizado: new Date().toISOString()
+      });
+
+      solicitudes = solicitudes.map(s => s.id === id ? { ...s, estado: 'rechazado', respuesta: txt, actualizado: new Date().toISOString() } : s);
+      savels(K_SOLICITUDES_CACHE, solicitudes, CACHE_TTL);
+      actualizarEstadisticas();
+      renderConsole();
+      Notificacion(`Postulación de @${sol.usuario} rechazada con comentarios.`, 'info');
+    } catch(e) {
+      console.error(e);
+      Notificacion('Error al procesar el rechazo', 'error');
+    }
+  };
+
+  const toggleRechazoBox = (id: string, isMob: boolean) => {
+    const boxId = isMob ? `reject_box_mob_${id}` : `reject_box_${id}`;
+    const box = document.getElementById(boxId);
+    if (box) {
+      box.classList.toggle('dpn');
+      if (!box.classList.contains('dpn')) {
+        const input = document.getElementById(isMob ? `feedback_mob_${id}` : `feedback_${id}`);
+        if (input) input.focus();
+      }
+    }
+  };
+
+  const setupDelegatedEvents = () => {
+    if (eventsSetup) return;
+    eventsSetup = true;
+
+    // Escuchar clicks delegados en botones de aprobación
+    document.addEventListener('click', (e: Event) => {
+      const target = e.target as HTMLElement;
+      
+      // 1. Abrir Modal Aprobar
+      const btnApprove = target.closest('.btn_approve');
+      if (btnApprove) {
+        const id = btnApprove.getAttribute('data-id');
+        const sol = solicitudes.find(s => s.id === id);
+        if (sol) {
+          activeApproveSol = sol;
+          const modalTextName = document.getElementById('approve_user_name');
+          const modalTextUser = document.getElementById('approve_username');
+          const modal = document.getElementById('approve_modal');
+          
+          if (modalTextName) modalTextName.textContent = `${sol.nombre || ''} ${sol.apellidos || ''}`.trim() || sol.usuario;
+          if (modalTextUser) modalTextUser.textContent = sol.usuario;
+          if (modal) modal.classList.remove('dpn');
+        }
+      }
+
+      // 2. Toggle Caja de Rechazo
+      const btnReject = target.closest('.btn_reject');
+      if (btnReject) {
+        const id = btnReject.getAttribute('data-id');
+        if (id) {
+          const isMob = btnReject.classList.contains('gestor_btn_secondary');
+          toggleRechazoBox(id, isMob);
+        }
+      }
+
+      // 3. Cancelar Caja de Rechazo
+      const btnCancel = target.closest('.btn_cancel');
+      if (btnCancel) {
+        const id = btnCancel.getAttribute('data-id');
+        if (id) {
+          const isMob = target.closest('.gestor_mobile_only') !== null;
+          toggleRechazoBox(id, isMob);
+        }
+      }
+
+      // 4. Confirmar Rechazo
+      const btnConfirm = target.closest('.btn_confirm');
+      if (btnConfirm) {
+        const id = btnConfirm.getAttribute('data-id');
+        if (id) {
+          const isMob = target.closest('.gestor_mobile_only') !== null;
+          handleRechazarOperacion(id, isMob);
+        }
+      }
+    });
+
+    // Inputs y Filtros
+    const searchInp = document.getElementById('gestor_search');
+    if (searchInp) {
+      searchInp.addEventListener('input', (e: Event) => {
+        busqueda = (e.target as HTMLInputElement).value;
+        renderConsole();
+      });
+    }
+
+    const filterTags = document.querySelectorAll('.gestor_filter_tag');
+    filterTags.forEach(tag => {
+      tag.addEventListener('click', (e: Event) => {
+        filterTags.forEach(t => t.classList.remove('active'));
+        const activeTag = e.currentTarget as HTMLElement;
+        activeTag.classList.add('active');
+        filtroHistorial = (activeTag.getAttribute('data-filter') as any) || 'todos';
+        renderConsole();
+      });
+    });
+
+    // Pestañas
+    const tabPendingBtn = document.getElementById('tab_pending_btn');
+    const tabHistoryBtn = document.getElementById('tab_history_btn');
+    const historyFilters = document.getElementById('history_filters');
+
+    if (tabPendingBtn && tabHistoryBtn) {
+      tabPendingBtn.addEventListener('click', () => {
+        tabPendingBtn.classList.add('active');
+        tabHistoryBtn.classList.remove('active');
+        if (historyFilters) historyFilters.classList.add('dpn');
+        tabActiva = 'pendientes';
+        renderConsole();
+      });
+
+      tabHistoryBtn.addEventListener('click', () => {
+        tabHistoryBtn.classList.add('active');
+        tabPendingBtn.classList.remove('active');
+        if (historyFilters) historyFilters.classList.remove('dpn');
+        tabActiva = 'historial';
+        renderConsole();
+      });
+    }
+
+    // Modal
+    const approveBtnCancel = document.getElementById('approve_btn_cancel');
+    const approveBtnConfirm = document.getElementById('approve_btn_confirm');
+    const approveModal = document.getElementById('approve_modal');
+
+    if (approveBtnCancel) {
+      approveBtnCancel.addEventListener('click', () => {
+        if (approveModal) approveModal.classList.add('dpn');
+        activeApproveSol = null;
+      });
+    }
+
+    if (approveBtnConfirm) {
+      approveBtnConfirm.addEventListener('click', handleAprobarOperacion);
+    }
+  };
+
+  const init = async () => {
+    u = await protegerRuta(['gestor', 'admin']);
+    if (!u) return;
+
+    const gestorName = document.getElementById('gestor_name');
+    if (gestorName) {
+      gestorName.textContent = getNombre(u.nombre || u.usuario || 'Gestor');
+    }
+
+    // 1. Cargar desde la caché local inmediatamente (0ms)
+    const cache = getls(K_SOLICITUDES_CACHE);
+    if (cache && Array.isArray(cache)) {
+      solicitudes = cache;
+      actualizarEstadisticas();
+      renderConsole();
+      setupDelegatedEvents();
+    }
+
+    // 2. Revalidar con red en segundo plano
+    try {
+      const q = query(
+        collection(db, 'solicitudes'),
+        orderBy('creado', 'desc')
+      );
+      const snap = await getDocs(q);
+      const freshSols = snap.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+
+      savels(K_SOLICITUDES_CACHE, freshSols, CACHE_TTL);
+
+      const hasChanged = JSON.stringify(solicitudes) !== JSON.stringify(freshSols);
+      if (hasChanged || !cache) {
+        solicitudes = freshSols;
+        actualizarEstadisticas();
+        renderConsole();
+        if (!cache) {
+          setupDelegatedEvents();
+        }
+      }
+    } catch(e) {
+      console.error(e);
+      if (!cache) {
+        Notificacion('Error de conexión con la base de datos', 'error');
+      }
+    }
+  };
+
+  document.addEventListener('astro:page-load', init);
+</script>

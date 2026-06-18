@@ -1,0 +1,488 @@
+---
+// src/pages/smile.astro
+import Layout from '../layouts/Layout.astro';
+import { app } from '../wii.js';
+---
+
+<!-- Guardia de Renderizado Inicial: Redirigir de inmediato si no hay token local para evitar parpadeos -->
+<script is:inline>localStorage.wiSmile||location.replace('/')</script>
+
+<style is:global>
+  /* =========================================================================
+     CSS PREMIUM
+     ========================================================================= */
+
+  @keyframes smw_entry {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .smw_dash {
+    width: 100%;
+    min-height: 100vh;
+    padding: 2vh 0 4vh;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    animation: smw_entry 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    font-family: var(--ff_P);
+  }
+
+  .wi_fadeUp {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+  .wi_fadeUp.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── HERO ── */
+  .smw_hero {
+    position: relative;
+    width: 100%;
+    padding: 3vh 3.5vw;
+    background: var(--wb);
+    border-radius: 2.2vh;
+    border: 1px solid var(--brd);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+  }
+
+  .smw_hero_glow {
+    position: absolute;
+    top: -20%; right: -10%; width: 45%; height: 140%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--mco) 12%, transparent) 0%, transparent 70%);
+    filter: blur(50px); z-index: 0;
+  }
+
+  .smw_hero_content {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: space-between; gap: 3vh;
+  }
+
+  .smw_hero_left { display: flex; align-items: center; gap: 2.5vh; }
+  .smw_avatar_wrap { position: relative; width: 8.5vh; height: 8.5vh; flex-shrink: 0; }
+  .smw_avatar {
+    width: 100%; height: 100%; background: var(--mco); color: var(--txa);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: var(--fz_m4); font-weight: 800; border: 2px solid var(--wb);
+  }
+  .smw_avatar_ring {
+    position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
+    border: 2px dashed var(--mco); border-radius: 50%; opacity: 0.35;
+    animation: smw_spin 20s linear infinite;
+  }
+  @keyframes smw_spin { to { transform: rotate(360deg); } }
+
+  .smw_welcome h1 { font-size: var(--fz_l1); font-weight: 800; color: var(--tx1); letter-spacing: -0.5px; }
+  .smw_welcome h1 strong { color: var(--mco); }
+  .smw_welcome p { font-size: var(--fz_s2); color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; margin-top: 0.4vh; }
+  .smw_welcome p i { color: var(--mco); margin-right: 0.4vh; }
+
+  .smw_hero_quote {
+    background: var(--bg5); padding: 1.8vh 2.5vh; border-radius: 1.8vh;
+    display: flex; gap: 1.5vh; align-items: flex-start; max-width: 420px; border: 1px solid var(--brd);
+  }
+  .smw_hero_quote i { font-size: var(--fz_m2); color: var(--mco); opacity: 0.4; }
+  .smw_quote_body p { font-size: var(--fz_m1); font-weight: 500; color: var(--tx1); line-height: 1.35; font-style: italic; }
+  .smw_quote_body span { font-size: var(--fz_s3); color: var(--tx3); font-weight: 700; margin-top: 0.8vh; display: block; text-align: right; }
+
+  /* ── TWO COLUMNS ── */
+  .smw_main {
+    display: grid;
+    grid-template-columns: 2.2fr 1.3fr;
+    gap: 3vh;
+  }
+
+  .smw_col {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5vh;
+  }
+
+  .smw_sec_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.5vh;
+  }
+  .smw_sec_info h2 { font-size: var(--fz_m4); font-weight: 800; color: var(--tx1); display: flex; align-items: center; gap: 1.2vh; }
+  .smw_sec_info h2 i { color: var(--mco); }
+  .smw_sec_info p { font-size: var(--fz_s2); color: var(--tx3); font-weight: 500; margin-top: 0.3vh; }
+
+  /* ── TOOLS GRID (Left Column) ── */
+  .smw_tools_grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2vh;
+  }
+
+  .smw_tool_card {
+    background: var(--wb); border: 1px solid var(--brd);
+    padding: 3vh; border-radius: 2vh;
+    display: flex; justify-content: space-between; align-items: center; gap: 3vh;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+  }
+  .smw_tool_card:hover {
+    transform: translateY(-3px);
+    border-color: var(--mco);
+    box-shadow: 0 10px 25px color-mix(in srgb, var(--mco) 8%, transparent);
+  }
+
+  .smw_tool_left { display: flex; gap: 2.5vh; align-items: center; }
+  .smw_tool_ico {
+    width: 7vh; height: 7vh; background: var(--bg5);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 1.8vh; color: var(--mco); font-size: var(--fz_l1);
+    flex-shrink: 0;
+    transition: 0.3s;
+  }
+  .smw_tool_card:hover .smw_tool_ico {
+    background: var(--mco);
+    color: var(--txa);
+  }
+
+  .smw_tool_body h3 { font-size: var(--fz_m3); font-weight: 800; color: var(--tx1); margin-bottom: 0.5vh; }
+  .smw_tool_body p { font-size: var(--fz_s3); color: var(--tx3); line-height: 1.4; }
+
+  .smw_tool_arrow {
+    width: 4.5vh; height: 4.5vh; border-radius: 50%;
+    background: var(--bg4); display: flex; align-items: center; justify-content: center;
+    color: var(--mco); font-size: var(--fz_s4); transition: 0.3s;
+  }
+  .smw_tool_card:hover .smw_tool_arrow {
+    transform: translateX(5px);
+    background: var(--mco);
+    color: var(--txa);
+  }
+
+  /* ── WIDGET KANBAN ── */
+  .smw_kb_widget {
+    background: var(--wb); border: 1px solid var(--brd);
+    padding: 2.5vh; border-radius: 2vh;
+    display: flex; flex-direction: column; gap: 2vh;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+  }
+  .smw_kb_head { display: flex; justify-content: space-between; align-items: center; }
+  .smw_kb_head h4 { font-size: var(--fz_m2); font-weight: 800; color: var(--tx1); display: flex; align-items: center; gap: 1vh; }
+  .smw_kb_head h4 i { color: var(--mco); }
+  .smw_kb_link { font-size: var(--fz_s3); color: var(--mco); font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 0.5vh; }
+  .smw_kb_link:hover { text-decoration: underline; }
+
+  .smw_kb_stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5vh; }
+  .smw_kb_stat_card {
+    background: var(--bg); border: 1px solid var(--brd);
+    padding: 1.5vh; border-radius: 1.5vh; text-align: center;
+  }
+  .smw_kb_stat_num { font-size: var(--fz_m4); font-weight: 800; color: var(--tx1); margin-bottom: 0.3vh; }
+  .smw_kb_stat_lbl { font-size: var(--fz_s1); color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── TEMPLATES GRID (Right Column) ── */
+  .smw_templates_grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5vh;
+  }
+
+  .smw_tpl_card {
+    background: var(--wb); border: 1px solid var(--brd);
+    padding: 2vh; border-radius: 1.8vh;
+    display: flex; align-items: center; justify-content: space-between; gap: 2vh;
+    transition: 0.3s;
+  }
+  .smw_tpl_card:hover { border-color: var(--mco); transform: translateX(5px); }
+
+  .smw_tpl_info { display: flex; gap: 1.8vh; align-items: center; }
+  .smw_tpl_thumb {
+    width: 6vh; height: 7.5vh; background: var(--bg);
+    border-radius: 0.8vh; border: 1px solid var(--brd);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--tx3); font-size: var(--fz_m2);
+    flex-shrink: 0;
+  }
+  .smw_tpl_meta h4 { font-size: var(--fz_m1); font-weight: 800; color: var(--tx1); margin-bottom: 0.4vh; }
+  .smw_tpl_tag {
+    display: inline-block; padding: 0.2vh 0.8vh; border-radius: 5vh;
+    font-size: var(--fz_s1); font-weight: 700; text-transform: uppercase;
+  }
+  .smw_tpl_tag.popular { background: color-mix(in srgb, var(--warning) 12%, var(--wb)); color: var(--warning); border: 1px solid color-mix(in srgb, var(--warning) 25%, var(--brd)); }
+  .smw_tpl_tag.rec { background: color-mix(in srgb, var(--success) 12%, var(--wb)); color: var(--success); border: 1px solid color-mix(in srgb, var(--success) 25%, var(--brd)); }
+  .smw_tpl_tag.new { background: color-mix(in srgb, var(--mco) 12%, var(--wb)); color: var(--mco); border: 1px solid color-mix(in srgb, var(--mco) 25%, var(--brd)); }
+
+  .smw_tpl_action {
+    width: 3.8vh; height: 3.8vh; border-radius: 50%;
+    background: var(--bg4); display: flex; align-items: center; justify-content: center;
+    color: var(--mco); font-size: var(--fz_s3); transition: 0.3s;
+    text-decoration: none;
+  }
+  .smw_tpl_card:hover .smw_tpl_action {
+    background: var(--mco);
+    color: var(--txa);
+  }
+
+  /* ── FEED DE ACTIVIDAD ── */
+  .smw_activity_feed {
+    background: var(--wb); border: 1px solid var(--brd);
+    padding: 2.5vh; border-radius: 2vh;
+    display: flex; flex-direction: column; gap: 2vh;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+  }
+  .smw_activity_list { display: flex; flex-direction: column; gap: 1.8vh; position: relative; }
+  .smw_activity_list::before {
+    content: ''; position: absolute; left: 1.7vh; top: 0.5vh; bottom: 0.5vh;
+    width: 2px; background: var(--bg4);
+  }
+
+  .smw_activity_item { display: flex; gap: 2vh; align-items: flex-start; position: relative; }
+  .smw_act_bullet {
+    width: 3.5vh; height: 3.5vh; border-radius: 50%;
+    background: var(--wb); border: 2px solid var(--mco);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--mco); font-size: var(--fz_s2); z-index: 1; flex-shrink: 0;
+  }
+  .smw_act_body { flex: 1; min-width: 0; }
+  .smw_act_body p { font-size: var(--fz_s4); color: var(--tx1); font-weight: 500; }
+  .smw_act_body p strong { font-weight: 700; }
+  .smw_act_time { font-size: var(--fz_s1); color: var(--tx3); margin-top: 0.3vh; display: block; font-weight: 600; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .smw_main { grid-template-columns: 1fr; }
+    .smw_hero_content { flex-direction: column; align-items: flex-start; }
+    .smw_hero_quote { max-width: 100%; width: 100%; }
+  }
+
+  @media (max-width: 600px) {
+    .smw_kb_stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<Layout title="Dashboard del Candidato" name={app} robots="noindex, nofollow">
+  <div class="smw_dash">
+    
+    <!-- ══ HEADER PREMIUM (Glassmorphism Hero) ══ -->
+    <header class="smw_hero wi_fadeUp">
+      <div class="smw_hero_glow"></div>
+      <div class="smw_hero_content">
+        <div class="smw_hero_left">
+          <div class="smw_avatar_wrap">
+             <div class="smw_avatar" id="smwAvatar"></div>
+             <div class="smw_avatar_ring"></div>
+          </div>
+          <div class="smw_welcome">
+            <h1 id="smwSaludo">Cargando...</h1>
+            <p id="smwPlan"><i class="fas fa-crown"></i> Plan: Cargando...</p>
+          </div>
+        </div>
+        <div class="smw_hero_quote" id="smwQuote">
+          <i class="fas fa-quote-left"></i>
+          <div class="smw_quote_body">
+            <p id="smwQuoteTxt">...</p>
+            <span id="smwQuoteRef">...</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══ DASHBOARD DOS COLUMNAS ══ -->
+    <main class="smw_main">
+      
+      <!-- COLUMNA IZQUIERDA: HERRAMIENTAS Y POSTULACIONES -->
+      <section class="smw_col smw_tools">
+        <div class="smw_sec_head">
+          <div class="smw_sec_info">
+            <h2><i class="fas fa-briefcase"></i> Mis Herramientas de Éxito</h2>
+            <p>Todo lo que necesitas para conseguir tu próximo gran empleo</p>
+          </div>
+        </div>
+
+        <div class="smw_tools_grid">
+          
+          <!-- Crear CV ATS -->
+          <a href="/crear" class="smw_tool_card">
+            <div class="smw_tool_left">
+              <div class="smw_tool_ico"><i class="fas fa-file-signature"></i></div>
+              <div class="smw_tool_body">
+                <h3>Crear Currículum ATS</h3>
+                <p>Escribe tu información paso a paso mediante nuestro formulario clásico inteligente y optimizado.</p>
+              </div>
+            </div>
+            <div class="smw_tool_arrow"><i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <!-- Analizar CV con IA -->
+          <a href="/analisar" class="smw_tool_card">
+            <div class="smw_tool_left">
+              <div class="smw_tool_ico"><i class="fas fa-robot"></i></div>
+              <div class="smw_tool_body">
+                <h3>Analizar CV con IA</h3>
+                <p>Sube o pega tu CV para medir tu puntuación ATS actual y recibir sugerencias críticas para mejorar.</p>
+              </div>
+            </div>
+            <div class="smw_tool_arrow"><i class="fas fa-arrow-right"></i></div>
+          </a>
+
+        </div>
+
+        <!-- Kanban de Postulaciones -->
+        <div class="smw_kb_widget">
+          <div class="smw_kb_head">
+            <h4><i class="fas fa-list-check"></i> Postulaciones y Empleo</h4>
+            <a href="/editor" class="smw_kb_link">Ir al Kanban <i class="fas fa-arrow-up-right-from-square"></i></a>
+          </div>
+          <div class="smw_kb_stats">
+            <div class="smw_kb_stat_card">
+              <div class="smw_kb_stat_num">0</div>
+              <div class="smw_kb_stat_lbl">Postulado</div>
+            </div>
+            <div class="smw_kb_stat_card">
+              <div class="smw_kb_stat_num">0</div>
+              <div class="smw_kb_stat_lbl">Entrevista</div>
+            </div>
+            <div class="smw_kb_stat_card">
+              <div class="smw_kb_stat_num">0</div>
+              <div class="smw_kb_stat_lbl">Oferta</div>
+            </div>
+            <div class="smw_kb_stat_card">
+              <div class="smw_kb_stat_num">0</div>
+              <div class="smw_kb_stat_lbl">Rechazado</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUMNA DERECHA: PLANTILLAS Y ACTIVIDAD -->
+      <section class="smw_col smw_side">
+        
+        <!-- Plantillas Favoritas -->
+        <div class="smw_sec_head">
+          <div class="smw_sec_info">
+            <h2><i class="fas fa-palette"></i> Plantillas Favoritas</h2>
+            <p>Diseños aprobados por reclutadores</p>
+          </div>
+        </div>
+
+        <div class="smw_templates_grid">
+          
+          <div class="smw_tpl_card">
+            <div class="smw_tpl_info">
+              <div class="smw_tpl_thumb"><i class="fas fa-file-alt"></i></div>
+              <div class="smw_tpl_meta">
+                <h4>Clásica Profesional</h4>
+                <span class="smw_tpl_tag popular">Popular</span>
+              </div>
+            </div>
+            <a href="/crear?template=clasica" class="smw_tpl_action"><i class="fas fa-plus"></i></a>
+          </div>
+
+          <div class="smw_tpl_card">
+            <div class="smw_tpl_info">
+              <div class="smw_tpl_thumb"><i class="fas fa-file-invoice"></i></div>
+              <div class="smw_tpl_meta">
+                <h4>Moderna Elegante</h4>
+                <span class="smw_tpl_tag rec">Recomendada</span>
+              </div>
+            </div>
+            <a href="/crear?template=moderna" class="smw_tpl_action"><i class="fas fa-plus"></i></a>
+          </div>
+
+          <div class="smw_tpl_card">
+            <div class="smw_tpl_info">
+              <div class="smw_tpl_thumb"><i class="fas fa-columns"></i></div>
+              <div class="smw_tpl_meta">
+                <h4>Minimalista Limpia</h4>
+                <span class="smw_tpl_tag new">Nueva</span>
+              </div>
+            </div>
+            <a href="/crear?template=minimalista" class="smw_tpl_action"><i class="fas fa-plus"></i></a>
+          </div>
+
+        </div>
+
+        <!-- Actividad Reciente -->
+        <div class="smw_sec_head" style="margin-top: 1vh;">
+          <div class="smw_sec_info">
+            <h2><i class="fas fa-clock-rotate-left"></i> Actividad Reciente</h2>
+            <p>Historial de tus acciones</p>
+          </div>
+        </div>
+
+        <div class="smw_activity_feed">
+          <div class="smw_activity_list">
+            
+            <div class="smw_activity_item">
+              <div class="smw_act_bullet"><i class="fas fa-user-plus"></i></div>
+              <div class="smw_act_body">
+                <p>Te registraste en <strong>{app}</strong>. ¡Bienvenido!</p>
+                <span class="smw_act_time">Recién registrado</span>
+              </div>
+            </div>
+
+            <div class="smw_activity_item">
+              <div class="smw_act_bullet"><i class="fas fa-lightbulb"></i></div>
+              <div class="smw_act_body">
+                <p>Tu currículum está listo para ser creado.</p>
+                <span class="smw_act_time">Pendiente</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+</Layout>
+
+<script>
+  import { app } from '../wii.js';
+  import { protegerRuta } from '../lib/auth.js';
+  import { getNombre, Saludar } from '../lib/widev.js';
+
+  const initDashboard = async () => {
+    // 1. Proteger ruta usando el guard centralizado de Firebase + localStorage
+    const wi = await protegerRuta(['usuario', 'editor', 'gestor', 'admin']);
+    if (!wi) return;
+
+    const nombre = getNombre(wi.nombre || wi.usuario || '');
+    const iniciales = `${(wi.nombre || '?')[0]}${(wi.apellidos || '')[0] || ''}`.toUpperCase();
+
+    // 2. RENDER HERO
+    const heroEl = document.querySelector('.smw_hero');
+    if (heroEl) heroEl.classList.add('visible');
+
+    const avatarEl = document.getElementById('smwAvatar');
+    if (avatarEl) avatarEl.textContent = iniciales;
+
+    const saludoEl = document.getElementById('smwSaludo');
+    if (saludoEl) saludoEl.innerHTML = `${Saludar()} <strong>${nombre}</strong>`;
+
+    const planEl = document.getElementById('smwPlan');
+    if (planEl) planEl.textContent = `Plan: ${wi.plan?.toUpperCase() || 'FREE'}`;
+
+    // 4. FRASES DE SUPERACIÓN PROFESIONAL
+    const quotes = [
+      { txt: "El único modo de hacer un gran trabajo es amar lo que haces.", ref: "Steve Jobs" },
+      { txt: "El éxito no es la clave de la felicidad. La felicidad es la clave del éxito.", ref: "Albert Schweitzer" },
+      { txt: "Cree que puedes y casi lo habrás logrado.", ref: "Theodore Roosevelt" },
+      { txt: "No cuentes los días, haz que los días cuenten.", ref: "Muhammad Ali" },
+      { txt: "Tu currículum muestra tu pasado; tu actitud determina tu futuro.", ref: app },
+      { txt: "La preparación es la clave del éxito.", ref: "Alexander Graham Bell" },
+      { txt: "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", ref: "Robert Collier" }
+    ];
+    
+    const q = quotes[Math.floor(Math.random() * quotes.length)];
+    const quoteTxtEl = document.getElementById('smwQuoteTxt');
+    const quoteRefEl = document.getElementById('smwQuoteRef');
+    if (quoteTxtEl) quoteTxtEl.textContent = `"${q.txt}"`;
+    if (quoteRefEl) quoteRefEl.textContent = q.ref;
+  };
+
+  document.addEventListener('astro:page-load', initDashboard);
+</script>
+

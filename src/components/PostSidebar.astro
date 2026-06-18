@@ -1,0 +1,88 @@
+---
+// src/components/PostSidebar.astro
+import { app, icon } from '../wii.js';
+
+interface Props {
+  post: any;
+  latest?: any[];
+  related?: any[];
+}
+
+const { post, latest = [], related = [] } = Astro.props;
+
+const formatShortDate = (dateVal: any) => {
+  if (!dateVal) return '';
+  const d = new Date(dateVal);
+  return d.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' });
+};
+---
+
+<aside class="po_sidebar">
+  <!-- Tarjeta del Autor -->
+  <div class="po_side_card po_fade po_visible" style="--d:.15s">
+    <div class="po_side_title"><i class="fas fa-user-pen"></i> Autor</div>
+    <div class="po_autor_box">
+      <div class="po_autor_av">
+        <img src="/smile.avif" alt={post.autor} />
+      </div>
+      <div class="po_autor_info">
+        <strong>{post.autor}</strong>
+        <span>{app} <i class={`fas ${icon}`}></i></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Últimas Historias -->
+  {latest.length > 0 && (
+    <div class="po_side_card po_fade po_visible" style="--d:.2s">
+      <div class="po_side_title"><i class="fas fa-clock"></i> Últimas historias</div>
+      <div class="po_relacionados" data-showi="100">
+        {latest.map(r => (
+          <a href={`/${r.slug || r.id}`} class="po_rel_card" data-witip={r.resumen || r.titulo}>
+            <div class="po_rel_img">
+              <img src={r.imagen} alt={r.imagenAlt || r.titulo} loading="lazy" />
+            </div>
+            <div class="po_rel_info">
+              <span class="po_rel_cat"><i class={`fas ${icon}`}></i> {r.categoria}</span>
+              <strong>{r.titulo}</strong>
+              <span class="po_rel_meta">
+                <i class="fas fa-calendar"></i> {formatShortDate(r.creado)} · <i class="fas fa-eye"></i> {r.vistas || 0} · <i class="fas fa-heart" style="color:#fe0149"></i> {r.likes || 0}
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Artículos Relacionados -->
+  {related.length > 0 && (
+    <div class="po_side_card po_fade po_visible" style="--d:.25s">
+      <div class="po_side_title"><i class="fas fa-heart"></i> Más historias de {post.categoria}</div>
+      <div class="po_relacionados" data-showi="100">
+        {related.map(r => (
+          <a href={`/${r.slug || r.id}`} class="po_rel_card" data-witip={r.resumen || r.titulo}>
+            <div class="po_rel_img">
+              <img src={r.imagen} alt={r.imagenAlt || r.titulo} loading="lazy" />
+            </div>
+            <div class="po_rel_info">
+              <span class="po_rel_cat"><i class={`fas ${icon}`}></i> {r.categoria}</span>
+              <strong>{r.titulo}</strong>
+              <span class="po_rel_meta">
+                <i class="fas fa-calendar"></i> {formatShortDate(r.creado)} · <i class="fas fa-eye"></i> {r.vistas || 0} · <i class="fas fa-heart" style="color:#fe0149"></i> {r.likes || 0}
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- AdSense Sticky Sidebar -->
+  <div class="po_ad_sticky po_fade po_visible" style="--d:.3s;">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1362457560630815" data-ad-slot="1800353788" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <div class="wi_ad_fallback">
+      <div class="po_ad_fallback_text">Publicidad</div>
+    </div>
+  </div>
+</aside>

@@ -1,0 +1,1131 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app, id } from '../wii.js';
+import { seo } from '../lib/seo.js';
+---
+
+<style is:global>
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+@keyframes ac_float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+@keyframes ac_pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+.wi_fadeUp {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wi_fadeUp.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#wimain {
+  opacity: 1 !important;
+}
+
+.ac_wrap {
+  width: 100%;
+  overflow-x: hidden;
+  background: color-mix(in srgb, var(--mco) 3%, var(--bg));
+  color: var(--tx);
+  font-family: var(--ff_P);
+}
+
+/* ── HERO ── */
+.ac_hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10vh 5vw;
+  overflow: hidden;
+}
+
+.ac_hero_orb {
+  position: absolute;
+  filter: blur(80px);
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ac_orb1 { width: 40vw; height: 40vw; background: rgba(14, 190, 255, 0.15); top: -10vh; right: -5vw; animation: ac_float 20s infinite linear; }
+.ac_orb2 { width: 35vw; height: 35vw; background: rgba(255, 92, 105, 0.12); bottom: -10vh; left: -5vw; animation: ac_float 25s infinite linear reverse; }
+.ac_orb3 { width: 25vw; height: 25vw; background: rgba(112, 0, 255, 0.1); top: 30%; left: 40%; animation: ac_pulse 15s infinite ease-in-out; }
+
+.ac_hero_body {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 800px;
+}
+
+.ac_hero_logo {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 3vh;
+  border-radius: 2.5vh;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  background: #fff;
+  border: 1px solid var(--brd);
+}
+.ac_hero_logo img { width: 100%; height: 100%; object-fit: cover; }
+
+.ac_hero_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  padding: 0.8vh 2vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx3);
+  margin-bottom: 3vh;
+}
+.ac_hero_badge i { color: var(--Cielo); }
+
+.ac_hero_tit {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  margin-bottom: 3vh;
+  background: linear-gradient(135deg, var(--tx), var(--tx3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -2px;
+}
+
+.ac_hero_sub {
+  font-size: var(--fz_m3);
+  color: var(--tx2);
+  line-height: 1.6;
+  margin-bottom: 5vh;
+}
+.ac_hero_sub strong { color: var(--tx); }
+
+.ac_hero_stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3vh;
+  margin-bottom: 6vh;
+}
+
+.ac_stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5vh;
+  min-width: 120px;
+}
+.ac_stat i { font-size: var(--fz_m4); margin-bottom: 0.5vh; }
+.ac_stat strong { font-size: var(--fz_l1); font-family: var(--ff_O); font-weight: 800; color: var(--tx); }
+.ac_stat span { font-size: var(--fz_s2); color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+.ac_hero_btns {
+  display: flex;
+  justify-content: center;
+  gap: 2vh;
+}
+
+.ac_btn_p, .ac_btn_s {
+  padding: 1.8vh 4vh;
+  border-radius: 1.5vh;
+  font-size: var(--fz_m1);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ac_btn_p { background: var(--mco); color: #fff; border: none; }
+.ac_btn_p:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+
+.ac_btn_s { background: var(--wb); color: var(--tx); border: 1px solid var(--brd); }
+.ac_btn_s:hover { background: var(--bg5); border-color: var(--tx3); }
+
+.ac_hero_scroll {
+  margin-top: 8vh;
+  font-size: var(--fz_m2);
+  color: var(--tx3);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+/* ── COUNTER BAND ── */
+.ac_counter_band {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 5vh 5vw;
+  background: var(--wb);
+  border-top: 1px solid var(--brd);
+  border-bottom: 1px solid var(--brd);
+  flex-wrap: wrap;
+  gap: 4vh;
+}
+
+.ac_counter_item {
+  text-align: center;
+}
+.ac_counter_num, .ac_counter_item span {
+  font-size: var(--fz_l2);
+  font-weight: 800;
+  font-family: var(--ff_O);
+  color: var(--tx);
+}
+.ac_counter_item p {
+  font-size: var(--fz_s1);
+  color: var(--tx3);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 0.5vh;
+}
+
+.ac_counter_sep {
+  width: 1px;
+  height: 4vh;
+  background: var(--brd);
+}
+
+@media (max-width: 768px) {
+  .ac_counter_sep { display: none; }
+  .ac_counter_item { width: 40%; }
+}
+
+/* ── SECTIONS ── */
+.ac_sec {
+  padding: 12vh 10vw;
+}
+.ac_sec_alt { background: var(--bg5); }
+
+.ac_sec_head {
+  text-align: center;
+  margin-bottom: 8vh;
+}
+
+.ac_sec_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  color: var(--tx3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: var(--fz_s2);
+  margin-bottom: 2vh;
+}
+
+.ac_sec_tit {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--tx);
+  letter-spacing: -1px;
+}
+
+.ac_grad {
+  background: linear-gradient(135deg, #0EBEFF, #7000FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ac_sec_sub {
+  font-size: var(--fz_m2);
+  color: var(--tx3);
+  margin-top: 1vh;
+}
+
+/* ── HISTORIA ── */
+.ac_historia {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.ac_historia p {
+  font-size: var(--fz_m2);
+  line-height: 1.8;
+  color: var(--tx2);
+  margin-bottom: 3vh;
+}
+.ac_historia strong { color: var(--tx); }
+.ac_firma {
+  margin-top: 6vh;
+  display: flex;
+  flex-direction: column;
+}
+.ac_firma strong { font-size: var(--fz_m3); color: var(--tx); }
+.ac_firma span { font-size: var(--fz_s2); color: var(--tx3); }
+
+/* ── BENEFICIOS GRID ── */
+.ac_feat_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3vh;
+}
+
+.ac_feat_card {
+  padding: 5vh 4vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  transition: all 0.3s ease;
+}
+.ac_feat_card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  border-color: var(--sc, var(--tx3));
+}
+
+.ac_feat_ico {
+  width: 6vh;
+  height: 6vh;
+  background: var(--bg);
+  border-radius: 1.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m4);
+  margin-bottom: 3vh;
+  color: var(--sc);
+}
+
+.ac_feat_card h3 {
+  font-size: var(--fz_m3);
+  font-weight: 700;
+  margin-bottom: 2vh;
+  color: var(--tx);
+}
+.ac_feat_card p {
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.6;
+}
+
+.ac_color_cielo { --sc: #0EBEFF; }
+.ac_color_dulce { --sc: #FF5C69; }
+.ac_color_paz { --sc: #29C72E; }
+.ac_color_mora { --sc: #7000FF; }
+
+/* ── PASOS ── */
+.ac_pasos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3vh;
+  flex-wrap: wrap;
+}
+
+.ac_paso {
+  flex: 1;
+  min-width: 250px;
+  text-align: center;
+  padding: 4vh;
+  position: relative;
+}
+
+.ac_paso_num {
+  position: absolute;
+  top: 0;
+  right: 10%;
+  font-size: 8rem;
+  font-weight: 900;
+  color: var(--bg5);
+  z-index: 0;
+  line-height: 1;
+}
+
+.ac_paso_ico {
+  width: 8vh;
+  height: 8vh;
+  background: var(--mco);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m4);
+  margin: 0 auto 3vh;
+  position: relative;
+  z-index: 1;
+}
+
+.ac_paso h3 { font-size: var(--fz_m3); font-weight: 700; margin-bottom: 1.5vh; position: relative; z-index: 1; }
+.ac_paso p { font-size: var(--fz_m1); color: var(--tx3); line-height: 1.5; position: relative; z-index: 1; }
+
+.ac_paso_sep { font-size: var(--fz_m4); color: var(--brd); }
+
+@media (max-width: 900px) {
+  .ac_paso_sep { display: none; }
+}
+
+/* ── TESTIMONIOS ── */
+.ac_test_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 3vh;
+}
+
+.ac_test_card {
+  padding: 4vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+.ac_test_stars { color: #FFB800; font-size: var(--fz_s2); }
+.ac_test_txt { font-style: italic; font-size: var(--fz_m1); color: var(--tx2); line-height: 1.6; }
+
+.ac_test_autor {
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  margin-top: auto;
+}
+.ac_test_avatar {
+  width: 5vh;
+  height: 5vh;
+  background: var(--bg5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m3);
+}
+.ac_test_autor strong { display: block; font-size: var(--fz_m1); color: var(--tx); }
+.ac_test_autor span { font-size: var(--fz_s2); color: var(--tx3); }
+
+/* ── MODULOS ── */
+.ac_modulos_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3vh;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.ac_modulo_card {
+  padding: 3vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 1.5vh;
+  display: flex;
+  align-items: center;
+  gap: 2vh;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.ac_modulo_card:hover {
+  background: var(--bg5);
+  transform: translateX(10px);
+  border-color: var(--mc);
+}
+
+.ac_modulo_ico {
+  width: 5vh;
+  height: 5vh;
+  border-radius: 1vh;
+  background: color-mix(in srgb, var(--mc) 10%, transparent);
+  color: var(--mc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m2);
+}
+
+.ac_modulo_info { flex: 1; display: flex; flex-direction: column; }
+.ac_modulo_info strong { font-size: var(--fz_m1); color: var(--tx); }
+.ac_modulo_info span { font-size: var(--fz_s2); color: var(--tx3); }
+.ac_modulo_arr { color: var(--brd); transition: color 0.3s; }
+.ac_modulo_card:hover .ac_modulo_arr { color: var(--mc); }
+
+/* ── CTA SECTION ── */
+.ac_cta_sec { padding: 10vh 5vw; }
+
+.ac_cta_wrap {
+  position: relative;
+  background: var(--bg);
+  color: var(--tx);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  padding: 10vh 5vw;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+}
+
+.ac_cta_glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(14, 190, 255, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.ac_cta_inner { position: relative; z-index: 2; }
+.ac_cta_emoji { font-size: 5rem; display: block; margin-bottom: 2vh; }
+.ac_cta_inner h2 { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 2vh; }
+.ac_cta_inner p { font-size: var(--fz_m2); opacity: 0.8; margin-bottom: 5vh; }
+
+.ac_cta_chips {
+  display: flex;
+  justify-content: center;
+  gap: 2vh;
+  flex-wrap: wrap;
+  margin-bottom: 6vh;
+}
+
+.ac_chip {
+  padding: 1vh 2.5vh;
+  border-radius: 3vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  color: var(--tx2);
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+  transition: all 0.3s;
+}
+.ac_chip:hover { background: var(--bg5); color: var(--tx); transform: translateY(-3px); }
+
+.ac_btn_lg { padding: 2.2vh 5vh; font-size: var(--fz_m2); }
+
+.ac_footer_txt {
+  margin-top: 8vh;
+  font-size: var(--fz_s2);
+  opacity: 0.5;
+}
+.ac_footer_txt a { color: inherit; text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .ac_hero_btns, .ac_cta_btns { flex-direction: column; }
+  .ac_btn_p, .ac_btn_s { justify-content: center; }
+  .ac_sec { padding: 8vh 6vw; }
+}
+
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+/* ── HERO TERMINOS ── */
+.tm_hero .ac_hero_tit { font-size: clamp(2.5rem, 8vw, 5rem); }
+
+.tm_hero_chips {
+  display: flex;
+  justify-content: center;
+  gap: 1.5vh;
+  flex-wrap: wrap;
+  margin-bottom: 4vh;
+}
+
+.tm_chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8vh;
+  padding: 0.8vh 2vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 5vh;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx2);
+}
+.tm_chip i { color: var(--mco); }
+
+.tm_last_upd {
+  font-size: var(--fz_s2);
+  color: var(--tx3);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8vh;
+}
+.tm_last_upd i { color: var(--mco); }
+
+/* ── ÍNDICE RÁPIDO ── */
+.tm_index_band {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5vh;
+  padding: 4vh 8vw;
+  background: var(--wb);
+  border-top: 1px solid var(--brd);
+  border-bottom: 1px solid var(--brd);
+  justify-content: center;
+}
+
+.tm_index_item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8vh;
+  padding: 0.8vh 1.8vh;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 1vh;
+  text-decoration: none;
+  color: var(--tx2);
+  font-size: var(--fz_s3);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.tm_index_item:hover {
+  background: var(--bg5);
+  transform: translateY(-3px);
+  color: var(--tx);
+  border-color: transparent;
+}
+.tm_index_item i { font-size: var(--fz_s4); }
+
+/* ── SECCIONES GRID ── */
+.tm_secciones { padding: 10vh 8vw; }
+
+.tm_secs_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  gap: 3vh;
+  margin-top: 6vh;
+}
+
+.tm_sec_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  padding: 4vh;
+  transition: all 0.3s ease;
+  border-top: 3px solid transparent;
+}
+.tm_sec_card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  border-top-color: var(--mco);
+}
+
+.tm_sec_header {
+  display: flex;
+  align-items: flex-start;
+  gap: 2.5vh;
+  margin-bottom: 3vh;
+}
+
+.tm_sec_ico {
+  width: 6vh;
+  height: 6vh;
+  border-radius: 1.5vh;
+  background: color-mix(in srgb, var(--tc) 12%, transparent);
+  color: var(--tc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m3);
+  flex-shrink: 0;
+  margin-top: 0.3vh;
+}
+
+.tm_sec_num {
+  font-size: var(--fz_s1);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 0.3vh;
+}
+
+.tm_sec_tit {
+  font-size: var(--fz_m4);
+  font-weight: 800;
+  color: var(--tx);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ── CUERPO LEGAL ── */
+.tm_sec_body p {
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.75;
+  margin-bottom: 2vh;
+}
+.tm_sec_body p:last-child { margin-bottom: 0; }
+.tm_sec_body strong { color: var(--tx); }
+.tm_sec_body a { color: var(--mco); text-decoration: underline; }
+.tm_sec_body a:hover { opacity: 0.8; }
+
+.tm_list {
+  list-style: none;
+  margin: 0 0 2vh 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vh;
+}
+.tm_list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2vh;
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.6;
+  margin: 0;
+}
+.tm_list li i {
+  color: var(--mco);
+  margin-top: 0.2vh;
+  flex-shrink: 0;
+  font-size: var(--fz_s4);
+}
+
+/* ── ALERTA ── */
+.tm_alert {
+  display: flex;
+  gap: 2vh;
+  align-items: flex-start;
+  background: var(--bg4);
+  border: 1px solid var(--bg5);
+  border-radius: 1.5vh;
+  padding: 2vh 2.5vh;
+  margin-top: 2.5vh;
+}
+.tm_alert i { color: var(--mco); flex-shrink: 0; font-size: var(--fz_m2); margin-top: 0.2vh; }
+.tm_alert p { margin: 0; font-size: var(--fz_s4); color: var(--tx2); line-height: 1.6; }
+
+/* ── CONTACTO ── */
+.tm_contact {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  margin-top: 2vh;
+}
+
+.tm_contact_item {
+  display: flex;
+  align-items: center;
+  gap: 2vh;
+  padding: 2.5vh 3vh;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 1.5vh;
+  text-decoration: none;
+  color: var(--tx);
+  transition: all 0.25s;
+}
+.tm_contact_item:hover {
+  background: var(--bg5);
+  transform: translateX(8px);
+  border-color: var(--mco);
+}
+.tm_contact_item i { font-size: var(--fz_m4); flex-shrink: 0; }
+.tm_contact_item strong { display: block; font-size: var(--fz_m1); font-weight: 700; color: var(--tx); }
+.tm_contact_item span { font-size: var(--fz_s3); color: var(--tx3); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .tm_secs_grid { grid-template-columns: 1fr; }
+  .tm_secciones { padding: 8vh 5vw; }
+  .tm_index_band { padding: 3vh 5vw; }
+}
+
+@media (max-width: 600px) {
+  .tm_hero_chips { gap: 1vh; }
+  .tm_chip { font-size: var(--fz_s3); padding: 0.7vh 1.5vh; }
+  .tm_sec_card { padding: 3vh; }
+}
+
+/* ── COOKIES: CARD GRID ── */
+.ck_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3vh;
+  margin-top: 6vh;
+}
+.ck_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  padding: 4vh;
+  transition: all 0.3s;
+}
+.ck_card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+.ck_card_top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2vh; }
+.ck_tag { font-size: var(--fz_s2); font-weight: 700; padding: 0.5vh 1.5vh; border-radius: 5vh; }
+.ck_tit { font-size: var(--fz_m3); font-weight: 800; color: var(--tx); margin-bottom: 1.5vh; }
+.ck_desc { font-size: var(--fz_m1); color: var(--tx2); line-height: 1.6; margin-bottom: 2vh; }
+.ck_ext_link {
+  display: inline-flex; align-items: center; gap: 0.8vh;
+  font-size: var(--fz_s3); font-weight: 700; margin-top: 2vh;
+  text-decoration: none; transition: opacity 0.2s;
+}
+.ck_ext_link:hover { opacity: 0.7; }
+
+/* ── FEEDBACK: CANALES ── */
+.fb_canales { display: flex; flex-direction: column; gap: 2.5vh; max-width: 700px; margin: 6vh auto 0; }
+.fb_canal {
+  display: flex; align-items: center; gap: 3vh;
+  padding: 3vh 4vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  text-decoration: none;
+  color: var(--tx);
+  transition: all 0.3s;
+}
+.fb_canal:hover { transform: translateX(10px); border-color: var(--cc); box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.fb_canal_ico {
+  width: 6vh; height: 6vh; border-radius: 1.5vh;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fz_m4); flex-shrink: 0;
+}
+.fb_canal_info { flex: 1; display: flex; flex-direction: column; gap: 0.4vh; }
+.fb_canal_info strong { font-size: var(--fz_m2); font-weight: 800; color: var(--tx); }
+.fb_canal_info span { font-size: var(--fz_s3); color: var(--tx3); }
+.fb_canal_cta { font-size: var(--fz_s3); font-weight: 700; white-space: nowrap; display: flex; align-items: center; gap: 0.8vh; }
+
+@media (max-width: 600px) {
+  .fb_canal { flex-direction: column; align-items: flex-start; gap: 2vh; }
+  .fb_canal_cta { display: none; }
+}
+
+
+</style>
+
+<Layout {...seo.terminos}>
+
+<div class="ac_wrap tm_wrap">
+
+  <!-- ══ HERO ══ -->
+  <section class="ac_hero tm_hero">
+    <div class="ac_hero_orb ac_orb1"></div>
+    <div class="ac_hero_orb ac_orb2"></div>
+    <div class="ac_hero_orb ac_orb3"></div>
+    <div class="ac_hero_body">
+      <div class="ac_hero_badge"><i class="fas fa-file-contract"></i> Transparencia y Compromiso</div>
+      <h1 class="ac_hero_tit">Términos y<br><span class="ac_grad">Condiciones</span></h1>
+      <p class="ac_hero_sub">
+        Al usar {app}, te unes a una comunidad profesional. Estos términos aseguran que 
+        nuestro espacio siga siendo <strong>seguro y productivo para todos.</strong>
+      </p>
+      <div class="tm_hero_chips">
+        <span class="tm_chip"><i class="fas fa-shield-halved"></i> Tu privacidad es sagrada</span>
+        <span class="tm_chip"><i class="fas fa-heart"></i> Contenido gratuito</span>
+        <span class="tm_chip"><i class="fas fa-scale-balanced"></i> Uso justo</span>
+      </div>
+      <div class="tm_last_upd">
+        <i class="fas fa-calendar-check"></i>
+        Última actualización: Abril 2026 · Versión 1.0.0
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ÍNDICE RÁPIDO ══ -->
+  <div class="tm_index_band">
+    <a href="#tm_sec_0" class="tm_index_item"><i class="fas fa-user-shield" style="color:#0EBEFF"></i><span>Uso de la Plataforma</span></a>
+    <a href="#tm_sec_1" class="tm_index_item"><i class="fas fa-cloud-bolt" style="color:#29C72E"></i><span>Sincronización y Datos</span></a>
+    <a href="#tm_sec_2" class="tm_index_item"><i class="fas fa-bullhorn" style="color:#FF5C69"></i><span>Publicidad</span></a>
+    <a href="#tm_sec_3" class="tm_index_item"><i class="fas fa-copyright" style="color:#7000FF"></i><span>Derechos</span></a>
+    <a href="#tm_sec_4" class="tm_index_item"><i class="fas fa-shield-heart" style="color:#FFDA34"></i><span>Responsabilidad</span></a>
+    <a href="#tm_sec_5" class="tm_index_item"><i class="fas fa-ban" style="color:#FF5C69"></i><span>Contenido Prohibido</span></a>
+    <a href="#tm_sec_6" class="tm_index_item"><i class="fas fa-gavel" style="color:#0EBEFF"></i><span>Jurisdicción</span></a>
+    <a href="#tm_sec_7" class="tm_index_item"><i class="fas fa-rotate" style="color:#29C72E"></i><span>Cambios</span></a>
+    <a href="#tm_sec_8" class="tm_index_item"><i class="fas fa-envelope" style="color:#7000FF"></i><span>Contacto</span></a>
+  </div>
+
+  <!-- ══ SECCIONES ══ -->
+  <section class="ac_sec tm_secciones">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-list-check"></i> Contenido</div>
+      <h2 class="ac_sec_tit">Todo lo que necesitas <span class="ac_grad">saber</span></h2>
+      <p class="ac_sec_sub">Lee con calma. Estamos aquí para ser transparentes contigo.</p>
+    </div>
+    <div class="tm_secs_grid">
+      
+      <!-- SECCIÓN 1 -->
+      <div class="tm_sec_card wi_fadeUp" id="tm_sec_0">
+        <div class="tm_sec_header">
+          <div class="tm_sec_ico" style="--tc:#0EBEFF"><i class="fas fa-user-shield"></i></div>
+          <div>
+            <span class="tm_sec_num" style="color:#0EBEFF">01</span>
+            <h2 class="tm_sec_tit">Uso de la Plataforma</h2>
+          </div>
+        </div>
+        <div class="tm_sec_body">
+          <p>{app} es una plataforma digital gratuita dedicada a la creación, edición y optimización de currículums, así como a la simulación de entrevistas con IA. Al usar nuestra aplicación, te comprometes a:</p>
+          <ul class="tm_list">
+            <li><i class="fas fa-check"></i> Respetar la integridad de los contenidos y servicios de la plataforma.</li>
+            <li><i class="fas fa-check"></i> No utilizar la simulación de entrevistas para fines comerciales, spam o de forma malintencionada.</li>
+            <li><i class="fas fa-check"></i> Mantener un lenguaje respetuoso y lleno de empatía hacia otros miembros.</li>
+            <li><i class="fas fa-check"></i> No intentar acceder sin autorización a cuentas ajenas o sistemas internos.</li>
+            <li><i class="fas fa-check"></i> Ser mayor de 13 años para registrarte. Menores requieren supervisión de un adulto.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2 -->
+      <div class="tm_sec_card wi_fadeUp" id="tm_sec_1">
+        <div class="tm_sec_header">
+          <div class="tm_sec_ico" style="--tc:#29C72E"><i class="fas fa-cloud-bolt"></i></div>
+          <div>
+            <span class="tm_sec_num" style="color:#29C72E">02</span>
+            <h2 class="tm_sec_tit">Sincronización y Datos</h2>
+          </div>
+        </div>
+        <div class="tm_sec_body">
+          <p>Utilizamos una arquitectura híbrida para que tu trabajo no dependa de una conexión constante a internet:</p>
+          <ul class="tm_list">
+            <li><i class="fas fa-check"></i> Tus documentos y notas se guardan primero localmente en tu dispositivo (LocalStorage).</li>
+            <li><i class="fas fa-check"></i> Si inicias sesión, sincronizamos tus datos con la nube (Firebase Firestore) para que te acompañen en cualquier dispositivo.</li>
+            <li><i class="fas fa-check"></i> Eres responsable de sincronizar tus datos antes de limpiar el historial de tu navegador si deseas conservarlos.</li>
+            <li><i class="fas fa-check"></i> {app} no se responsabiliza por pérdida de datos causada por limpiar el caché del navegador sin haber iniciado sesión.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3 -->
+      <div class="tm_sec_card wi_fadeUp" id="tm_sec_2">
+        <div class="tm_sec_header">
+          <div class="tm_sec_ico" style="--tc:#FF5C69"><i class="fas fa-bullhorn"></i></div>
+          <div>
+            <span class="tm_sec_num" style="color:#FF5C69">03</span>
+            <h2 class="tm_sec_tit">Publicidad (Google AdSense)</h2>
+          </div>
+        </div>
+        <div class="tm_sec_body">
+          <p>{app} puede mostrar anuncios publicitarios de <strong>Google AdSense</strong> para financiar el mantenimiento de la plataforma. Al usar nuestro sitio:</p>
+          <ul class="tm_list">
+            <li><i class="fas fa-check"></i> Google AdSense puede mostrar anuncios personalizados según tu historial de navegación.</li>
+            <li><i class="fas fa-check"></i> Utilizamos cookies de DoubleClick y otras tecnologías de Google para mostrar publicidad relevante.</li>
+            <li><i class="fas fa-check"></i> Puedes controlar tus preferencias de anuncios en <a href="https://adssettings.google.com" target="_blank" rel="noopener">Google Ads Settings</a>.</li>
+            <li><i class="fas fa-check"></i> Jamás hacemos clic en nuestros propios anuncios ni alentamos a otros a hacerlo.</li>
+          </ul>
+          <div class="tm_alert">
+            <i class="fas fa-info-circle"></i>
+            <p>Los ingresos por publicidad nos permiten mantener {app} completamente gratuito para todos. Gracias por tu comprensión.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 4 -->
+      <div class="tm_sec_card wi_fadeUp" id="tm_sec_3">
+        <div class="tm_sec_header">
+          <div class="tm_sec_ico" style="--tc:#7000FF"><i class="fas fa-copyright"></i></div>
+          <div>
+            <span class="tm_sec_num" style="color:#7000FF">04</span>
+            <h2 class="tm_sec_tit">Derechos y Propiedad Intelectual</h2>
+          </div>
+        </div>
+        <div class="tm_sec_body">
+          <p>{app} es un proyecto desarrollado por <strong>Wilder Taype</strong>. Todos los derechos reservados 2026.</p>
+          <ul class="tm_list">
+            <li><i class="fas fa-check"></i> El diseño, código fuente y funcionalidades de {app} son propiedad exclusiva del autor.</li>
+            <li><i class="fas fa-check"></i> Agradecemos a todos los usuarios y profesionales que colaboran enviando feedback para mejorar el editor.</li>
+            <li><i class="fas fa-check"></i> Tu contenido personal (currículums, notas y documentos) sigue siendo de tu propiedad exclusiva.</li>
+            <li><i class="fas fa-check"></i> Al publicar contenido en nuestro blog, nos otorgas una licencia de uso no exclusiva para mostrarlo en la plataforma.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 5 -->
+      <div class="tm_sec_card wi_fadeUp" id="tm_sec_4">
+        <div class="tm_sec_header">
+          <div class="tm_sec_ico" style="--tc:#FFDA34"><i class="fas fa-shield-heart"></i></div>
+          <div>
+            <span class="tm_sec_num" style="color:#FFDA34">05</span>
+            <h2 class="tm_sec_tit">Limitación de Responsabilidad</h2>
+          </div>
+        </div>
+        <div class="tm_sec_body">
+          <p>{app} se proporciona "tal cual" sin garantías de ningún tipo. En la medida máxima permitida por la ley:</p>
+          <ul class="tm_list">
+            <li><i class="fas fa-check"></i> No garantizamos disponibilidad ininterrumpida del servicio (puede haber mantenimientos).</li>
+            <li><i class="fas fa-check"></i> No somos responsables por decisiones o resultados de tus procesos de selección y postulaciones de empleo.</li>
+            <li><i class="fas fa-check"></i> Los testimonios y sugerencias de la IA son de carácter informativo y no constituyen asesoramiento profesional.</li>
+            <li><i class="fas fa-check"></i> Nos reservamos el derecho de modificar o discontinuar el servicio con notificación previa.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 6 -->
+      <div class="tm_sec_card wi_fadeUp" id="tm_sec_5">
+        <div class="tm_sec_header">
+          <div class="tm_sec_ico" style="--tc:#FF5C69"><i class="fas fa-ban"></i></div>
+          <div>
+            <span class="tm_sec_num" style="color:#FF5C69">06</span>
+            <h2 class="tm_sec_tit">Contenido Prohibido</h2>
+          </div>
+        </div>
+        <div class="tm_sec_body">
+          <p>Para mantener {app} como un espacio seguro y productivo, está estrictamente prohibido:</p>
+          <ul class="tm_list">
+            <li><i class="fas fa-times" style="color:#FF5C69"></i> Publicar contenido ofensivo, violento, discriminatorio o inapropiado.</li>
+            <li><i class="fas fa-times" style="color:#FF5C69"></i> Difundir información falsa o maliciosa.</li>
+            <li><i class="fas fa-times" style="color:#FF5C69"></i> Realizar actividades de spam, phishing o ingeniería social.</li>
+            <li><i class="fas fa-times" style="color:#FF5C69"></i> Usar bots, scrapers o herramientas automatizadas para acceder a la plataforma.</li>
+            <li><i class="fas fa-times" style="color:#FF5C69"></i> Copiar o redistribuir el contenido de {app} sin autorización expresa.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 7 -->
+      <div class="tm_sec_card wi_fadeUp" id="tm_sec_6">
+        <div class="tm_sec_header">
+          <div class="tm_sec_ico" style="--tc:#0EBEFF"><i class="fas fa-gavel"></i></div>
+          <div>
+            <span class="tm_sec_num" style="color:#0EBEFF">07</span>
+            <h2 class="tm_sec_tit">Jurisdicción y Ley Aplicable</h2>
+          </div>
+        </div>
+        <div class="tm_sec_body">
+          <p>Estos Términos y Condiciones se rigen por las leyes de la República del Perú. Cualquier disputa será sometida a los tribunales competentes de Lima, Perú.</p>
+          <p>Si alguna disposición de estos términos es declarada inválida o inaplicable, las demás disposiciones continuarán en plena vigencia.</p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 8 -->
+      <div class="tm_sec_card wi_fadeUp" id="tm_sec_7">
+        <div class="tm_sec_header">
+          <div class="tm_sec_ico" style="--tc:#29C72E"><i class="fas fa-rotate"></i></div>
+          <div>
+            <span class="tm_sec_num" style="color:#29C72E">08</span>
+            <h2 class="tm_sec_tit">Cambios en los Términos</h2>
+          </div>
+        </div>
+        <div class="tm_sec_body">
+          <p>Nos reservamos el derecho de modificar estos Términos y Condiciones en cualquier momento. Los cambios entrarán en vigencia inmediatamente después de su publicación en esta página.</p>
+          <p>Te notificaremos cambios significativos a través de la plataforma. El uso continuado de {app} después de los cambios constituye tu aceptación de los nuevos términos.</p>
+          <div class="tm_alert">
+            <i class="fas fa-calendar-check"></i>
+            <p>Última actualización: Abril 2026. Versión 1.0.0 de {app}.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 9 -->
+      <div class="tm_sec_card wi_fadeUp" id="tm_sec_8">
+        <div class="tm_sec_header">
+          <div class="tm_sec_ico" style="--tc:#7000FF"><i class="fas fa-envelope"></i></div>
+          <div>
+            <span class="tm_sec_num" style="color:#7000FF">09</span>
+            <h2 class="tm_sec_tit">Contacto Legal</h2>
+          </div>
+        </div>
+        <div class="tm_sec_body">
+          <p>Si tienes preguntas, reclamos o consultas legales sobre estos términos, puedes contactarnos:</p>
+          <div class="tm_contact">
+            <a href="mailto:wilder.taype@hotmail.com" class="tm_contact_item">
+              <i class="fas fa-envelope" style="color:#7000FF"></i>
+              <div>
+                <strong>Correo Electrónico</strong>
+                <span>wilder.taype@hotmail.com</span>
+              </div>
+            </a>
+            <a href={`https://github.com/wtaype/${id}/issues`} target="_blank" rel="noopener" class="tm_contact_item">
+              <i class="fab fa-github" style="color:#0EBEFF"></i>
+              <div>
+                <strong>GitHub Issues</strong>
+                <span>Reporta problemas o consultas técnicas</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ CTA FINAL ══ -->
+  <section class="ac_cta_sec">
+    <div class="ac_cta_wrap wi_fadeUp">
+      <div class="ac_hero_orb ac_orb1"></div>
+      <div class="ac_hero_orb ac_orb2"></div>
+      <div class="ac_cta_glow"></div>
+      <div class="ac_cta_inner">
+        <span class="ac_cta_emoji"><i class="fas fa-file-contract" style="font-size:4.5rem;color:var(--mco);"></i></span>
+        <h2>¿Tienes alguna pregunta?</h2>
+        <p>Estamos aquí para ayudarte. Contáctanos con total confianza.</p>
+        <div class="ac_cta_btns">
+          <a href="mailto:wilder.taype@hotmail.com" class="ac_btn_p ac_btn_lg">
+            <i class="fas fa-envelope"></i> Escribir al equipo
+          </a>
+          <a href="/privacidad" class="ac_btn_s ac_btn_lg tm_nav">
+            <i class="fas fa-lock"></i> Ver Privacidad
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</Layout>
+
+<script>
+  import { app } from '../wii.js';
+
+  // ⚡ INIT
+  const initTerminos = () => {
+    // Animación de entrada para los elementos wi_fadeUp
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.wi_fadeUp').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Smooth scroll para índice
+    document.querySelectorAll('.tm_index_item').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        if (href) {
+          const target = document.querySelector(href);
+          if (target) {
+            window.scrollTo({ 
+              top: target.getBoundingClientRect().top + window.scrollY - 90, 
+              behavior: 'smooth' 
+            });
+          }
+        }
+      });
+    });
+
+    console.log('📜 ' + app + ' Términos cargados');
+    (window as any).__WIREADY__ = true;
+  };
+
+  document.addEventListener('astro:page-load', initTerminos);
+</script>

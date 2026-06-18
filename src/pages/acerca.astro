@@ -1,0 +1,910 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app, descri, id } from '../wii.js';
+import { seo } from '../lib/seo.js';
+---
+
+<style is:global>
+@keyframes ac_float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+@keyframes ac_pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+.wi_fadeUp {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wi_fadeUp.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#wimain {
+  opacity: 1 !important;
+}
+
+.ac_wrap {
+  width: 100%;
+  overflow-x: hidden;
+  background: color-mix(in srgb, var(--mco) 3%, var(--bg));
+  color: var(--tx);
+  font-family: var(--ff_P);
+}
+
+/* ── HERO ── */
+.ac_hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10vh 5vw;
+  overflow: hidden;
+}
+
+.ac_hero_orb {
+  position: absolute;
+  filter: blur(80px);
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ac_orb1 { width: 40vw; height: 40vw; background: rgba(14, 190, 255, 0.15); top: -10vh; right: -5vw; animation: ac_float 20s infinite linear; }
+.ac_orb2 { width: 35vw; height: 35vw; background: rgba(255, 92, 105, 0.12); bottom: -10vh; left: -5vw; animation: ac_float 25s infinite linear reverse; }
+.ac_orb3 { width: 25vw; height: 25vw; background: rgba(112, 0, 255, 0.1); top: 30%; left: 40%; animation: ac_pulse 15s infinite ease-in-out; }
+
+.ac_hero_body {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 800px;
+}
+
+.ac_hero_logo {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 3vh;
+  border-radius: 2.5vh;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  background: #fff;
+  border: 1px solid var(--brd);
+}
+.ac_hero_logo img { width: 100%; height: 100%; object-fit: cover; }
+
+.ac_hero_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  padding: 0.8vh 2vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx3);
+  margin-bottom: 3vh;
+}
+.ac_hero_badge i { color: var(--Cielo); }
+
+.ac_hero_tit {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  margin-bottom: 3vh;
+  background: linear-gradient(135deg, var(--tx), var(--tx3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -2px;
+}
+
+.ac_hero_sub {
+  font-size: var(--fz_m3);
+  color: var(--tx2);
+  line-height: 1.6;
+  margin-bottom: 5vh;
+}
+.ac_hero_sub strong { color: var(--tx); }
+
+.ac_hero_stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3vh;
+  margin-bottom: 6vh;
+}
+
+.ac_stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5vh;
+  min-width: 120px;
+}
+.ac_stat i { font-size: var(--fz_m4); margin-bottom: 0.5vh; }
+.ac_stat strong { font-size: var(--fz_l1); font-family: var(--ff_O); font-weight: 800; color: var(--tx); }
+.ac_stat span { font-size: var(--fz_s2); color: var(--tx3); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+.ac_hero_btns {
+  display: flex;
+  justify-content: center;
+  gap: 2vh;
+}
+
+.ac_btn_p, .ac_btn_s {
+  padding: 1.8vh 4vh;
+  border-radius: 1.5vh;
+  font-size: var(--fz_m1);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ac_btn_p { background: var(--mco); color: #fff; border: none; }
+.ac_btn_p:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+
+.ac_btn_s { background: var(--wb); color: var(--tx); border: 1px solid var(--brd); }
+.ac_btn_s:hover { background: var(--bg5); border-color: var(--tx3); }
+
+.ac_hero_scroll {
+  margin-top: 8vh;
+  font-size: var(--fz_m2);
+  color: var(--tx3);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+/* ── COUNTER BAND ── */
+.ac_counter_band {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 5vh 5vw;
+  background: var(--wb);
+  border-top: 1px solid var(--brd);
+  border-bottom: 1px solid var(--brd);
+  flex-wrap: wrap;
+  gap: 4vh;
+}
+
+.ac_counter_item {
+  text-align: center;
+}
+.ac_counter_num, .ac_counter_item span {
+  font-size: var(--fz_l2);
+  font-weight: 800;
+  font-family: var(--ff_O);
+  color: var(--tx);
+}
+.ac_counter_item p {
+  font-size: var(--fz_s1);
+  color: var(--tx3);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 0.5vh;
+}
+
+.ac_counter_sep {
+  width: 1px;
+  height: 4vh;
+  background: var(--brd);
+}
+
+@media (max-width: 768px) {
+  .ac_counter_sep { display: none; }
+  .ac_counter_item { width: 40%; }
+}
+
+/* ── SECTIONS ── */
+.ac_sec {
+  padding: 12vh 10vw;
+}
+.ac_sec_alt { background: var(--bg5); }
+
+.ac_sec_head {
+  text-align: center;
+  margin-bottom: 8vh;
+}
+
+.ac_sec_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  color: var(--tx3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: var(--fz_s2);
+  margin-bottom: 2vh;
+}
+
+.ac_sec_tit {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--tx);
+  letter-spacing: -1px;
+}
+
+.ac_grad {
+  background: linear-gradient(135deg, #0EBEFF, #7000FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ac_sec_sub {
+  font-size: var(--fz_m2);
+  color: var(--tx3);
+  margin-top: 1vh;
+}
+
+/* ── HISTORIA ── */
+.ac_historia {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.ac_historia p {
+  font-size: var(--fz_m2);
+  line-height: 1.8;
+  color: var(--tx2);
+  margin-bottom: 3vh;
+}
+.ac_historia strong { color: var(--tx); }
+.ac_firma {
+  margin-top: 6vh;
+  display: flex;
+  flex-direction: column;
+}
+.ac_firma strong { font-size: var(--fz_m3); color: var(--tx); }
+.ac_firma span { font-size: var(--fz_s2); color: var(--tx3); }
+
+/* ── BENEFICIOS GRID ── */
+.ac_feat_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3vh;
+}
+
+.ac_feat_card {
+  padding: 5vh 4vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  transition: all 0.3s ease;
+}
+.ac_feat_card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  border-color: var(--sc, var(--tx3));
+}
+
+.ac_feat_ico {
+  width: 6vh;
+  height: 6vh;
+  background: var(--bg);
+  border-radius: 1.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m4);
+  margin-bottom: 3vh;
+  color: var(--sc);
+}
+
+.ac_feat_card h3 {
+  font-size: var(--fz_m3);
+  font-weight: 700;
+  margin-bottom: 2vh;
+  color: var(--tx);
+}
+.ac_feat_card p {
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.6;
+}
+
+.ac_color_cielo { --sc: #0EBEFF; }
+.ac_color_dulce { --sc: #FF5C69; }
+.ac_color_paz { --sc: #29C72E; }
+.ac_color_mora { --sc: #7000FF; }
+
+/* ── PASOS ── */
+.ac_pasos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3vh;
+  flex-wrap: wrap;
+}
+
+.ac_paso {
+  flex: 1;
+  min-width: 250px;
+  text-align: center;
+  padding: 4vh;
+  position: relative;
+}
+
+.ac_paso_num {
+  position: absolute;
+  top: 0;
+  right: 10%;
+  font-size: 8rem;
+  font-weight: 900;
+  color: var(--bg5);
+  z-index: 0;
+  line-height: 1;
+}
+
+.ac_paso_ico {
+  width: 8vh;
+  height: 8vh;
+  background: var(--mco);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m4);
+  margin: 0 auto 3vh;
+  position: relative;
+  z-index: 1;
+}
+
+.ac_paso h3 { font-size: var(--fz_m3); font-weight: 700; margin-bottom: 1.5vh; position: relative; z-index: 1; }
+.ac_paso p { font-size: var(--fz_m1); color: var(--tx3); line-height: 1.5; position: relative; z-index: 1; }
+
+.ac_paso_sep { font-size: var(--fz_m4); color: var(--brd); }
+
+@media (max-width: 900px) {
+  .ac_paso_sep { display: none; }
+}
+
+/* ── TESTIMONIOS ── */
+.ac_test_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 3vh;
+}
+
+.ac_test_card {
+  padding: 4vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+.ac_test_stars { color: #FFB800; font-size: var(--fz_s2); }
+.ac_test_txt { font-style: italic; font-size: var(--fz_m1); color: var(--tx2); line-height: 1.6; }
+
+.ac_test_autor {
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  margin-top: auto;
+}
+.ac_test_avatar {
+  width: 5vh;
+  height: 5vh;
+  background: var(--bg5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m3);
+}
+.ac_test_autor strong { display: block; font-size: var(--fz_m1); color: var(--tx); }
+.ac_test_autor span { font-size: var(--fz_s2); color: var(--tx3); }
+
+/* ── MODULOS ── */
+.ac_modulos_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3vh;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.ac_modulo_card {
+  padding: 3vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 1.5vh;
+  display: flex;
+  align-items: center;
+  gap: 2vh;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.ac_modulo_card:hover {
+  background: var(--bg5);
+  transform: translateX(10px);
+  border-color: var(--mc);
+}
+
+.ac_modulo_ico {
+  width: 5vh;
+  height: 5vh;
+  border-radius: 1vh;
+  background: color-mix(in srgb, var(--mc) 10%, transparent);
+  color: var(--mc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m2);
+}
+
+.ac_modulo_info { flex: 1; display: flex; flex-direction: column; }
+.ac_modulo_info strong { font-size: var(--fz_m1); color: var(--tx); }
+.ac_modulo_info span { font-size: var(--fz_s2); color: var(--tx3); }
+.ac_modulo_arr { color: var(--brd); transition: color 0.3s; }
+.ac_modulo_card:hover .ac_modulo_arr { color: var(--mc); }
+
+/* ── CTA SECTION ── */
+.ac_cta_sec { padding: 10vh 5vw; }
+
+.ac_cta_wrap {
+  position: relative;
+  background: var(--bg);
+  color: var(--tx);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  padding: 10vh 5vw;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+}
+
+.ac_cta_glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(14, 190, 255, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.ac_cta_inner { position: relative; z-index: 2; }
+.ac_cta_emoji { font-size: 5rem; display: block; margin-bottom: 2vh; }
+.ac_cta_inner h2 { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 2vh; }
+.ac_cta_inner p { font-size: var(--fz_m2); opacity: 0.8; margin-bottom: 5vh; }
+
+.ac_cta_chips {
+  display: flex;
+  justify-content: center;
+  gap: 2vh;
+  flex-wrap: wrap;
+  margin-bottom: 6vh;
+}
+
+.ac_chip {
+  padding: 1vh 2.5vh;
+  border-radius: 3vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  color: var(--tx2);
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+  transition: all 0.3s;
+}
+.ac_chip:hover { background: var(--bg5); color: var(--tx); transform: translateY(-3px); }
+
+.ac_btn_lg { padding: 2.2vh 5vh; font-size: var(--fz_m2); }
+
+.ac_footer_txt {
+  margin-top: 8vh;
+  font-size: var(--fz_s2);
+  opacity: 0.5;
+}
+.ac_footer_txt a { color: inherit; text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .ac_hero_btns, .ac_cta_btns { flex-direction: column; }
+  .ac_btn_p, .ac_btn_s { justify-content: center; }
+  .ac_sec { padding: 8vh 6vw; }
+}
+</style>
+
+<Layout {...seo.acerca}>
+<div class="ac_wrap">
+
+  <!-- ══ HERO ══ -->
+  <section class="ac_hero">
+    <div class="ac_hero_orb ac_orb1"></div>
+    <div class="ac_hero_orb ac_orb2"></div>
+    <div class="ac_hero_orb ac_orb3"></div>
+    <div class="ac_hero_body">
+      <div class="ac_hero_logo">
+        <img src="/perfil.webp" alt={app} loading="lazy">
+      </div>
+      <div class="ac_hero_badge"><i class="fas fa-briefcase"></i> Tu aliado inteligente para conseguir empleo</div>
+      <h1 class="ac_hero_tit">{app}</h1>
+      <p class="ac_hero_sub">
+        Optimiza tu currículum, supera los filtros ATS y simula entrevistas reales 
+        impulsadas por Inteligencia Artificial para destacar en el mercado laboral.
+      </p>
+      <div class="ac_hero_stats">
+        
+          <div class="ac_stat" style="--sc:#0EBEFF">
+            <i class="fas fa-file-invoice" style="color:#0EBEFF"></i>
+            <strong>100%</strong>
+            <span>Optimización ATS</span>
+          </div>
+          <div class="ac_stat" style="--sc:#FF5C69">
+            <i class="fas fa-heart" style="color:#FF5C69"></i>
+            <strong>Gratis</strong>
+            <span>Completamente gratis</span>
+          </div>
+          <div class="ac_stat" style="--sc:#29C72E">
+            <i class="fas fa-robot" style="color:#29C72E"></i>
+            <strong>24/7</strong>
+            <span>Feedback con IA</span>
+          </div>
+          <div class="ac_stat" style="--sc:#7000FF">
+            <i class="fas fa-check-double" style="color:#7000FF"></i>
+            <strong>10K+</strong>
+            <span>CVs Mejorados</span>
+          </div>
+      </div>
+      <div class="ac_hero_btns">
+        <a href="/word" class="ac_btn_p"><i class="fas fa-file-word"></i> Optimizar CV</a>
+        <button class="ac_btn_s" id="ac_compartir"><i class="fas fa-share-nodes"></i> Compartir App</button>
+      </div>
+      <div class="ac_hero_scroll"><i class="fas fa-chevron-down"></i></div>
+    </div>
+  </section>
+
+  <!-- ══ COUNTER BAND ══ -->
+  <div class="ac_counter_band">
+    <div class="ac_counter_item">
+      <span class="ac_counter_num" data-target="100">100</span><span>%</span>
+      <p>Gratis para siempre</p>
+    </div>
+    <div class="ac_counter_sep"></div>
+    <div class="ac_counter_item">
+      <span class="ac_counter_num" data-target="99">99</span><span>%</span>
+      <p>Velocidad de Carga</p>
+    </div>
+    <div class="ac_counter_sep"></div>
+    <div class="ac_counter_item">
+      <i class="fas fa-infinity" style="font-size: var(--fz_l2); color: var(--tx);"></i>
+      <p>Simulaciones IA</p>
+    </div>
+    <div class="ac_counter_sep"></div>
+    <div class="ac_counter_item">
+      <span class="ac_counter_num" data-target="2026">2026</span>
+      <p>Siempre actualizado</p>
+    </div>
+  </div>
+
+  <!-- ══ NUESTRA HISTORIA ══ -->
+  <section class="ac_sec">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-heart"></i> Acerca de nosotros</div>
+      <h2 class="ac_sec_tit">El propósito de <span class="ac_grad">{app}</span></h2>
+    </div>
+    <div class="ac_historia wi_fadeUp">
+      <p><strong>{app}</strong> es una aplicación diseñada para ayudarte a crear y optimizar tu currículum profesional. Su propósito es ayudarte a superar los exigentes filtros ATS (Applicant Tracking Systems) y prepararte adecuadamente para tus futuras entrevistas laborales.</p>
+      
+      <p>Inspirados en la necesidad de democratizar el acceso a herramientas profesionales de calidad, desarrollamos una plataforma que actúa como el puente inteligente entre tu perfil actual y tu próximo gran empleo. Creemos firmemente que la preparación técnica y el feedback oportuno marcan la diferencia en los procesos de selección modernos.</p>
+      
+      <p>Además de un lienzo interactivo para redactar tus documentos de forma limpia y organizada en tiempo real, integramos un sistema de asistencia por IA capaz de simular entrevistas reales. Podrás entrenar tus respuestas en base al puesto al que postulas, recibiendo retroalimentación constructiva al instante.</p>
+
+      <p>Esta app fue construida para digitalizar estos recursos y hacerlos 100% accesibles para todos los profesionales en búsqueda de nuevas oportunidades, en cualquier momento y desde cualquier dispositivo.</p>
+      
+      <p>Agradecemos sinceramente tu confianza en nosotros. ¡Te deseamos el mayor de los éxitos en tu camino profesional y recuerda que tu potencial no tiene límites!</p>
+
+      <div class="ac_firma">
+        <strong>Con aprecio, Wilder Taype</strong>
+        <span>Creador de {app}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ BENEFICIOS ══ -->
+  <section class="ac_sec ac_sec_alt">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-star"></i> ¿Por qué {app}?</div>
+      <h2 class="ac_sec_tit">Beneficios para impulsar tu <span class="ac_grad">perfil laboral</span></h2>
+      <p class="ac_sec_sub">Herramientas profesionales potenciadas por Inteligencia Artificial</p>
+    </div>
+    <div class="ac_feat_grid">
+      
+        <div class="ac_feat_card wi_fadeUp ac_color_cielo">
+          <div class="ac_feat_ico"><i class="fas fa-file-lines"></i></div>
+          <h3>Editor de CV Profesional</h3>
+          <p>Crea y edita tus documentos profesionales en tiempo real con un lienzo optimizado y libre de distracciones.</p>
+        </div>
+        <div class="ac_feat_card wi_fadeUp ac_color_dulce">
+          <div class="ac_feat_ico"><i class="fas fa-magnifying-glass-chart"></i></div>
+          <h3>Optimización ATS</h3>
+          <p>Analiza y adapta tu CV según las palabras clave requeridas por las empresas para superar filtros automatizados.</p>
+        </div>
+        <div class="ac_feat_card wi_fadeUp ac_color_paz">
+          <div class="ac_feat_ico"><i class="fas fa-comments"></i></div>
+          <h3>Simulador de Entrevistas</h3>
+          <p>Practica con una IA entrenada que te hará preguntas reales de reclutamiento según tu especialidad y puesto objetivo.</p>
+        </div>
+        <div class="ac_feat_card wi_fadeUp ac_color_mora">
+          <div class="ac_feat_ico"><i class="fas fa-lightbulb"></i></div>
+          <h3>Consejos de Empleo</h3>
+          <p>Accede a guías y plantillas detalladas para optimizar tu redacción, mejorar tu marca personal y captar reclutadores.</p>
+        </div>
+        <div class="ac_feat_card wi_fadeUp ac_color_cielo">
+          <div class="ac_feat_ico"><i class="fas fa-wand-magic-sparkles"></i></div>
+          <h3>Interfaz Premium</h3>
+          <p>Cada animación y detalle visual está adaptado con colores suaves para brindarte una zona de trabajo cómoda y veloz.</p>
+        </div>
+        <div class="ac_feat_card wi_fadeUp ac_color_dulce">
+          <div class="ac_feat_ico"><i class="fas fa-mobile-screen"></i></div>
+          <h3>100% Responsivo</h3>
+          <p>Lleva tu currículum contigo. Edita, estructura y consulta tus notas de empleo cómodamente desde cualquier dispositivo móvil.</p>
+        </div>
+    </div>
+  </section>
+
+  <!-- ══ CÓMO FUNCIONA ══ -->
+  <section class="ac_sec">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-route"></i> Empieza ahora</div>
+      <h2 class="ac_sec_tit">3 pasos para <span class="ac_grad">destacar</span></h2>
+      <p class="ac_sec_sub">Optimiza tu perfil profesional en minutos</p>
+    </div>
+    <div class="ac_pasos">
+      
+        <div class="ac_paso wi_fadeUp">
+          <div class="ac_paso_num">1</div>
+          <div class="ac_paso_ico"><i class="fas fa-pen-nib"></i></div>
+          <h3>Redacta</h3>
+          <p>Escribe y estructura el contenido de tu currículum profesional en nuestro editor dinámico.</p>
+        </div>
+        <div class="ac_paso_sep"><i class="fas fa-chevron-right"></i></div>
+        <div class="ac_paso wi_fadeUp">
+          <div class="ac_paso_num">2</div>
+          <div class="ac_paso_ico"><i class="fas fa-chart-line"></i></div>
+          <h3>Optimiza</h3>
+          <p>Ajusta el vocabulario técnico para superar las pruebas de los filtros automáticos ATS.</p>
+        </div>
+        <div class="ac_paso_sep"><i class="fas fa-chevron-right"></i></div>
+        <div class="ac_paso wi_fadeUp">
+          <div class="ac_paso_num">3</div>
+          <div class="ac_paso_ico"><i class="fas fa-user-astronaut"></i></div>
+          <h3>Simula</h3>
+          <p>Responde preguntas de IA de reclutamiento real y entrena tus respuestas para triunfar.</p>
+        </div>
+        
+    </div>
+  </section>
+
+  <!-- ══ TESTIMONIOS ══ -->
+  <section class="ac_sec ac_sec_alt">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-comments"></i> Comunidad</div>
+      <h2 class="ac_sec_tit">Profesionales que usan <span class="ac_grad">{app}</span></h2>
+      <p class="ac_sec_sub">Casos de éxito y testimonios de nuestra comunidad laboral</p>
+    </div>
+    <div class="ac_test_grid">
+      
+        <div class="ac_test_card wi_fadeUp">
+          <div class="ac_test_stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="ac_test_txt">"El editor en tiempo real y los consejos de IA me ayudaron a estructurar mi CV en minutos. Conseguí mi primera entrevista técnica en semanas."</p>
+          <div class="ac_test_autor">
+            <span class="ac_test_avatar"><i class="fas fa-user-graduate"></i></span>
+            <div><strong>María C.</strong><span>Ingeniera de Software</span></div>
+          </div>
+        </div>
+        <div class="ac_test_card wi_fadeUp">
+          <div class="ac_test_stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="ac_test_txt">"Simular la entrevista técnica con la IA me dio la confianza que necesitaba. El feedback de las preguntas fue muy acertado y directo."</p>
+          <div class="ac_test_autor">
+            <span class="ac_test_avatar"><i class="fas fa-user-tie"></i></span>
+            <div><strong>Juan Pérez</strong><span>Analista de Datos</span></div>
+          </div>
+        </div>
+        <div class="ac_test_card wi_fadeUp">
+          <div class="ac_test_stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="ac_test_txt">"Me encantan los consejos del blog con plantillas. La interfaz oscura es preciosa y me permite trabajar de noche sin cansar la vista."</p>
+          <div class="ac_test_autor">
+            <span class="ac_test_avatar"><i class="fas fa-user-gear"></i></span>
+            <div><strong>Rosa M.</strong><span>Administradora</span></div>
+          </div>
+        </div>
+        <div class="ac_test_card wi_fadeUp">
+          <div class="ac_test_stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="ac_test_txt">"Superar los filtros automáticos (ATS) siempre fue mi dolor de cabeza. Gracias al analizador de palabras clave logré pasar el primer filtro."</p>
+          <div class="ac_test_autor">
+            <span class="ac_test_avatar"><i class="fas fa-briefcase"></i></span>
+            <div><strong>Carlos G.</strong><span>Project Manager</span></div>
+          </div>
+        </div>
+        <div class="ac_test_card wi_fadeUp">
+          <div class="ac_test_stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="ac_test_txt">"La rapidez de la aplicación móvil es fantástica. Puedo revisar y actualizar mis notas profesionales de camino a las oficinas de selección."</p>
+          <div class="ac_test_autor">
+            <span class="ac_test_avatar"><i class="fas fa-bolt"></i></span>
+            <div><strong>Elena R.</strong><span>Consultora de RRHH</span></div>
+          </div>
+        </div>
+        <div class="ac_test_card wi_fadeUp">
+          <div class="ac_test_stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="ac_test_txt">"{app} se ha convertido en mi herramienta diaria de desarrollo profesional. Las guías de CV son oro puro para cualquier postulante."</p>
+          <div class="ac_test_autor">
+            <span class="ac_test_avatar"><i class="fas fa-graduation-cap"></i></span>
+            <div><strong>Pedro S.</strong><span>Diseñador UX</span></div>
+          </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- ══ MÓDULOS ══ -->
+  <section class="ac_sec">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-layer-group"></i> Funciones</div>
+      <h2 class="ac_sec_tit">Herramientas para <span class="ac_grad">potenciar tu perfil</span></h2>
+      <p class="ac_sec_sub">Diseñadas para acompañarte en tu preparación profesional y laboral</p>
+    </div>
+    <div class="ac_modulos_grid">
+      
+        <a href="/word" class="ac_modulo_card wi_fadeUp" style="--mc:#0EBEFF">
+          <div class="ac_modulo_ico"><i class="fas fa-file-word"></i></div>
+          <div class="ac_modulo_info">
+            <strong>Editor de CV</strong>
+            <span>Escribe tu currículum</span>
+          </div>
+          <div class="ac_modulo_arr"><i class="fas fa-arrow-right"></i></div>
+        </a>
+        <a href="/chatwil" class="ac_modulo_card wi_fadeUp" style="--mc:#29C72E">
+          <div class="ac_modulo_ico"><i class="fas fa-robot"></i></div>
+          <div class="ac_modulo_info">
+            <strong>Entrevista IA</strong>
+            <span>Simula preguntas reales</span>
+          </div>
+          <div class="ac_modulo_arr"><i class="fas fa-arrow-right"></i></div>
+        </a>
+    </div>
+  </section>
+
+  <!-- ══ CTA ══ -->
+  <section class="ac_cta_sec">
+    <div class="ac_cta_wrap wi_fadeUp">
+      <div class="ac_hero_orb ac_orb1"></div>
+      <div class="ac_hero_orb ac_orb2"></div>
+      <div class="ac_cta_glow"></div>
+      <div class="ac_cta_particles">
+        <span class="ac_particle"></span><span class="ac_particle"></span><span class="ac_particle"></span><span class="ac_particle"></span><span class="ac_particle"></span><span class="ac_particle"></span>
+      </div>
+      <div class="ac_cta_inner">
+        <span class="ac_cta_emoji"><i class="fas fa-rocket" style="font-size: 3rem; color: var(--sc, #7000FF);"></i></span>
+        <h2>¿Listo para dar el<br>siguiente paso?</h2>
+        <p>Optimiza tu perfil profesional y supera cualquier proceso de selección hoy mismo.</p>
+        <div class="ac_cta_chips">
+          
+            <a href="/word" class="ac_chip" style="--cc:#0EBEFF" data-witip="Optimizar CV" data-wtipo="top" data-wtiempo="1800">
+              <i class="fas fa-file-word"></i> Editor de CV
+            </a>
+            <a href="/chatwil" class="ac_chip" style="--cc:#29C72E" data-witip="Simulador de entrevistas" data-wtipo="top" data-wtiempo="1800">
+              <i class="fas fa-robot"></i> Simulador IA
+            </a>
+        </div>
+        <div class="ac_cta_btns">
+          <a href="/word" class="ac_btn_p ac_btn_lg"><i class="fas fa-file-word"></i> Ir al Editor</a>
+          <a href="/blog" class="ac_btn_s ac_btn_lg"><i class="fas fa-lightbulb"></i> Ver Blog</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</Layout>
+
+<script>
+  import { app } from '../wii.js';
+
+  // ============================================================
+  // 🔢 COUNTER ANIMATION
+  // ============================================================
+  const animateCounters = () => {
+    document.querySelectorAll('.ac_counter_num').forEach(el => {
+      const targetVal = (el as HTMLElement).dataset.target;
+      if (!targetVal) return;
+      
+      const target = parseInt(targetVal);
+      const duration = 2000;
+      let start: number | null = null;
+      
+      const step = (ts: number) => {
+        if (!start) start = ts;
+        const progress = Math.min((ts - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 4);
+        const current = Math.floor(ease * target);
+        el.textContent = current.toLocaleString();
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  };
+
+  // ============================================================
+  // ⚡ INIT
+  // ============================================================
+  const initAcerca = () => {
+    // Animación de entrada para los elementos wi_fadeUp
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.wi_fadeUp').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Contadores al entrar en vista
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounters();
+          counterObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    const band = document.querySelector('.ac_counter_band');
+    if (band) counterObserver.observe(band);
+
+    // Compartir
+    const shareBtn = document.getElementById('ac_compartir');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', function (this: HTMLElement) {
+        const url = window.location.origin;
+        if (navigator.share) {
+          navigator.share({ 
+            title: document.title, 
+            text: `Optimiza tu CV y supera entrevistas con la ayuda de la Inteligencia Artificial.`, 
+            url 
+          }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText(url);
+          this.textContent = '¡Link copiado!';
+          setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-share-nodes"></i> Compartir App';
+          }, 2000);
+        }
+      });
+    }
+
+    console.log(app + ' Acerca actualizado');
+    (window as any).__WIREADY__ = true;
+  };
+
+  document.addEventListener('astro:page-load', initAcerca);
+</script>

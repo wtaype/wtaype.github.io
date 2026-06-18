@@ -1,0 +1,1345 @@
+---
+// src/pages/notas.astro
+import Layout from '../layouts/Layout.astro';
+import { app } from '../wii.js';
+---
+
+<!-- Guardia de Renderizado Inicial: Redirigir de inmediato si no hay token local para evitar parpadeos -->
+<script is:inline>localStorage.wiSmile||location.replace('/')</script>
+
+<style is:global>
+  /* ═══════════════════════════════════════════════════════════
+     📝 Notas Pro - Diseño Moderno Premium
+     ═══════════════════════════════════════════════════════════ */
+
+  /* Container - sin fondo */
+  .wn_container { 
+    width: 100%; 
+    min-height: 90vh; 
+    padding: 1.5rem; 
+    box-sizing: border-box;
+  }
+
+  /* Header */
+  .wn_header {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    flex-wrap: wrap; 
+    gap: 1rem;
+    margin-bottom: 1.75rem; 
+    padding: 1.1rem 1.5rem;
+    background: var(--wb);
+    border-radius: 1rem; 
+    border: 1px solid var(--brd);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .wn_info { display: flex; align-items: center; gap: 0.9rem; }
+  .wn_avatar { 
+    width: 46px; 
+    height: 46px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 2px solid var(--mco);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.25s ease;
+  }
+  .wn_avatar:hover { transform: scale(1.08); }
+  .wn_text h1 { 
+    font-size: var(--fz_m5); 
+    font-weight: 700; 
+    margin: 0; 
+    color: var(--tx); 
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem;
+  }
+  .wn_text h1 i { color: var(--mco); }
+  .wn_text p { font-size: var(--fz_m1); margin: 0.25rem 0 0; color: var(--tx2); }
+  .wn_text strong { color: var(--mco); font-weight: 600; }
+  .wn_actions { display: flex; align-items: center; gap: 0.75rem; }
+
+  /* Botón Nueva */
+  .wn_btn_new {
+    display: inline-flex; 
+    align-items: center; 
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem; 
+    border: none; 
+    border-radius: 0.75rem;
+    background: var(--mco);
+    color: var(--txa);
+    font-size: var(--fz_m2); 
+    font-weight: 600; 
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  }
+  .wn_btn_new:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 5px 16px rgba(0,0,0,0.18);
+    filter: brightness(1.08);
+  }
+  .wn_btn_new:active { transform: translateY(0) scale(0.98); }
+  .wn_btn_new i { font-size: 0.95em; }
+
+  /* Status + Sync */
+  .wn_status_wrap { display: flex; align-items: center; gap: 0.5rem; }
+  .wn_status {
+    display: flex; 
+    align-items: center; 
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem; 
+    border-radius: 2rem;
+    background: var(--bg4); 
+    font-size: var(--fz_s4); 
+    color: var(--tx2);
+  }
+  .wn_dot { 
+    width: 8px; 
+    height: 8px; 
+    border-radius: 50%; 
+    background: var(--tx3);
+    transition: all 0.25s ease;
+  }
+  .wn_dot.active { 
+    background: var(--success); 
+    box-shadow: 0 0 6px var(--success);
+  }
+  .wn_dot.error { background: var(--error); }
+
+  .wn_btn_sync {
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    width: 34px; 
+    height: 34px; 
+    border: none; 
+    border-radius: 50%;
+    background: var(--bg4); 
+    color: var(--tx2); 
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .wn_btn_sync:hover { 
+    background: var(--mco); 
+    color: var(--txa); 
+  }
+  .wn_btn_sync.spinning i { animation: spin 0.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Grid */
+  .wn_grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    background: var(--wb);
+    padding: 3vh 2vh;
+    border-radius: 1vh;
+  }
+  @media (min-width: 1400px) { .wn_grid { grid-template-columns: repeat(5, 1fr); } }
+  @media (min-width: 1200px) and (max-width: 1399px) { .wn_grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 600px) { .wn_grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; } }
+
+  /* Card */
+  .wn_card {
+    position: relative; 
+    border-radius: 1rem; 
+    overflow: hidden;
+    background: var(--c-bg, var(--wb)); 
+    color: var(--c-tx, var(--tx));
+    border: 1px solid var(--brd); 
+    cursor: pointer;
+    transition: all 0.25s ease; 
+    min-height: 130px;
+    animation: cardIn 0.3s ease;
+  }
+  @keyframes cardIn { 
+    from { opacity: 0; transform: translateY(12px); } 
+    to { opacity: 1; transform: translateY(0); } 
+  }
+
+  .wn_card:hover { 
+    transform: translateY(-4px); 
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    border-color: var(--c-accent, var(--mco)); 
+  }
+  .wn_card.pinned { 
+    border-color: var(--c-accent, var(--mco)); 
+    border-width: 2px;
+  }
+  .wn_card.editing { 
+    box-shadow: 0 0 0 2px var(--c-accent, var(--mco));
+    transform: none; 
+  }
+  .wn_card.saving { opacity: 0.7; }
+  .wn_card.deleting { animation: delOut 0.25s forwards; }
+  @keyframes delOut { to { opacity: 0; transform: scale(0.9); } }
+
+  .wn_card_inner { 
+    padding: 1rem; 
+    display: flex; 
+    flex-direction: column; 
+    min-height: inherit; 
+    position: relative; 
+  }
+
+  /* Pin badge */
+  .wn_pin_badge {
+    position: absolute; 
+    top: 8px; 
+    right: 8px;
+    width: 22px; 
+    height: 22px; 
+    border-radius: 50%;
+    background: var(--c-accent, var(--mco));
+    color: var(--txa);
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 9px;
+    transform: rotate(45deg);
+  }
+
+  /* Título */
+  .wn_titulo {
+    font-size: var(--fz_m3); 
+    font-weight: 700; 
+    color: var(--c-tx, var(--tx));
+    min-height: 1.2em; 
+    outline: none; 
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid transparent; 
+    line-height: 1.4;
+  }
+  .wn_titulo:empty::before { 
+    content: attr(data-placeholder); 
+    color: var(--tx3); 
+    opacity: 0.6;
+  }
+  .wn_card.editing .wn_titulo { 
+    border-bottom-color: var(--c-accent, var(--mco)); 
+  }
+
+  /* Contenido */
+  .wn_contenido {
+    font-size: var(--fz_m1); 
+    color: var(--c-tx, var(--tx2)); 
+    opacity: 0.85;
+    line-height: 1.6; 
+    min-height: 2.5em; 
+    max-height: 5em;
+    overflow: hidden; 
+    outline: none; 
+    flex: 1;
+  }
+  .wn_contenido:empty::before { 
+    content: attr(data-placeholder); 
+    color: var(--tx3); 
+    opacity: 0.5;
+  }
+  .wn_card.editing .wn_contenido { 
+    max-height: 12em; 
+    overflow: auto;
+  }
+
+  /* Footer */
+  .wn_footer {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    margin-top: 0.75rem; 
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--brd);
+  }
+  .wn_fecha { 
+    font-size: var(--fz_s3); 
+    color: var(--tx3);
+  }
+  .wn_saved { 
+    opacity: 0; 
+    font-size: var(--fz_s4); 
+    color: var(--success); 
+    transition: opacity 0.3s;
+  }
+  .wn_card.saved .wn_saved { opacity: 1; }
+
+  /* Toolbar */
+  .wn_toolbar {
+    position: absolute; 
+    top: 6px; 
+    right: 6px;
+    display: flex; 
+    gap: 4px; 
+    opacity: 0; 
+    transition: opacity 0.2s;
+  }
+  .wn_card:hover .wn_toolbar, .wn_card.editing .wn_toolbar { opacity: 1; }
+
+  .wn_toolbar button {
+    width: 26px; 
+    height: 26px; 
+    border: none; 
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--tx2);
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 11px; 
+    cursor: pointer; 
+    transition: all 0.15s ease;
+  }
+  .wn_toolbar button:hover { 
+    background: var(--c-accent, var(--mco)); 
+    color: var(--txa);
+  }
+  .wn_toolbar .wn_pin.active { 
+    color: var(--c-accent, var(--mco));
+    background: var(--bg5);
+  }
+  .wn_toolbar .wn_del:hover { background: var(--error); }
+
+  /* Colors picker */
+  .wn_colors {
+    position: absolute; 
+    top: 36px; 
+    right: 6px;
+    display: flex; 
+    gap: 5px; 
+    padding: 6px 8px;
+    background: var(--wb); 
+    border: 1px solid var(--brd); 
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12); 
+    opacity: 0; 
+    visibility: hidden;
+    transform: translateY(-4px); 
+    transition: all 0.2s ease; 
+    z-index: 10;
+  }
+  .wn_colors.show { 
+    opacity: 1; 
+    visibility: visible; 
+    transform: translateY(0); 
+  }
+
+  .wn_color_opt {
+    width: 20px; 
+    height: 20px; 
+    border-radius: 50%;
+    background: var(--cc); 
+    cursor: pointer; 
+    transition: transform 0.15s ease;
+    border: 2px solid transparent;
+  }
+  .wn_color_opt:hover { transform: scale(1.15); }
+  .wn_color_opt.active { border-color: var(--tx); }
+
+  /* Saving bar */
+  .wn_card.saving::after {
+    content: ''; 
+    position: absolute; 
+    bottom: 0; 
+    left: 0;
+    width: 100%; 
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--c-accent, var(--mco)), transparent);
+    animation: saveBar 0.8s infinite;
+  }
+  @keyframes saveBar { 
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); } 
+  }
+
+  /* Empty */
+  .wn_empty {
+    grid-column: 1 / -1; 
+    display: flex; 
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    padding: 4rem 2rem; 
+    text-align: center;
+    background: var(--bg4);
+    border-radius: 1rem; 
+    border: 2px dashed var(--brd);
+  }
+  .wn_empty i { 
+    font-size: 3.5rem; 
+    color: var(--mco); 
+    opacity: 0.4; 
+    margin-bottom: 1rem;
+  }
+  .wn_empty p { 
+    font-size: var(--fz_m5); 
+    font-weight: 600; 
+    color: var(--tx); 
+    margin: 0;
+  }
+  .wn_empty span { 
+    font-size: var(--fz_m1); 
+    color: var(--tx3); 
+    margin-top: 0.3rem;
+  }
+
+  /* Modal */
+  .wn_modal {
+    position: fixed; 
+    inset: 0; 
+    z-index: 999;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    background: rgba(0,0,0,0.55); 
+    backdrop-filter: blur(6px);
+    opacity: 0; 
+    visibility: hidden; 
+    transition: all 0.25s;
+  }
+  .wn_modal.show { opacity: 1; visibility: visible; }
+
+  .wn_modal_body {
+    background: var(--wb); 
+    border-radius: 1.25rem; 
+    padding: 2rem;
+    text-align: center; 
+    max-width: 320px; 
+    width: 90%;
+    border: 1px solid var(--brd); 
+    box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+    transform: scale(0.9); 
+    transition: transform 0.25s;
+  }
+  .wn_modal.show .wn_modal_body { transform: scale(1); }
+  .wn_modal_body i { 
+    font-size: 2.5rem; 
+    color: var(--error); 
+    margin-bottom: 1rem; 
+    display: block; 
+  }
+  .wn_modal_body h3 { 
+    margin: 0 0 0.5rem; 
+    font-size: var(--fz_m5); 
+    font-weight: 700;
+    color: var(--tx); 
+  }
+  .wn_modal_body p { 
+    margin: 0 0 1.5rem; 
+    font-size: var(--fz_m1); 
+    color: var(--tx2); 
+  }
+
+  .wn_modal_acts { display: flex; gap: 0.75rem; justify-content: center; }
+  .wn_modal_acts button {
+    padding: 0.7rem 1.5rem; 
+    border: none; 
+    border-radius: 0.75rem;
+    font-size: var(--fz_m2); 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all 0.2s ease;
+  }
+  .wn_cancel { 
+    background: var(--bg4); 
+    color: var(--tx); 
+  }
+  .wn_cancel:hover { 
+    background: var(--bg5);
+    transform: translateY(-1px);
+  }
+  .wn_confirm { 
+    background: var(--error); 
+    color: white;
+    box-shadow: 0 2px 8px rgba(239,68,68,0.3);
+  }
+  .wn_confirm:hover { 
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+
+  /* Tags display */
+  .wn_tags_display { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+  .wn_tag_badge { font-size: var(--fz_s2); background: rgba(0,0,0,0.06); color: var(--tx2); padding: 0.2rem 0.6rem; border-radius: 0.4rem; font-weight: 600; border: 1px solid var(--brd); }
+  
+  /* Tags input (hidden in view mode, visible in edit mode) */
+  .wn_tags_input { display: none; width: 100%; border: 1px solid var(--brd); border-radius: 0.5rem; padding: 0.4rem 0.6rem; font-size: var(--fz_s4); font-family: inherit; margin-top: 0.5rem; outline: none; background: var(--wb); color: var(--tx); box-sizing: border-box; }
+  .wn_card.editing .wn_tags_input { display: block; }
+  .wn_card.editing .wn_tags_display { display: none; }
+
+  /* Archive button */
+  .wn_toolbar .wn_archive.active { color: var(--c-accent, var(--mco)); background: var(--bg5); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .wn_container { padding: 1rem; }
+    .wn_header { 
+      flex-direction: column; 
+      gap: 1rem; 
+      padding: 1rem; 
+    }
+    .wn_actions { width: 100%; justify-content: space-between; }
+    .wn_btn_new { flex: 1; justify-content: center; }
+    .wn_toolbar { opacity: 1; }
+  }
+  @media (max-width: 480px) {
+    .wn_btn_new span { display: none; }
+    .wn_btn_new { 
+      padding: 0.75rem; 
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      justify-content: center;
+    }
+    .wn_card { min-height: 110px; }
+    .wn_card_inner { padding: 0.85rem; }
+  }
+</style>
+
+<Layout title="Mis Notas" name={app} robots="noindex, nofollow">
+  <div class="wn_container">
+    <div class="wn_header">
+      <div class="wn_info">
+        <img src="/smile.avif" alt={app} class="wn_avatar" />
+        <div class="wn_text">
+          <h1><i class="fas fa-sticky-note"></i> Mis Notas</h1>
+          <p id="wnHeaderWelcome">Cargando...</p>
+        </div>
+      </div>
+      <div class="wn_actions">
+        <button class="wn_btn_new" id="wnToggleArchive" style="background: var(--bg4); color: var(--tx); border: 1px solid var(--brd);" data-witip="Alternar archivadas">
+          <i class="fas fa-archive"></i> <span id="wnToggleText">Ver Archivadas</span>
+        </button>
+        <button class="wn_btn_new" id="wnNueva" data-witip="Crear nueva nota">
+          <i class="fas fa-plus"></i> <span>Nueva</span>
+        </button>
+        <div class="wn_status_wrap">
+          <div class="wn_status">
+            <span class="wn_dot"></span>
+            <span class="wn_dotxt">Cargando...</span>
+          </div>
+          <button class="wn_btn_sync" id="wnSync" data-witip="Sincronizar ahora">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wn_grid" id="wnGrid">
+      <div class="wn_empty">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando tus notas...</p>
+      </div>
+    </div>
+
+    <div class="wn_modal" id="wnEliminar">
+      <div class="wn_modal_body">
+        <i class="fas fa-trash-alt"></i>
+        <h3>¿Eliminar nota?</h3>
+        <p>Esta acción no se puede deshacer</p>
+        <div class="wn_modal_acts">
+          <button class="wn_cancel" id="wnCancel">Cancelar</button>
+          <button class="wn_confirm" id="wnConfirm">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { auth, db } from '../lib/firebase.js';
+  import { collection, query, where, limit, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+  import { protegerRuta, waitAuth } from '../lib/auth.js';
+  import { Notificacion, getls, savels, Saludar, wiTip, wicopy, wiTiempo } from '../lib/widev.js';
+
+  let notas: any[] = [];
+  let editando: string | null = null;
+  let saveTimer: any = null;
+  let unsubscribe: any = null;
+  let currentUserId = '';
+  let mostrarArchivadas = false;
+
+  const LIMIT = 100;
+  const DEBOUNCE = 1200;
+
+  const COLORES = [
+    { id: 'Cielo',  hex: '#0EBEFF', bg: 'rgba(14,190,255,.12)', tx: 'var(--tx)', rgb: '14,190,255' },
+    { id: 'Dulce',  hex: '#FF5C93', bg: 'rgba(255,92,147,.12)', tx: 'var(--tx)', rgb: '255,92,147' },
+    { id: 'Paz',    hex: '#10B981', bg: 'rgba(16,185,129,.12)', tx: 'var(--tx)', rgb: '16,185,129' },
+    { id: 'Mora',   hex: '#8B5CF6', bg: 'rgba(139,92,246,.12)', tx: 'var(--tx)', rgb: '139,92,246' },
+    { id: 'Sol',    hex: '#F59E0B', bg: 'rgba(245,158,11,.12)', tx: 'var(--tx)', rgb: '245,158,11' },
+  ];
+
+  const _saveCache = (d: any) => { 
+    savels('notasls', d, 168);
+  };
+
+  const _getCache = (): any[] => { 
+    return getls('notasls') || [];
+  };
+
+  const _status = (ok: boolean, txt?: string) => {
+    const dot = document.querySelector('.wn_dot');
+    const dotxt = document.querySelector('.wn_dotxt');
+    if (dot && dotxt) {
+      dot.className = `wn_dot ${ok ? 'active' : 'error'}`;
+      dotxt.textContent = txt || (ok ? 'Online' : 'Offline');
+    }
+  };
+
+  const _getColor = (id: string) => COLORES.find(c => c.id === id) || COLORES[0];
+
+  const _parseTags = (t: any): string[] => {
+    if (!t) return [];
+    if (Array.isArray(t)) return t;
+    if (typeof t === 'string') return t.split(',').map(x => x.trim()).filter(Boolean);
+    return [];
+  };
+
+  const _tagsToString = (t: any): string => _parseTags(t).join(', ');
+
+  const toMs = (v: any) => {
+    if (!v) return null;
+    if (v.seconds) return v.seconds * 1000;
+    const dateObj = new Date(v);
+    return isNaN(dateObj.getTime()) ? null : dateObj.getTime();
+  };
+
+  const _fecha = (ts: any) => {
+    const ms = toMs(ts);
+    return wiTiempo(ms);
+  };
+
+  const _escVal = (t: string) => String(t || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[c] || c));
+  const _empty = (ico: string, txt: string, sub: string) => `<div class="wn_empty"><i class="fas ${ico}"></i><p>${txt}</p><span>${sub}</span></div>`;
+
+  const mdToHtml = (md: string) => {
+    if (!md) return '';
+    let html = _escVal(md);
+    html = html
+      .replace(/^### (.*?)$/gim, '<h3>$1</h3>')
+      .replace(/^## (.*?)$/gim, '<h2>$1</h2>')
+      .replace(/^# (.*?)$/gim, '<h1>$1</h1>')
+      .replace(/^\> (.*?)$/gim, '<blockquote>$1</blockquote>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/~~(.*?)~~/g, '<del>$1</del>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img alt="$1" src="$2" style="max-width:100%; border-radius:0.5vh;" />')
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/^- (.*?)$/gim, '<li>$1</li>')
+      .replace(/\n/g, '<br>');
+    return html;
+  };
+
+  const _htmlCardInner = (n: any) => {
+    const c = _getColor(n.color);
+    const parsedTags = _parseTags(n.tags);
+    return `
+      ${n.pin ? '<span class="wn_pin_badge"><i class="fas fa-thumbtack"></i></span>' : ''}
+      <div class="wn_titulo" contenteditable="true" data-placeholder="Título" spellcheck="false" style="padding-right: 28px;">${_escVal(n.titulo)}</div>
+      <div class="wn_contenido" contenteditable="true" data-placeholder="Escribe aquí..." spellcheck="false">${n.contenido || _escVal(n.contenidoMD).replace(/\n/g,'<br>')}</div>
+      
+      <div class="wn_tags_display">
+        ${parsedTags.map((t: string) => `<span class="wn_tag_badge">${_escVal(t)}</span>`).join('')}
+      </div>
+      <input type="text" class="wn_tags_input" placeholder="Etiquetas (comas)..." value="${_escVal(_tagsToString(n.tags))}" />
+
+      <div class="wn_footer">
+        <span class="wn_fecha">${_fecha(n.actualizado || n.creado)}</span>
+        <span class="wn_saved"><i class="fas fa-check"></i></span>
+      </div>
+      <div class="wn_toolbar">
+        <button class="wn_pin${n.pin?' active':''}" data-witip="${n.pin ? 'Desanclar' : 'Fijar'}"><i class="fas fa-thumbtack"></i></button>
+        <button class="wn_color" data-witip="Color"><i class="fas fa-palette"></i></button>
+        <button class="wn_copy" data-witip="Copiar nota"><i class="fas fa-copy"></i></button>
+        <button class="wn_archive${n.archivado?' active':''}" data-witip="${n.archivado ? 'Desarchivar' : 'Archivar'}"><i class="fas ${n.archivado ? 'fa-box-open' : 'fa-box'}"></i></button>
+        <button class="wn_del" data-witip="Eliminar"><i class="fas fa-trash"></i></button>
+      </div>
+      <div class="wn_colors">${COLORES.map(x=>`<span class="wn_color_opt${x.id===n.color?' active':''}" data-color="${x.id}" style="--cc:${x.hex}" data-witip="${x.id}"></span>`).join('')}</div>
+    `;
+  };
+
+  const _getTime = (field: any) => {
+    const ms = toMs(field);
+    return ms || 0;
+  };
+
+  const _sortNotas = () => {
+    notas.sort((a, b) => {
+      if (a.pin !== b.pin) return b.pin ? 1 : -1;
+      return _getTime(b.actualizado || b.creado) - _getTime(a.actualizado || a.creado);
+    });
+  };
+
+  const _renderGrid = () => {
+    const grid = document.getElementById('wnGrid');
+    if (!grid) return;
+
+    const filtered = notas.filter(n => !!n.archivado === mostrarArchivadas);
+
+    if (!filtered.length) {
+      grid.innerHTML = _empty(
+        mostrarArchivadas ? 'fa-archive' : 'fa-sticky-note',
+        mostrarArchivadas ? 'Sin notas archivadas' : 'Sin notas aún',
+        mostrarArchivadas ? 'Tus notas archivadas aparecerán aquí' : 'Crea tu primera nota 👆'
+      );
+      return;
+    }
+
+    const emptyEl = grid.querySelector('.wn_empty');
+    if (emptyEl) emptyEl.remove();
+
+    const cards = grid.querySelectorAll('.wn_card');
+    cards.forEach(card => {
+      const id = card.getAttribute('data-id');
+      if (!filtered.some(n => n.id === id)) {
+        card.remove();
+      }
+    });
+
+    filtered.forEach((n, index) => {
+      const c = _getColor(n.color);
+      let card = grid.querySelector(`.wn_card[data-id="${n.id}"]`) as HTMLElement;
+
+      if (!card) {
+        const temp = document.createElement('div');
+        temp.innerHTML = `
+          <div class="wn_card${n.pin ? ' pinned' : ''}" data-id="${n.id}" style="--c-bg:${c.bg};--c-tx:${c.tx};--c-accent:${c.hex}">
+            <div class="wn_card_inner">
+              ${_htmlCardInner(n)}
+            </div>
+          </div>
+        `;
+        const newCard = temp.firstElementChild as HTMLElement;
+        if (index === 0) {
+          grid.prepend(newCard);
+        } else {
+          const sibling = grid.children[index];
+          if (sibling) {
+            grid.insertBefore(newCard, sibling);
+          } else {
+            grid.appendChild(newCard);
+          }
+        }
+      } else {
+        card.style.setProperty('--c-bg', c.bg);
+        card.style.setProperty('--c-tx', c.tx);
+        card.style.setProperty('--c-accent', c.hex);
+
+        if (n.pin) card.classList.add('pinned');
+        else card.classList.remove('pinned');
+
+        const inner = card.querySelector('.wn_card_inner');
+        if (inner) {
+          const badge = inner.querySelector('.wn_pin_badge');
+          if (n.pin && !badge) {
+            const span = document.createElement('span');
+            span.className = 'wn_pin_badge';
+            span.innerHTML = '<i class="fas fa-thumbtack"></i>';
+            inner.prepend(span);
+          } else if (!n.pin && badge) {
+            badge.remove();
+          }
+        }
+
+        const pinBtn = card.querySelector('.wn_pin');
+        if (pinBtn) {
+          if (n.pin) pinBtn.classList.add('active');
+          else pinBtn.classList.remove('active');
+        }
+
+        const archiveBtn = card.querySelector('.wn_archive');
+        if (archiveBtn) {
+          if (n.archivado) {
+            archiveBtn.classList.add('active');
+            archiveBtn.setAttribute('data-witip', 'Desarchivar');
+            const icon = archiveBtn.querySelector('i');
+            if (icon) icon.className = 'fas fa-box-open';
+          } else {
+            archiveBtn.classList.remove('active');
+            archiveBtn.setAttribute('data-witip', 'Archivar');
+            const icon = archiveBtn.querySelector('i');
+            if (icon) icon.className = 'fas fa-box';
+          }
+        }
+
+        card.querySelectorAll('.wn_color_opt').forEach(opt => {
+          const colorVal = opt.getAttribute('data-color');
+          if (colorVal === n.color) opt.classList.add('active');
+          else opt.classList.remove('active');
+        });
+
+        const dateEl = card.querySelector('.wn_fecha');
+        if (dateEl) dateEl.textContent = _fecha(n.actualizado || n.creado);
+
+        const tit = card.querySelector('.wn_titulo') as HTMLElement;
+        const cont = card.querySelector('.wn_contenido') as HTMLElement;
+        const tagsInput = card.querySelector('.wn_tags_input') as HTMLInputElement;
+
+        const isEditing = card.classList.contains('editing') ||
+                          document.activeElement === tit ||
+                          document.activeElement === cont ||
+                          document.activeElement === tagsInput;
+
+        if (!isEditing) {
+          if (tit) tit.innerText = n.titulo;
+          if (cont) cont.innerHTML = n.contenido || _escVal(n.contenidoMD).replace(/\n/g,'<br>');
+          if (tagsInput) tagsInput.value = _tagsToString(n.tags);
+          
+          const tagsDisplay = card.querySelector('.wn_tags_display');
+          if (tagsDisplay) {
+            tagsDisplay.innerHTML = _parseTags(n.tags).map((t: string) => `<span class="wn_tag_badge">${_escVal(t)}</span>`).join('');
+          }
+        }
+      }
+    });
+
+    const sortedIds = filtered.map(n => n.id);
+    const elements = Array.from(grid.children) as HTMLElement[];
+    elements.forEach(el => {
+      const id = el.getAttribute('data-id');
+      if (id) {
+        const expectedIndex = sortedIds.indexOf(id);
+        if (expectedIndex !== -1 && grid.children[expectedIndex] !== el) {
+          grid.insertBefore(el, grid.children[expectedIndex]);
+        }
+      }
+    });
+  };
+
+  const _crearNota = async (email: string) => {
+    const newDocRef = doc(collection(db, 'notas'));
+    const id = newDocRef.id;
+    const wiUser = getls('wiSmile') || {};
+    const { usuario = '', nombre = '' } = wiUser;
+
+    const nueva = {
+      id,
+      userId: currentUserId,
+      usuario: nombre || usuario || email,
+      email,
+      titulo: '',
+      contenido: '',
+      contenidoMD: '',
+      color: 'Cielo',
+      pin: false,
+      archivado: false,
+      tags: [],
+      creado: Date.now(),
+      actualizado: Date.now()
+    };
+
+    notas.unshift(nueva);
+    _saveCache(notas);
+    _renderGrid();
+
+    setTimeout(() => {
+      const card = document.querySelector(`.wn_card[data-id="${id}"]`) as HTMLElement;
+      if (card) {
+        card.classList.add('editing');
+        (card.querySelector('.wn_titulo') as HTMLElement)?.focus();
+      }
+    }, 100);
+
+    try {
+      await setDoc(newDocRef, {
+        id,
+        userId: currentUserId,
+        usuario: nueva.usuario,
+        email,
+        titulo: nueva.titulo,
+        contenido: nueva.contenido,
+        contenidoMD: nueva.contenidoMD,
+        color: nueva.color,
+        pin: nueva.pin,
+        archivado: nueva.archivado,
+        tags: nueva.tags,
+        creado: serverTimestamp(),
+        actualizado: serverTimestamp()
+      });
+      _status(true);
+      Notificacion('Nueva nota ✨', 'success', 1200);
+    } catch (e) {
+      console.error(e);
+      _status(false);
+      notas = notas.filter(n => n.id !== id);
+      _saveCache(notas);
+      _renderGrid();
+      Notificacion('Error al crear', 'error');
+    }
+  };
+
+  const _actualizarLocal = (id: string, card: HTMLElement) => {
+    const nota = notas.find(n => n.id === id);
+    if (!nota) return;
+
+    const tit = card.querySelector('.wn_titulo') as HTMLElement;
+    const cont = card.querySelector('.wn_contenido') as HTMLElement;
+    const tagsInput = card.querySelector('.wn_tags_input') as HTMLInputElement;
+
+    const tituloVal = tit?.innerText.trim() || '';
+    const contVal = cont?.innerText.trim() || '';
+    const tagsVal = tagsInput?.value.trim() || '';
+
+    nota.titulo = tituloVal;
+    nota.contenidoMD = contVal;
+    nota.contenido = mdToHtml(contVal);
+    nota.tags = _parseTags(tagsVal);
+    nota.actualizado = Date.now();
+
+    _saveCache(notas);
+  };
+
+  const _iniciarEdicion = (id: string, card: HTMLElement) => {
+    const nota = notas.find(n => n.id === id);
+    if (!nota) return;
+
+    if (!card.classList.contains('editing')) {
+      const currentlyEditing = document.querySelector('.wn_card.editing') as HTMLElement;
+      if (currentlyEditing && currentlyEditing !== card) {
+        _cerrarEdicion(currentlyEditing.dataset.id || '');
+      }
+      card.classList.add('editing');
+      
+      // Guardar copia original para detectar cambios reales
+      nota._original = {
+        titulo: nota.titulo,
+        contenidoMD: nota.contenidoMD,
+        tagsStr: _tagsToString(nota.tags)
+      };
+
+      const cont = card.querySelector('.wn_contenido') as HTMLElement;
+      if (cont) {
+        cont.innerText = nota.contenidoMD || nota.contenido || '';
+      }
+    }
+  };
+
+  const _cerrarEdicion = async (id: string) => {
+    const card = document.querySelector(`.wn_card[data-id="${id}"]`);
+    if (!card) return;
+
+    card.classList.remove('editing');
+    
+    const nota = notas.find(n => n.id === id);
+    if (!nota) return;
+
+    // Sincronizar DOM a local
+    _actualizarLocal(id, card as HTMLElement);
+
+    // Limpiar propiedad original temporal al cerrar edición
+    delete nota._original;
+
+    const cont = card.querySelector('.wn_contenido') as HTMLElement;
+    if (cont) cont.innerHTML = nota.contenido || '';
+    const tagsDisplay = card.querySelector('.wn_tags_display');
+    if (tagsDisplay) {
+      tagsDisplay.innerHTML = nota.tags.map(t => `<span class="wn_tag_badge">${_escVal(t)}</span>`).join('');
+    }
+  };
+
+  const _guardarEnNube = async (id: string) => {
+    const card = document.querySelector(`.wn_card[data-id="${id}"]`) as HTMLElement;
+    if (!card) return;
+
+    const nota = notas.find(n => n.id === id);
+    if (!nota) return;
+
+    // Actualizar local desde el DOM si está editando
+    if (card.classList.contains('editing')) {
+      _actualizarLocal(id, card);
+    }
+
+    const orig = nota._original || {};
+    const haCambiado = orig.titulo !== nota.titulo || 
+                       orig.contenidoMD !== nota.contenidoMD || 
+                       orig.tagsStr !== _tagsToString(nota.tags);
+
+    if (haCambiado) {
+      card.classList.add('saving');
+      
+      try {
+        await setDoc(doc(db, 'notas', id), {
+          id,
+          userId: currentUserId,
+          usuario: nota.usuario,
+          email: nota.email,
+          titulo: nota.titulo,
+          contenido: nota.contenido,
+          contenidoMD: nota.contenidoMD,
+          color: nota.color,
+          pin: nota.pin,
+          archivado: nota.archivado,
+          tags: nota.tags,
+          actualizado: serverTimestamp()
+        }, { merge: true });
+        
+        // Actualizar el estado original al nuevo estado guardado
+        nota._original = {
+          titulo: nota.titulo,
+          contenidoMD: nota.contenidoMD,
+          tagsStr: _tagsToString(nota.tags)
+        };
+
+        _status(true);
+        card.classList.remove('saving');
+        card.classList.add('saved');
+        Notificacion('Guardado en la nube ☁️', 'success', 1200);
+        setTimeout(() => card.classList.remove('saved'), 800);
+      } catch (e) {
+        console.error(e);
+        _status(false);
+        card.classList.remove('saving');
+        Notificacion('Error al guardar', 'error');
+      }
+    } else {
+      Notificacion('Nota al día ☁️', 'info', 1000);
+    }
+  };
+
+  const _togglePin = async (id: string) => {
+    const nota = notas.find(n => n.id === id);
+    if (!nota) return;
+
+    nota.pin = !nota.pin;
+    nota.actualizado = Date.now();
+    _sortNotas();
+    _saveCache(notas);
+    _renderGrid();
+
+    try {
+      await setDoc(doc(db, 'notas', id), {
+        pin: nota.pin,
+        actualizado: serverTimestamp()
+      }, { merge: true });
+      _status(true);
+      Notificacion(nota.pin ? 'Fijada 📌' : 'Desanclada', 'success', 1000);
+    } catch (e) {
+      console.error(e);
+      _status(false);
+      nota.pin = !nota.pin;
+      _sortNotas();
+      _saveCache(notas);
+      _renderGrid();
+    }
+  };
+
+  const _cambiarColor = async (id: string, colorId: string) => {
+    const nota = notas.find(n => n.id === id);
+    if (!nota || nota.color === colorId) return;
+
+    const oldColor = nota.color;
+    nota.color = colorId;
+    nota.actualizado = Date.now();
+    _saveCache(notas);
+    _renderGrid();
+
+    try {
+      await setDoc(doc(db, 'notas', id), {
+        color: nota.color,
+        actualizado: serverTimestamp()
+      }, { merge: true });
+      _status(true);
+    } catch (e) {
+      console.error(e);
+      _status(false);
+      nota.color = oldColor;
+      _saveCache(notas);
+      _renderGrid();
+    }
+  };
+
+  const _archivarNota = async (id: string) => {
+    const nota = notas.find(n => n.id === id);
+    if (!nota) return;
+
+    nota.archivado = !nota.archivado;
+    nota.actualizado = Date.now();
+    _saveCache(notas);
+    _renderGrid();
+
+    try {
+      await setDoc(doc(db, 'notas', id), {
+        archivado: nota.archivado,
+        actualizado: serverTimestamp()
+      }, { merge: true });
+      _status(true);
+      Notificacion(nota.archivado ? 'Archivada 📦' : 'Desarchivada', 'success', 1000);
+    } catch (e) {
+      console.error(e);
+      _status(false);
+      nota.archivado = !nota.archivado;
+      _saveCache(notas);
+      _renderGrid();
+    }
+  };
+
+  const _eliminar = async () => {
+    if (!editando) return;
+    const id = editando;
+    editando = null;
+    document.getElementById('wnEliminar')?.classList.remove('show');
+
+    const backup = [...notas];
+    notas = notas.filter(n => n.id !== id);
+    _saveCache(notas);
+
+    const card = document.querySelector(`.wn_card[data-id="${id}"]`);
+    if (card) card.classList.add('deleting');
+
+    setTimeout(() => {
+      _renderGrid();
+    }, 250);
+
+    try {
+      await deleteDoc(doc(db, 'notas', id));
+      _status(true);
+      Notificacion('Eliminada 🗑️', 'success', 1000);
+    } catch (e) {
+      console.error(e);
+      _status(false);
+      notas = backup;
+      _saveCache(notas);
+      _renderGrid();
+      Notificacion('Error al eliminar', 'error');
+    }
+  };
+
+  let eventListeners: { target: EventTarget; type: string; handler: EventListener }[] = [];
+  const listen = (target: EventTarget, type: string, handler: EventListener) => {
+    target.addEventListener(type, handler);
+    eventListeners.push({ target, type, handler });
+  };
+
+  const cleanup = () => {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    eventListeners.forEach(({ target, type, handler }) => target.removeEventListener(type, handler));
+    eventListeners = [];
+    notas = [];
+    editando = null;
+  };
+
+  const setupEvents = (userEmail: string) => {
+    const btnNueva = document.getElementById('wnNueva');
+    if (btnNueva) listen(btnNueva, 'click', () => _crearNota(userEmail));
+
+    const btnSync = document.getElementById('wnSync');
+    if (btnSync) listen(btnSync, 'click', () => initNotas());
+
+    const btnToggle = document.getElementById('wnToggleArchive');
+    const toggleText = document.getElementById('wnToggleText');
+    if (btnToggle && toggleText) {
+      listen(btnToggle, 'click', () => {
+        mostrarArchivadas = !mostrarArchivadas;
+        toggleText.textContent = mostrarArchivadas ? 'Ver Activas' : 'Ver Archivadas';
+        const icon = btnToggle.querySelector('i');
+        if (icon) icon.className = mostrarArchivadas ? 'fas fa-sticky-note' : 'fas fa-archive';
+        
+        const pageTitle = document.querySelector('.wn_text h1');
+        if (pageTitle) {
+          pageTitle.innerHTML = mostrarArchivadas ? 
+            `<i class="fas fa-archive"></i> Notas Archivadas` : 
+            `<i class="fas fa-sticky-note"></i> Mis Notas`;
+        }
+        _renderGrid();
+      });
+    }
+
+    const gridEl = document.getElementById('wnGrid');
+    if (gridEl) {
+      listen(gridEl, 'click', (e: Event) => {
+        const target = e.target as HTMLElement;
+        const card = target.closest('.wn_card') as HTMLElement;
+        if (!card) return;
+
+        const id = card.dataset.id || '';
+
+        if (target.closest('.wn_toolbar, .wn_colors')) {
+          if (target.closest('.wn_pin')) { e.stopPropagation(); _togglePin(id); return; }
+          if (target.closest('.wn_color')) { e.stopPropagation(); card.querySelector('.wn_colors')?.classList.toggle('show'); return; }
+          if (target.closest('.wn_copy')) {
+            e.stopPropagation();
+            const btn = target.closest('.wn_copy') as HTMLElement;
+            const nota = notas.find(n => n.id === id);
+            if (nota) {
+              const textoCopiar = `${nota.titulo ? nota.titulo + '\n' : ''}${nota.contenidoMD || ''}`;
+              wicopy(textoCopiar, btn as any, '¡Copiado!');
+              Notificacion('Nota copiada 📋', 'success', 1500);
+            }
+            return;
+          }
+          if (target.closest('.wn_archive')) { e.stopPropagation(); _archivarNota(id); return; }
+          if (target.closest('.wn_del')) { e.stopPropagation(); editando = id; document.getElementById('wnEliminar')?.classList.add('show'); return; }
+          if (target.closest('.wn_color_opt')) {
+            e.stopPropagation();
+            const opt = target.closest('.wn_color_opt') as HTMLElement;
+            _cambiarColor(id, opt.dataset.color || '');
+            card.querySelector('.wn_colors')?.classList.remove('show');
+            return;
+          }
+          return;
+        }
+
+        const tit = card.querySelector('.wn_titulo') as HTMLElement;
+        const cont = card.querySelector('.wn_contenido') as HTMLElement;
+        const tagsInput = card.querySelector('.wn_tags_input') as HTMLInputElement;
+        
+        if (!card.classList.contains('editing') && target !== tit && target !== cont && target !== tagsInput) {
+          _iniciarEdicion(id, card);
+          tit?.focus();
+        }
+      });
+
+      listen(gridEl, 'input', (e: Event) => {
+        const target = e.target as HTMLElement;
+        if (target.classList.contains('wn_titulo') || target.classList.contains('wn_contenido') || target.classList.contains('wn_tags_input')) {
+          const card = target.closest('.wn_card') as HTMLElement;
+          if (card) {
+            _actualizarLocal(card.dataset.id || '', card);
+          }
+        }
+      });
+
+      listen(gridEl, 'focusin', (e: Event) => {
+        const target = e.target as HTMLElement;
+        const card = target.closest('.wn_card') as HTMLElement;
+        if (!card) return;
+
+        _iniciarEdicion(card.dataset.id || '', card);
+      });
+
+      listen(gridEl, 'focusout', (e: Event) => {
+        const card = (e.target as HTMLElement).closest('.wn_card') as HTMLElement;
+        if (!card) return;
+        const id = card.dataset.id || '';
+        setTimeout(() => {
+          if (card.classList.contains('editing') && !card.contains(document.activeElement)) {
+            _cerrarEdicion(id);
+          }
+        }, 150);
+      });
+    }
+
+    const btnCancel = document.getElementById('wnCancel') || document.getElementById('wmCancel');
+    if (btnCancel) listen(btnCancel, 'click', () => { document.getElementById('wnEliminar')?.classList.remove('show'); editando = null; });
+
+    const modal = document.getElementById('wnEliminar');
+    if (modal) listen(modal, 'click', (e: Event) => { if (e.target === modal) { modal.classList.remove('show'); editando = null; } });
+
+    const btnConfirm = document.getElementById('wnConfirm');
+    if (btnConfirm) listen(btnConfirm, 'click', _eliminar);
+
+    listen(document, 'click', (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.wn_colors, .wn_color')) {
+        document.querySelectorAll('.wn_colors').forEach(el => el.classList.remove('show'));
+      }
+      const activeCard = document.querySelector('.wn_card.editing') as HTMLElement;
+      if (activeCard && !activeCard.contains(target) && !target.closest('.wn_modal, .wn_modal_body')) {
+        _cerrarEdicion(activeCard.dataset.id || '');
+      }
+    });
+
+    // Guardado al salir/cambiar pestaña
+    listen(window, 'visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        const currentlyEditing = document.querySelector('.wn_card.editing') as HTMLElement;
+        if (currentlyEditing) {
+          _cerrarEdicion(currentlyEditing.dataset.id || '');
+        }
+      }
+    });
+    listen(window, 'pagehide', () => {
+      const currentlyEditing = document.querySelector('.wn_card.editing') as HTMLElement;
+      if (currentlyEditing) {
+        _cerrarEdicion(currentlyEditing.dataset.id || '');
+      }
+    });
+
+    // Ctrl + S para guardar nota activa en Firestore
+    listen(document, 'keydown', (e: Event) => {
+      const keyEvent = e as KeyboardEvent;
+      if ((keyEvent.ctrlKey || keyEvent.metaKey) && keyEvent.key.toLowerCase() === 's') {
+        const currentlyEditing = document.querySelector('.wn_card.editing') as HTMLElement;
+        if (currentlyEditing) {
+          keyEvent.preventDefault();
+          _guardarEnNube(currentlyEditing.dataset.id || '');
+        }
+      }
+    });
+  };
+
+  const initNotas = async () => {
+    cleanup();
+
+    const u = await protegerRuta(['usuario', 'editor', 'gestor', 'admin']);
+    if (!u) return;
+
+    let user = auth.currentUser;
+    if (!user) {
+      user = await waitAuth();
+    }
+    currentUserId = user?.uid || u.id || '';
+
+    const userEmail = u.email;
+    const display = u.nombre || u.usuario || u.email || '';
+
+    const welcome = document.getElementById('wnHeaderWelcome');
+    if (welcome) welcome.innerHTML = `${Saludar()} <strong>${display}</strong>`;
+
+    wiTip();
+    setupEvents(userEmail);
+
+    const initialCache = _getCache();
+    if (initialCache.length) {
+      notas = initialCache;
+      _sortNotas();
+      _renderGrid();
+      _status(true, 'Cache');
+    } else {
+      _status(false, 'Cargando...');
+    }
+
+    const q = query(
+      collection(db, 'notas'),
+      where('userId', '==', currentUserId),
+      limit(LIMIT)
+    );
+
+    unsubscribe = onSnapshot(q, (snap) => {
+      notas = snap.docs.map(doc => {
+        const data = doc.data({ serverTimestamps: 'estimate' });
+        return {
+          id: doc.id,
+          ...data,
+          creado: toMs(data.creado),
+          actualizado: toMs(data.actualizado)
+        };
+      });
+      _sortNotas();
+      _saveCache(notas);
+      _renderGrid();
+      _status(true);
+    }, (error) => {
+      console.error('[notas] onSnapshot error:', error);
+      _status(false);
+      const cache = _getCache();
+      if (cache.length) {
+        notas = cache;
+        _sortNotas();
+        _renderGrid();
+        Notificacion('Caché local', 'warning', 2000);
+      } else {
+        const grid = document.getElementById('wnGrid');
+        if (grid) grid.innerHTML = _empty('fa-wifi-slash', 'Sin conexión', 'Verifica tu internet');
+      }
+    });
+  };
+
+  document.addEventListener('astro:page-load', initNotas);
+  document.addEventListener('astro:before-preparation', cleanup);
+</script>

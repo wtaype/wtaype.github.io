@@ -1,0 +1,963 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PostPage from '../components/PostPage.astro';
+import PostSidebar from '../components/PostSidebar.astro';
+import { db } from '../lib/firebase.js';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+
+export async function getStaticPaths() {
+  try {
+    const q = query(collection(db, 'blog'), where('activo', '==', true));
+    const snap = await getDocs(q);
+    const posts = snap.docs.map(doc => ({ ...doc.data(), id: doc.id } as any));
+    if (!posts || !posts.length) {
+      return [{
+        params: { slug: 'ejemplo-de-articulo-con-mas-de-11-caracteres' },
+        props: { post: {} as any, related: [] as any[], latest: [] as any[], prevPost: null as any, nextPost: null as any }
+      }];
+    }
+
+    return posts.map((post: any, index: number) => {
+      const related = posts.filter((p: any) => p.categoria === post.categoria && p.slug !== post.slug).slice(0, 3);
+      const latest = posts.filter((p: any) => p.slug !== post.slug).slice(0, 5);
+      const prevPost = posts[index + 1] || null;
+      const nextPost = posts[index - 1] || null;
+      return {
+        params: { slug: post.slug },
+        props: { post, related, latest, prevPost, nextPost }
+      };
+    }) as any;
+  } catch (err) {
+    console.error('[getStaticPaths]', err);
+    return [{
+      params: { slug: 'ejemplo-de-articulo-con-mas-de-11-caracteres' },
+      props: { post: {} as any, related: [] as any[], latest: [] as any[], prevPost: null as any, nextPost: null as any }
+    }];
+  }
+}
+
+interface Props {
+  post: any;
+  related: any[];
+  latest: any[];
+  prevPost: any;
+  nextPost: any;
+}
+
+const { post, related, latest, prevPost, nextPost } = Astro.props;
+
+// Generar cabeceras y contenido modificado en el servidor para evitar JS en el cliente
+const headings: { text: string; id: string; depth: number }[] = [];
+let modifiedContenido = post.contenido || '';
+
+if (modifiedContenido) {
+  // 1. Convertir botones antiguos de YouTube en enlaces limpios
+  modifiedContenido = modifiedContenido.replace(/<button[^>]*?class="po_yt_btn"[^>]*?data-yt="([a-zA-Z0-9_-]+)"[^>]*>([\s\S]*?)<\/button>/gi, (match: string, ytId: string, innerHtml: string) => {
+    const cleanInner = innerHtml.replace(/<i\s+class=(['"])(.*?)\1\s+style=(['"])[^>]*?\3/gi, '<i class="$2 po_ico_youtube"');
+    return `<a href="https://www.youtube.com/watch?v=${ytId}" target="_blank" rel="noopener noreferrer" class="po_yt_link">${cleanInner}</a>`;
+  });
+
+  // 2. Limpiar estilos inline de hr y checklists
+  modifiedContenido = modifiedContenido
+    .replace(/<hr style="border:none;border-top:1px solid var\(--brd\);margin:2vh 0"\/?>/gi, '<hr class="po_hr" />')
+    .replace(/(<input[^>]*?type="checkbox"[^>]*?)style="margin-right:\s*0\.5vh;?"/gi, '$1class="po_todo_check"');
+
+  // 3. Limpiar estilos inline de iconos personalizados combinando clases
+  modifiedContenido = modifiedContenido.replace(/<i\s+class=(['"])(.*?)\1\s+style=(['"])color:\s*(.*?);?\3><\/i>/gi, (match: string, q1: string, classes: string, q2: string, color: string) => {
+    let colorClass = '';
+    const c = color.trim().toLowerCase();
+    if (c === '#fe0149' || c === '#ff3849') colorClass = 'po_ico_red';
+    else if (c === '#ffb636' || c === '#ffc107') colorClass = 'po_ico_yellow';
+    else if (c === '#3cd741') colorClass = 'po_ico_green';
+    else if (c === '#0edeff') colorClass = 'po_ico_cyan';
+    else if (c === '#e0a910') colorClass = 'po_ico_gold';
+    else if (c === 'var(--warning)') colorClass = 'po_ico_warning';
+    else if (c === 'var(--mco)') colorClass = 'po_ico_mco';
+    return `<i class="${classes} ${colorClass}"></i>`;
+  });
+
+  // 4. Inyección automática de Lazy Loading y Async Decoding en imágenes de contenido
+  modifiedContenido = modifiedContenido.replace(/<img\s+(?!([^>]*?\bloading\b))([^>]*?)>/gi, '<img loading="lazy" decoding="async" $1$2>');
+
+  // 5. Procesamiento de encabezados (TOC)
+  let headingCount = 0;
+  modifiedContenido = modifiedContenido.replace(/<(h2|h3)([^>]*?)>([\s\S]*?)<\/\1>/gi, (match: string, tag: string, attrs: string, content: string) => {
+    let customId = '';
+    let cleanContent = content;
+    const trimmedContent = content.trim();
+    const contentIdMatch = trimmedContent.match(/(.*?)\s*\{\#([a-zA-Z0-9_-]+)\}\s*$/i);
+    
+    if (contentIdMatch) {
+      cleanContent = contentIdMatch[1].trim();
+      customId = contentIdMatch[2];
+    }
+
+    const idMatch = attrs.match(/id=(['"])(.*?)\1/i);
+    const id = customId || (idMatch ? idMatch[2] : `po_h_${headingCount++}`);
+    
+    let cleanAttrs = attrs;
+    if (!idMatch) {
+      cleanAttrs = `${attrs} id="${id}"`;
+    } else if (customId) {
+      cleanAttrs = attrs.replace(/id=(['"])(.*?)\1/i, `id="${id}"`);
+    }
+
+    const cleanText = cleanContent.replace(/<[^>]*>/g, '').trim();
+    headings.push({
+      text: cleanText,
+      id,
+      depth: tag.toLowerCase() === 'h3' ? 3 : 2
+    });
+    return `<${tag}${cleanAttrs}>${cleanContent}</${tag}>`;
+  });
+}
+
+const processedPost = {
+  ...post,
+  contenido: modifiedContenido
+};
+
+const seoMeta = typeof processedPost.metaSEO === 'string' ? JSON.parse(processedPost.metaSEO) : (processedPost.metaSEO || {});
+const keywords = seoMeta.keywords || '';
+---
+
+<style is:global>
+@import "../lib/blog/post.css";
+
+/* ── 1. SKELETON ─────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200vh 0; }
+  100% { background-position:  200vh 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, var(--brd) 25%, var(--bg3) 50%, var(--brd) 75%);
+  background-size: 200vh 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 0.8vh;
+}
+.po_sk_img  { height: 40vh; border-radius: 1.8vh 1.8vh 0 0; margin-bottom: 2vh; }
+.po_sk_body { display: flex; flex-direction: column; gap: 1.2vh; padding: 1vh 3vh 2vh; }
+.po_sk_cat  { height: 2.5vh; width: 12vh; border-radius: 2vh; }
+.po_sk_tit  { height: 4.5vh; width: 92%; }
+.po_sk_t2   { width: 65%; }
+.po_sk_meta { height: 2vh; width: 75%; }
+.po_sk_p    { height: 1.8vh; width: 100%; }
+.po_sk_side { height: 18vh; border-radius: 1.8vh; margin-bottom: 1.5vh; }
+
+/* ── 2. FADE ENTRADA ─────────────────────────────── */
+.po_fade {
+  opacity: 0;
+  transform: translateY(2vh);
+  transition: opacity .5s cubic-bezier(.4,0,.2,1), transform .5s cubic-bezier(.4,0,.2,1);
+}
+.po_fade.po_visible { opacity: 1; transform: none; }
+
+/* ── 3. WRAP & LAYOUT ────────────────────────────── */
+.po_wrap { margin: 0 auto; padding: 0 1vh; font-family: var(--ff_P); }
+
+.po_layout {
+  display: grid;
+  grid-template-columns: 1fr 26%;
+  gap: 2vw;
+  align-items: start;
+}
+
+/* ── 4. CONTENT CARD & HERO ──────────────────────── */
+.po_content {
+  background: var(--wb);
+  border-radius: 1.8vh;
+  border: 1px solid var(--brd);
+  box-shadow: 0 4px 12px rgba(0,0,0,.02);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.po_hero { position: relative; overflow: hidden; flex-shrink: 0; }
+
+.po_hero_img {
+  width: 100%;
+  aspect-ratio: 1180 / 425;
+  object-fit: cover;
+  display: block;
+  transition: transform .7s ease;
+}
+.po_content:hover .po_hero_img { transform: scale(1.025); }
+
+.po_hero_over {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,.5) 0%, transparent 45%, rgba(0,0,0,.15) 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2vh;
+}
+.po_back {
+  display: flex;
+  align-items: center;
+  gap: .6vh;
+  color: #fff;
+  font-size: var(--fz_m2);
+  font-weight: 600;
+  padding: .7vh 1.5vh;
+  background: rgba(0,0,0,.3);
+  border-radius: 2vh;
+  backdrop-filter: blur(8px);
+  transition: all var(--tr_f);
+}
+.po_back:hover { background: rgba(0,0,0,.55); color: #fff; transform: translateX(-.4vh); }
+
+.po_hero_badges { display: flex; gap: .8vh; align-items: center; }
+.po_cat_badge, .po_dest_badge {
+  display: flex; align-items: center; gap: .5vh;
+  color: #fff; font-size: var(--fz_s4); font-weight: 700;
+  padding: .6vh 1.2vh; border-radius: 2vh;
+}
+.po_cat_badge  { background: var(--mco); }
+.po_dest_badge { background: var(--warning); }
+
+/* padding interior del article */
+.po_header,
+.po_contenido,
+.po_tags,
+.po_share { padding-left: 3vh; padding-right: 3vh; }
+
+/* ── 5. HEADER ───────────────────────────────────── */
+.po_header { padding-top: 2.5vh; }
+
+.po_titulo {
+  font-size: var(--fz_x1);
+  font-weight: 800;
+  color: var(--tx1);
+  line-height: 1.2;
+  margin-bottom: 1.5vh;
+  font-family: var(--ff_O);
+}
+.po_resumen {
+  font-size: var(--fz_m3);
+  color: var(--tx2);
+  line-height: 1.7;
+  font-style: italic;
+  padding: 1.2vh 2vh;
+  background: var(--bg4);
+  border-left: 3px solid var(--mco);
+  border-radius: 0 1vh 1vh 0;
+  margin-bottom: .5vh;
+}
+.po_meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.2vh;
+  margin-top: 1.8vh;
+  padding-top: 1.5vh;
+  border-top: 1px solid var(--brd);
+}
+.po_meta span {
+  display: flex;
+  align-items: center;
+  gap: .4vh;
+  font-size: var(--fz_s4);
+  color: var(--tx3);
+  cursor: default;
+  transition: color var(--tr_f);
+}
+.po_meta span:hover { color: var(--mco); }
+.po_meta i { color: var(--mco); }
+
+/* ── 6. CACHE BADGE ──────────────────────────────── */
+.po_cache_badge {
+  display: inline-flex !important;
+  align-items: center;
+  gap: .4vh;
+  padding: .3vh 1vh;
+  background: linear-gradient(135deg, var(--mco), var(--bg2));
+  color: var(--txa) !important;
+  border-radius: 2vh;
+  font-size: var(--fz_s3) !important;
+  font-weight: 700 !important;
+  animation: po_cachePulse 2.5s ease-in-out infinite;
+}
+.po_cache_badge i { color: var(--txa) !important; }
+@keyframes po_cachePulse {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: .82; transform: scale(1.04); }
+}
+
+/* ── 8. TAGS ─────────────────────────────────────── */
+.po_tags {
+  display: flex; flex-wrap: wrap; gap: .6vh;
+  padding-top: 1.5vh; padding-bottom: 1vh;
+}
+.po_tag {
+  padding: .4vh 1.2vh;
+  background: var(--bg4);
+  color: var(--mco);
+  border-radius: 5vh;
+  font-size: var(--fz_s4);
+  font-weight: 600;
+  border: 1px solid var(--brd);
+  transition: all var(--tr_f);
+  cursor: default;
+}
+.po_tag:hover { background: color-mix(in srgb, var(--mco) 10%, transparent); border-color: var(--mco); }
+.po_tags_side { padding: 0; }
+
+/* ── 9. COMPARTIR INLINE ─────────────────────────── */
+.po_share {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1.2vh;
+  padding-bottom: 2vh;
+  flex-wrap: wrap;
+  gap: 1vh;
+  border-top: 1px solid var(--brd);
+}
+.po_share > span {
+  display: flex; align-items: center; gap: .6vh;
+  font-size: var(--fz_m2); font-weight: 600; color: var(--tx1);
+}
+.po_share > span i { color: var(--mco); }
+.po_share_btns { display: flex; gap: .8vh; }
+.po_share_btn {
+  width: 4.5vh; height: 4.5vh;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--sc);
+  color: #fff;
+  font-size: var(--fz_m2);
+  transition: all var(--tr_f);
+  border: none; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  text-decoration: none;
+}
+.po_share_btn:hover { transform: translateY(-.4vh) scale(1.12); box-shadow: 0 6px 16px rgba(0,0,0,.2); color: #fff; }
+
+/* ── 10. SIDEBAR ─────────────────────────────────── */
+.po_sidebar {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+  min-width: 0;
+}
+.po_side_card {
+  background: var(--wb);
+  border-radius: 1.8vh;
+  padding: 2.5vh;
+  border: 1px solid var(--brd);
+  box-shadow: 0 4px 12px rgba(0,0,0,.02);
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  transition: box-shadow var(--tr_m), transform var(--tr_m);
+}
+.po_side_card:hover { box-shadow: 0 8px 24px rgba(0,0,0,.07); transform: translateY(-.2vh); }
+.po_side_title {
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  color: var(--tx1);
+  display: flex; align-items: center; gap: .6vh;
+  padding-bottom: 1vh;
+  border-bottom: 1px solid var(--brd);
+  margin-bottom: .4vh;
+}
+.po_side_title i { color: var(--mco); }
+
+/* ── AD STICKY ───────────────────────────────────── */
+.po_ad_sticky {
+  position: sticky;
+  top: 7vh;
+  border-radius: 1.8vh;
+  overflow: hidden;
+  border: 1px solid var(--brd);
+  box-shadow: 0 4px 12px rgba(0,0,0,.04);
+  background: var(--wb);
+}
+.po_ad_sticky .lc_ad_side { margin: 0; }
+.po_ad_sticky .wi_ad_link {
+  display: block;
+  border-radius: 1.8vh !important;
+  overflow: hidden;
+  margin: auto;
+}
+.po_ad_sticky .wi_ad_img {
+  transition: transform .5s ease;
+}
+.po_ad_sticky .wi_ad_link:hover .wi_ad_img { transform: scale(1.04); }
+
+/* ── 11. SIDEBAR — AUTOR ─────────────────────────── */
+.po_autor_box { display: flex; align-items: center; gap: 1.2vh; }
+.po_autor_av img {
+  width: 5.5vh; height: 5.5vh;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--mco);
+  transition: transform .4s ease;
+}
+.po_autor_av img:hover { transform: scale(1.05); }
+.po_autor_av i { font-size: var(--fz_x1); color: var(--mco); opacity: .7; }
+.po_autor_info strong { display: block; font-size: var(--fz_m2); font-weight: 700; color: var(--tx1); }
+.po_autor_info span   { font-size: var(--fz_s4); color: var(--mco); font-weight: 500; }
+
+/* ── 12. SIDEBAR — INFO LIST ─────────────────────── */
+.po_info_list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.6vh; }
+.po_info_list li {
+  display: flex; align-items: center; gap: .8vh;
+  padding: .9vh 1.2vh;
+  background: var(--bg4);
+  border-radius: 1vh;
+  font-size: var(--fz_s4);
+  color: var(--tx3);
+  border: 2px solid transparent;
+  transition: border-color var(--tr_f), background var(--tr_f);
+  cursor: default; margin: 0;
+}
+.po_info_list li:hover { border-color: var(--mco); background: var(--wb); }
+.po_info_list i { color: var(--mco); width: 1.8vh; text-align: center; flex-shrink: 0; }
+.po_info_list span  { flex: 1; }
+.po_info_list strong { color: var(--tx1); font-weight: 600; }
+
+/* ── 13. SIDEBAR — COMPARTIR FULL ────────────────── */
+.po_share_full { display: flex; flex-direction: column; gap: .6vh; }
+.po_share_full_btn {
+  display: flex; align-items: center; gap: 1vh;
+  padding: 1vh 1.5vh;
+  background: var(--sc);
+  color: #fff;
+  border-radius: 1vh;
+  font-size: var(--fz_m1); font-weight: 600;
+  transition: all var(--tr_f);
+  border: none; cursor: pointer; text-decoration: none; width: 100%;
+}
+.po_share_full_btn:hover { transform: translateX(.4vh); opacity: .9; color: #fff; }
+.po_share_full_btn i { font-size: var(--fz_m2); width: 2vh; text-align: center; flex-shrink: 0; }
+
+/* ── 14. SIDEBAR — RELACIONADOS ──────────────────── */
+.po_relacionados { display: flex; flex-direction: column; gap: 1vh; }
+.po_rel_card {
+  display: flex; gap: 1vh;
+  padding: 1vh;
+  background: var(--bg4);
+  border-radius: 1.2vh;
+  border: 2px solid transparent;
+  transition: all var(--tr_f);
+  text-decoration: none;
+}
+.po_rel_card:hover { background: var(--wb); border-color: var(--mco); transform: translateX(.3vh); }
+.po_rel_img { width: 8vh; height: 7vh; border-radius: .8vh; overflow: hidden; flex-shrink: 0; }
+.po_rel_img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.po_rel_card:hover .po_rel_img img { transform: scale(1.08); }
+.po_rel_info { flex: 1; display: flex; flex-direction: column; gap: .3vh; min-width: 0; }
+.po_rel_cat { font-size: var(--fz_s2); color: var(--mco); font-weight: 600; display: flex; align-items: center; gap: .3vh; }
+.po_rel_info strong {
+  font-size: var(--fz_s4); font-weight: 600; color: var(--tx1); line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.po_rel_meta { font-size: var(--fz_s2); color: var(--tx3); display: flex; align-items: center; gap: .4vh; }
+.po_rel_meta i { color: var(--mco); }
+
+/* ── 15. SIDEBAR — ADMIN CARD ────────────────────── */
+.po_admin_card { border: 1.5px dashed var(--mco); background: color-mix(in srgb, var(--mco) 4%, var(--wb)); }
+.po_admin_card:hover { transform: none; }
+.po_admin_card .po_side_title { color: var(--mco); }
+.po_admin_info { display: flex; flex-direction: column; gap: .6vh; }
+.po_admin_row {
+  display: flex; align-items: center; gap: .8vh;
+  padding: .9vh 1.2vh;
+  background: var(--wb);
+  border-radius: 1vh;
+  border: 2px solid var(--bg4);
+  font-size: var(--fz_s4); color: var(--tx3);
+  transition: border-color var(--tr_f); cursor: default;
+}
+.po_admin_row:hover { border-color: var(--mco); }
+.po_admin_row i { color: var(--mco); width: 1.8vh; text-align: center; flex-shrink: 0; }
+.po_admin_row span { flex: 1; }
+.po_admin_estado { font-size: var(--fz_s3); font-weight: 700; padding: .2vh .8vh; border-radius: 2vh; }
+.po_admin_estado.ok  { background: rgba(60,215,65,.12); color: var(--success); }
+.po_admin_estado.off { background: rgba(255,56,73,.1);  color: var(--error);   }
+.po_admin_id {
+  font-family: 'Courier New', monospace;
+  background: var(--bg5); color: var(--mco);
+  padding: .2vh .7vh; border-radius: .5vh;
+  font-size: var(--fz_s3); font-weight: 700;
+  max-width: 14vh; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.po_admin_actions { display: flex; gap: .6vh; margin-top: .4vh; }
+.po_admin_btn_edit {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: .5vh;
+  padding: 1vh 1.2vh; background: var(--mco); color: var(--txa);
+  border-radius: 1vh; font-size: var(--fz_s4); font-weight: 600;
+  transition: all var(--tr_f); text-decoration: none;
+}
+.po_admin_btn_edit:hover { filter: brightness(1.1); color: var(--txa); transform: translateY(-.2vh); }
+.po_admin_btn_refresh {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: .5vh;
+  padding: 1vh .8vh; background: transparent;
+  color: var(--mco); border: 2px solid var(--bg4);
+  border-radius: 1vh; font-size: var(--fz_s4); font-weight: 600;
+  cursor: pointer; transition: all var(--tr_f);
+}
+.po_admin_btn_refresh:hover { border-color: var(--mco); background: color-mix(in srgb, var(--mco) 8%, transparent); transform: translateY(-.2vh); }
+.po_admin_btn_refresh:disabled { opacity: .5; cursor: wait; transform: none; }
+
+/* ── 16. ERROR 404 ───────────────────────────────── */
+.po_err { gap: 2vh; min-height: 55vh; color: var(--tx3); }
+.po_err i { font-size: var(--fz_x3); color: var(--mco); opacity: .35; }
+.po_err h2 { font-size: var(--fz_l2); color: var(--tx1); margin: 0; }
+.po_err p  { margin: 0; }
+.po_back_btn {
+  display: flex; align-items: center; gap: .6vh;
+  padding: 1.2vh 2.5vh; background: var(--mco); color: var(--txa);
+  border-radius: 1vh; font-weight: 600; font-size: var(--fz_m3);
+  transition: all var(--tr_f);
+}
+.po_back_btn:hover { filter: brightness(1.08); transform: translateY(-.2vh); color: var(--txa); }
+
+/* ── 18. LECTOR PREMIUM ───────────────────────────── */
+.po_progress_bar {
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  height: 0.5vh;
+  background: var(--mco);
+  width: 0%;
+  z-index: 9999;
+  transition: width 0.1s ease-out;
+}
+
+.po_toc_box {
+  background: var(--bg4);
+  padding: 1.5vh 2.5vh 0 1.5vh;
+  margin: 2vh 3vh 0 3vh;
+  border-radius: 1vh;
+  border-left: 3px solid var(--mco);
+}
+.po_toc_title {
+  font-size: var(--fz_m2);
+  font-weight: 700;
+  color: var(--tx1);
+  display: flex; align-items: center; gap: .6vh;
+  margin-bottom: 1vh;
+}
+.po_toc_title i { color: var(--mco); }
+
+.po_toc {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vh;
+}
+.po_toc li { margin: 0; }
+.po_toc_link {
+  color: var(--tx2);
+  font-size: var(--fz_m1);
+  text-decoration: none;
+  transition: color var(--tr_f);
+  display: block;
+}
+.po_toc_link:hover { color: var(--mco); }
+
+.po_contenido h2, .po_contenido h3 { scroll-margin-top: 8vh; }
+
+.po_like_btn {
+  display: inline-flex; align-items: center; gap: 0.5vh;
+  padding: 0.5vh 1.2vh; border-radius: 5vh;
+  border: 1px solid var(--brd); background: var(--wb);
+  color: var(--tx2); font-size: var(--fz_m1);
+  cursor: pointer; transition: all var(--tr_f);
+}
+.po_like_btn.active, .po_like_btn:hover {
+  border-color: #fe0149 !important; color: #fe0149 !important;
+  background: color-mix(in srgb, #fe0149 12%, transparent) !important;
+}
+.po_like_btn.active i, .po_like_btn:hover i { color: #fe0149 !important; }
+.po_like_btn.active i { animation: po_heartPulse 0.4s ease-out; }
+
+@keyframes po_heartPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+/* ── 19. PREV / NEXT NAV ───────────────────────────── */
+.po_pn_box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2vh;
+  margin-top: 1vh;
+}
+.po_pn_card {
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  padding: 1.2vh;
+  background: var(--bg4);
+  border-radius: 1.2vh;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: all var(--tr_f);
+}
+.po_pn_card:hover {
+  background: var(--wb);
+  border-color: var(--mco);
+  transform: translateY(-0.3vh);
+  box-shadow: 0 4px 12px rgba(0,0,0,.03);
+}
+.po_pn_card.pn_next { text-align: right; justify-content: flex-end; }
+
+.po_pn_img {
+  width: 7.5vh; height: 7.5vh;
+  border-radius: 0.8vh; overflow: hidden; flex-shrink: 0;
+}
+.po_pn_img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.po_pn_card:hover .po_pn_img img { transform: scale(1.08); }
+
+.po_pn_info { flex: 1; display: flex; flex-direction: column; gap: 0.4vh; min-width: 0; }
+.po_pn_lb {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5vh;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.po_pn_card.pn_next .po_pn_lb { justify-content: flex-end; }
+.po_pn_lb i { color: var(--mco); }
+.po_pn_tit {
+  font-size: var(--fz_s4);
+  color: var(--tx1);
+  font-weight: 700;
+  line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* ── 20. COMENTARIOS FACEBOOK ────────────────────── */
+.po_col_main {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  min-width: 0;
+}
+
+.po_comments {
+  background: var(--wb);
+  border-radius: 1.8vh;
+  border: 1px solid var(--brd);
+  box-shadow: 0 4px 12px rgba(0,0,0,.02);
+  padding: 3vh;
+  margin-top: 1vh; /* Espacio extra visual si se necesita */
+}
+
+.po_comments_title {
+  font-size: var(--fz_l1);
+  font-weight: 800;
+  color: var(--tx1);
+  margin-bottom: 2vh;
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+  border-bottom: 2px solid var(--bg5);
+  padding-bottom: 1.5vh;
+}
+
+.po_comments_title i {
+  color: var(--mco);
+}
+
+/* ── 17. RESPONSIVE ──────────────────────────────── */
+@media (max-width: 1100px) { .po_wrap { padding: 0 2vh; } }
+
+@media (max-width: 900px) {
+  .po_wrap   { padding: 0 1vh; }
+  .po_layout { grid-template-columns: 1fr; }
+  .po_sidebar {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5vh;
+  }
+  .po_hero_img { height: 28vh; }
+  .po_titulo   { font-size: var(--fz_l2); }
+  .po_side_card:hover { transform: none; }
+}
+
+@media (max-width: 600px) {
+  .po_wrap    { padding: 0; }
+  .po_sidebar { grid-template-columns: 1fr; }
+  .po_hero_img { height: 22vh; }
+  .po_share   { flex-direction: column; align-items: flex-start; }
+  .po_contenido { font-size: var(--fz_m2); }
+  .po_header,
+  .po_contenido,
+  .po_tags,
+  .po_share { padding-left: 2vh; padding-right: 2vh; }
+  [data-witip="Lectura"],[data-witip="Cache ⚡"]{display: none!important}
+  .po_toc_box{margin-bottom:2vh}
+  .po_pn_box { grid-template-columns: 1fr; gap: 1vh; }
+  .po_pn_card.pn_next { text-align: left; justify-content: flex-start; flex-direction: row-reverse; }
+  .po_pn_card.pn_next .po_pn_lb { justify-content: flex-start; flex-direction: row-reverse; }
+}
+
+/* ── BOTON DE LIKE HERO ────────────────────────── */
+.po_hero_like {
+  border-color: rgba(255,255,255,0.2) !important;
+  background: rgba(0,0,0,0.4) !important;
+  color: #fff !important;
+  padding: .6vh 1.2vh !important;
+  font-size: var(--fz_s4) !important;
+}
+.po_hero_like:hover {
+  background: color-mix(in srgb, #fe0149 12%, transparent) !important;
+}
+
+/* ── YOUTUBE LIGHTBOX / MODAL ───────────────────── */
+#wi_yt_modal .modalBody {
+  background: #000;
+  padding: 0;
+  border-radius: 1.5vh;
+  overflow: hidden;
+  width: 95%;
+  max-width: 800px;
+  border: 1px solid rgba(255,255,255,.1);
+}
+#wi_yt_modal .wi_yt_close {
+  color: #fff;
+  text-shadow: 0 0 8px #000;
+  right: 1.5vh;
+  top: 1vh;
+  font-size: 2.2rem;
+  z-index: 10;
+}
+#wi_yt_player {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+}
+
+.po_ad_fallback_text {
+  text-align: center;
+  color: var(--tx3);
+  font-size: var(--fz_s2);
+  padding: 1.5vh 0;
+}
+</style>
+
+<Layout
+  title={processedPost.titulo}
+  description={processedPost.descripcion}
+  keywords={keywords}
+  path={`/${processedPost.slug || processedPost.id || (Astro.params as any).slug}`}
+  image={processedPost.imagenTop || processedPost.imagen || '/poster.webp'}
+  type="article"
+>
+  <PostPage post={processedPost} headings={headings} prevPost={prevPost} nextPost={nextPost}>
+    <PostSidebar post={processedPost} latest={latest} related={related} />
+  </PostPage>
+</Layout>
+
+<script>
+  import { db } from '../lib/firebase.js';
+  import { doc, updateDoc, increment, getDoc, onSnapshot } from 'firebase/firestore';
+  import { wicopy, showi, herowi } from '../lib/widev.js';
+
+  let scrollListener: any = null;
+  let handleYtClickRef: any = null;
+  let realtimeChannel: any = null;
+
+  const initPost = () => {
+    const postEl = document.querySelector('.po_wrap') as HTMLElement;
+    if (!postEl) return;
+
+    const slug = postEl.dataset.slug;
+    const postId = postEl.dataset.id;
+    if (!slug) return;
+
+    // 1. Aumentar vistas (solo una vez por sesión del navegador)
+    if (!sessionStorage.getItem(`wi_view_${slug}`)) {
+      sessionStorage.setItem(`wi_view_${slug}`, '1');
+      if (postId) {
+        const postRef = doc(db, 'blog', postId);
+        updateDoc(postRef, { vistas: increment(1) }).catch((err: any) => {
+          console.error('Error al incrementar vistas:', err);
+        });
+      }
+    }
+
+    // 2. Controlar la barra de progreso al hacer scroll
+    const progress = document.getElementById('po_progress');
+    if (progress) {
+      scrollListener = () => {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPct = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+        progress.style.width = `${scrollPct}%`;
+      };
+      window.addEventListener('scroll', scrollListener);
+    }
+
+    // 3. Generación de la Tabla de Contenidos (TOC) migrada al servidor para máxima velocidad y rendimiento Lighthouse.
+
+    // 4. Sincronización de Me encanta (Likes)
+    document.querySelectorAll('.po_like_sync').forEach(btn => {
+      if (localStorage.getItem(`wi_like_${slug}`)) {
+        btn.classList.add('active');
+      }
+
+      btn.addEventListener('click', () => {
+        if (localStorage.getItem(`wi_like_${slug}`)) return;
+        localStorage.setItem(`wi_like_${slug}`, '1');
+
+        document.querySelectorAll('.po_like_sync').forEach(b => b.classList.add('active'));
+
+        document.querySelectorAll('.po_likes_count_text').forEach(el => {
+          el.textContent = String((parseInt(el.textContent || '0') || 0) + 1);
+        });
+
+        if (postId) {
+          const postRef = doc(db, 'blog', postId);
+          updateDoc(postRef, { likes: increment(1) }).catch((err: any) => {
+            console.error('Error al incrementar likes:', err);
+          });
+        }
+      });
+    });
+
+    // 5. Copiar enlace del artículo
+    document.querySelectorAll('.po_copy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        wicopy(window.location.href, btn as any, '¡Enlace copiado! 🔗');
+      });
+    });
+
+    // 6. Lightbox de video de YouTube por delegación y MutationObserver
+    handleYtClickRef = (e: any) => {
+      const link = e.target?.closest?.('a');
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+      const ytMatch = href.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/i);
+      if (!ytMatch) return;
+
+      e.preventDefault();
+      const id = ytMatch[1];
+
+      let modal = document.getElementById('wi_yt_modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'wi_yt_modal';
+        modal.className = 'wiModal';
+        modal.innerHTML = `
+          <div class="modalBody">
+            <button class="modalX wi_yt_close">&times;</button>
+            <div id="wi_yt_player"></div>
+          </div>`;
+        document.body.appendChild(modal);
+
+        // Limpiar el reproductor automáticamente si el modal pierde la clase "active"
+        const obs = new MutationObserver(() => {
+          if (!modal!.classList.contains('active')) {
+            const player = document.getElementById('wi_yt_player');
+            if (player) player.innerHTML = '';
+          }
+        });
+        obs.observe(modal, { attributes: true, attributeFilter: ['class'] });
+      }
+
+      const player = document.getElementById('wi_yt_player');
+      if (player) {
+        player.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      }
+
+      import('../lib/widev.js').then(m => m.abrirModal('wi_yt_modal'));
+    };
+    document.addEventListener('click', handleYtClickRef);
+
+    // 7. Conexión diferida y pasiva a Firebase Firestore Realtime (onSnapshot)
+    if (postId) {
+      const startRealtime = () => {
+        const postRef = doc(db, 'blog', postId);
+        
+        // Consultar valores de la base de datos al montarse para sincronizar con la verdad absoluta
+        getDoc(postRef)
+          .then((docSnap) => {
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              if (data) {
+                if (typeof data.likes === 'number') {
+                  document.querySelectorAll('.po_likes_count_text').forEach(el => {
+                    el.textContent = String(data.likes);
+                  });
+                }
+                if (typeof data.vistas === 'number') {
+                  document.querySelectorAll('.po_vistas_count_text').forEach(el => {
+                    el.textContent = String(data.vistas);
+                  });
+                }
+              }
+            }
+          })
+          .catch((err: any) => {
+            console.error('Error fetching stats:', err);
+          });
+
+        // Suscribirse al canal en tiempo real
+        realtimeChannel = onSnapshot(postRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data) {
+              const nuevosLikes = data.likes;
+              const nuevasVistas = data.vistas;
+              if (typeof nuevosLikes === 'number') {
+                document.querySelectorAll('.po_likes_count_text').forEach(el => {
+                  el.textContent = String(nuevosLikes);
+                });
+              }
+              if (typeof nuevasVistas === 'number') {
+                document.querySelectorAll('.po_vistas_count_text').forEach(el => {
+                  el.textContent = String(nuevasVistas);
+                });
+              }
+            }
+          }
+        }, (err: any) => {
+          console.error('Error in stats realtime listener:', err);
+        });
+      };
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => startRealtime());
+      } else {
+        setTimeout(startRealtime, 1500);
+      }
+    }
+
+    // 8. Lanzar efectos de entrada
+    if (typeof herowi === 'function') herowi();
+    if (typeof showi === 'function') showi();
+  };
+
+  const cleanupPost = () => {
+    if (scrollListener) {
+      window.removeEventListener('scroll', scrollListener);
+      scrollListener = null;
+    }
+    if (handleYtClickRef) {
+      document.removeEventListener('click', handleYtClickRef);
+      handleYtClickRef = null;
+    }
+    if (realtimeChannel) {
+      realtimeChannel();
+      realtimeChannel = null;
+    }
+  };
+
+  document.addEventListener('astro:page-load', initPost);
+  document.addEventListener('astro:before-preparation', cleanupPost);
+</script>

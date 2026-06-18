@@ -1,0 +1,837 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app } from '../wii.js';
+---
+
+<style is:global>
+/* ==============================================================================
+   CSS PREMIUM
+   ============================================================================== */
+
+.creador_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  padding: 0 2vh 2vh 2vh;
+  background: radial-gradient(circle at top right, color-mix(in srgb, var(--mco) 8%, transparent) 0%, transparent 60%),
+              radial-gradient(circle at bottom left, color-mix(in srgb, var(--hva) 4%, transparent) 0%, transparent 65%);
+}
+
+/* Glassmorphism Card (Consolidada para Full-Width y 55/45 Split) */
+.creador_card {
+  width: 100%;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  position: relative;
+  overflow: hidden;
+  display: flex; /* Flexbox para dividir en dos columnas */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.creador_card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--mco) 0%, var(--hva) 50%, var(--mco) 100%);
+  z-index: 10;
+}
+
+/* Columna Izquierda (Imagen 55%) */
+.creador_left_img {
+  width: 55%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 580px;
+}
+
+.creador_left_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0.4) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 3rem 2.5rem;
+}
+
+.creador_quote_box {
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.quote_ico {
+  font-size: 2.2rem;
+  color: var(--hva);
+  opacity: 0.8;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.creador_quote_text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.creador_quote_author {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--mco);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Columna Derecha (Formulario 45%) */
+.creador_right_content {
+  width: 45%;
+  padding: 3.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--bg);
+}
+
+/* Responsividad para móviles y tablets */
+@media (max-width: 860px) {
+  .creador_card {
+    flex-direction: column; /* Apilar verticalmente */
+  }
+  .creador_left_img {
+    width: 100%;
+    min-height: 260px;
+  }
+  .creador_left_overlay {
+    padding: 2rem;
+  }
+  .creador_right_content {
+    width: 100%;
+    padding: 2.5rem 2rem;
+  }
+  .creador_quote_text {
+    font-size: 1.1rem;
+  }
+}
+
+/* Encabezado */
+.creador_header {
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.creador_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: color-mix(in srgb, var(--mco) 10%, transparent);
+  color: var(--mco);
+  padding: 0.5rem 1rem;
+  border-radius: 99px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+  border: 1px solid color-mix(in srgb, var(--mco) 15%, transparent);
+}
+
+.creador_title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--tx1);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.creador_subtitle {
+  font-size: 0.92rem;
+  color: var(--tx3);
+  line-height: 1.5;
+}
+
+/* Alertas */
+.creador_alert {
+  display: flex;
+  gap: 1rem;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.creador_alert_icon {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.creador_alert.rejected {
+  border-color: rgba(254, 215, 215, 0.8);
+  background: rgba(255, 245, 245, 0.9);
+}
+.creador_alert.rejected .creador_alert_icon {
+  color: var(--error);
+}
+
+.creador_alert.pending {
+  border-color: rgba(254, 235, 200, 0.8);
+  background: rgba(255, 250, 240, 0.9);
+}
+.creador_alert.pending .creador_alert_icon {
+  color: var(--warning);
+}
+
+.creador_alert_title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--tx1);
+  margin-bottom: 0.25rem;
+}
+
+.creador_alert_desc {
+  font-size: 0.88rem;
+  color: var(--tx2);
+  line-height: 1.45;
+}
+
+.creador_alert_desc strong {
+  color: var(--tx1);
+  font-weight: 600;
+}
+
+/* Inputs y Selects del Formulario */
+.creador_form_grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 580px) {
+  .creador_form_grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+.creador_group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.creador_label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--tx2);
+  letter-spacing: 0.01em;
+}
+
+.creador_input, 
+.creador_textarea {
+  width: 100%;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  color: var(--tx);
+  outline: none;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01);
+  transition: all 0.25s ease;
+}
+
+/* Estilo premium del Dropdown Select */
+select.creador_input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2em;
+  padding-right: 2.5rem;
+}
+
+.creador_input:focus, 
+.creador_textarea:focus {
+  border-color: var(--mco);
+  background: var(--wb);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mco) 15%, transparent),
+              inset 0 2px 4px rgba(0, 0, 0, 0.01);
+}
+
+.creador_input:disabled {
+  background: var(--bg4);
+  color: var(--tx3);
+  cursor: not-allowed;
+  border-color: var(--brd);
+  font-weight: 500;
+}
+
+.creador_textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+/* Progreso */
+.creador_progress_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--tx3);
+  font-weight: 500;
+}
+
+.creador_progress_bar {
+  flex-grow: 1;
+  height: 6px;
+  background: var(--bg4);
+  border-radius: 99px;
+  margin-left: 1rem;
+  overflow: hidden;
+}
+
+.creador_progress_fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mco) 0%, var(--hva) 100%);
+  border-radius: 99px;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Botones */
+.creador_submit_btn {
+  width: 100%;
+  background: var(--mco);
+  color: var(--txa);
+  border: none;
+  border-radius: 14px;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.50rem;
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--mco) 20%, transparent);
+  transition: all 0.25s ease;
+}
+
+.creador_submit_btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--mco) 30%, transparent);
+}
+
+.creador_submit_btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.creador_submit_btn:disabled {
+  background: var(--bg4);
+  color: var(--tx3);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Spinner Animado */
+.creador_spinner {
+  animation: rotate 1s linear infinite;
+  font-size: 1.1rem;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estado de Espera / Pendiente Animado */
+.creador_pending_state {
+  text-align: center;
+  padding: 1rem 0;
+  width: 100%;
+}
+
+.creador_pending_icon_wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: color-mix(in srgb, var(--mco) 10%, transparent);
+  color: var(--mco);
+  border-radius: 50%;
+  font-size: 2.5rem;
+}
+
+.creador_pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid color-mix(in srgb, var(--mco) 30%, transparent);
+  border-radius: 50%;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.creador_pending_title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--tx1);
+  margin-bottom: 0.75rem;
+}
+
+.creador_pending_text {
+  font-size: 0.95rem;
+  color: var(--tx3);
+  max-width: 420px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+
+.creador_btn_secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  color: var(--tx2);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.creador_btn_secondary:hover {
+  background: var(--bg4);
+  border-color: var(--brd2);
+  color: var(--tx1);
+}
+</style>
+
+<Layout title={`Quiero ser Editor — ${app}`} description={`Postúlate para redactar artículos en el blog oficial de ${app}.`} robots="noindex, nofollow">
+  <div class="creador_container">
+
+    <div class="creador_card" id="sol_card" data-herowi="80">
+      
+      <!-- COLUMNA IZQUIERDA: IMAGEN MOTIVACIONAL SPLIT (55%) -->
+      <div 
+        class="creador_left_img" 
+        style="background-image: url('https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&auto=format&fit=crop&q=80')"
+      >
+        <div class="creador_left_overlay">
+          <div class="creador_quote_box">
+            <i class="fas fa-quote-left quote_ico"></i>
+            <p class="creador_quote_text">
+              "Tu experiencia y conocimiento del mercado laboral pueden abrir puertas para miles de candidatos. Comparte tu conocimiento y guía a otros hacia el éxito."
+            </p>
+            <span class="creador_quote_author">— Equipo {app}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: CONTENIDO Y FORMULARIO (45%) -->
+      <div class="creador_right_content">
+        
+        <!-- CASO A: SOLICITUD PENDIENTE ACTIVA -->
+        <div id="sol_pending_sec" style="display: none;" class="creador_pending_state">
+          <div class="creador_pending_icon_wrapper">
+            <i class="fas fa-hourglass-half"></i>
+            <div class="creador_pulse"></div>
+          </div>
+          <h2 class="creador_pending_title">¡Postulación en Revisión!</h2>
+          <p class="creador_pending_text">
+            Hola, <strong id="sol_pending_name">usuario</strong>. Recibimos con alegría tu propuesta para ascender a Editor. 
+            Nuestros administradores la están evaluando detalladamente. ¡Pronto recibirás novedades!
+          </p>
+          <div class="creador_alert pending">
+            <div class="creador_alert_icon"><i class="fas fa-info-circle"></i></div>
+            <div>
+              <div class="creador_alert_title">Detalles de Envío</div>
+              <div id="solicitud_details" class="creador_alert_desc">
+                Tu solicitud está siendo analizada.
+              </div>
+            </div>
+          </div>
+          <a href="/smile" class="creador_btn_secondary" style="margin-top: 1rem;">
+            <i class="fas fa-arrow-left"></i> Volver al Dashboard
+          </a>
+        </div>
+
+        <!-- CASO B: ÉXITO INMEDIATO AL ENVIAR -->
+        <div id="sol_success_sec" style="display: none;" style="text-align: center; padding: 1.5rem 0;">
+          <i class="fas fa-check-circle" style="font-size: 4.5rem; color: var(--mco); margin-bottom: 1.5rem; display: block; text-align: center;"></i>
+          <h2 class="creador_pending_title" style="text-align: center;">¡Enviado Exitosamente!</h2>
+          <p class="creador_pending_text" style="margin-bottom: 2rem; text-align: center;">
+            Tu postulación se ha registrado con total éxito. El equipo de administración revisará tus categorías seleccionadas y motivos muy pronto.
+          </p>
+          <div style="text-align: center;">
+            <a href="/smile" class="creador_btn_secondary">
+              <i class="fas fa-home"></i> Ir al Dashboard
+            </a>
+          </div>
+        </div>
+
+        <!-- CASO C: FORMULARIO ACTIVO -->
+        <div id="sol_form_sec">
+          <div class="creador_header">
+            <div class="creador_badge">
+              <i class="fas fa-user-tie"></i> Candidato a Editor
+            </div>
+            <h1 class="creador_title">Quiero ser Editor</h1>
+            <p class="creador_subtitle">
+              Escribe artículos en nuestro blog oficial, comparte guías de reclutamiento y ayuda a otros profesionales a destacar en el mercado laboral.
+            </p>
+          </div>
+
+          <!-- Alerta de Rechazo Histórico si existe -->
+          <div id="sol_rejected_alert" class="creador_alert rejected" style="display: none;">
+            <div class="creador_alert_icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div>
+              <div class="creador_alert_title">Tu postulación anterior requiere mejoras</div>
+              <div class="creador_alert_desc">
+                Retroalimentación del moderador: <br />
+                <em id="sol_rejected_reason" style="color: var(--error); display: block; margin-top: 0.25rem; font-weight: 500;">
+                  "Por favor, expande un poco más tus motivos y enfoques."
+                </em>
+                <button 
+                  id="sol_retry_btn" 
+                  class="creador_btn_secondary" 
+                  style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.82rem;"
+                >
+                  <i class="fas fa-undo"></i> Intentar de nuevo
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <form id="sol_form">
+            <div class="creador_form_grid">
+              <div class="creador_group">
+                <label class="creador_label">Nombre completo</label>
+                <input 
+                  type="text" 
+                  id="sol_nombre"
+                  class="creador_input" 
+                  value="" 
+                  placeholder="Tu nombre completo"
+                  disabled 
+                />
+              </div>
+              <div class="creador_group">
+                <label class="creador_label">Usuario {app}</label>
+                <input 
+                  type="text" 
+                  id="sol_usuario"
+                  class="creador_input" 
+                  value="@usuario" 
+                  disabled 
+                />
+              </div>
+            </div>
+
+            <!-- Motivos TextArea -->
+            <div class="creador_group">
+              <label class="creador_label">¿Por qué deseas ser Editor en {app}? *</label>
+              <textarea 
+                id="sol_motivo"
+                class="creador_textarea" 
+                placeholder={`Escribe aquí (mínimo 3 palabras) por qué deseas ser Editor en ${app}...`}
+                maxlength="800"
+                required
+              ></textarea>
+            </div>
+
+            <!-- Selector Dropdown del tipo de contenido -->
+            <div class="creador_group">
+              <label class="creador_label">¿Qué tipo de contenido te gustaría publicar? *</label>
+              <select 
+                id="sol_categoria"
+                class="creador_input" 
+                required
+              >
+                <option value="Optimización de CV y superación de filtros ATS">Optimización de CV y superación de filtros ATS</option>
+                <option value="Consejos prácticos para entrevistas de trabajo y negociación salarial">Consejos prácticos para entrevistas de trabajo y negociación salarial</option>
+                <option value="Tendencias de empleo, trabajo remoto, híbrido y freelance">Tendencias de empleo, trabajo remoto, híbrido y freelance</option>
+                <option value="Desarrollo de habilidades y formación continua (Upskilling)">Desarrollo de habilidades y formación continua (Upskilling)</option>
+                <option value="Marca personal y optimización de perfiles en LinkedIn">Marca personal y optimización de perfiles en LinkedIn</option>
+                <option value="Historias de éxito laboral y motivación profesional">Historias de éxito laboral y motivación profesional</option>
+              </select>
+            </div>
+
+            <!-- Barra de progreso interactiva -->
+            <div class="creador_progress_container">
+              <span id="sol_progress_text">Progreso de Postulación 20%</span>
+              <div class="creador_progress_bar">
+                <div id="sol_progress_fill" class="creador_progress_fill" style="width: 20%"></div>
+              </div>
+            </div>
+
+            <div id="sol_error_alert" class="creador_alert rejected" style="display: none; margin-top: 1rem; margin-bottom: 1rem;">
+              <div class="creador_alert_icon"><i class="fas fa-exclamation-triangle"></i></div>
+              <div>
+                <div class="creador_alert_title">Error al procesar</div>
+                <div id="sol_error_msg" class="creador_alert_desc">Ocurrió un error.</div>
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              id="sol_submit"
+              class="creador_submit_btn" 
+              disabled
+              style="margin-top: 1rem; opacity: 0.4;"
+            >
+              <i class="fas fa-paper-plane"></i> Enviar mi Postulación a Editor
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</Layout>
+
+
+
+<script>
+  import { db } from '../lib/firebase.js';
+  import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+  import { getls, Notificacion, wiSpin, herowi } from '../lib/widev.js';
+  import { protegerRuta } from '../lib/auth.js';
+
+  let u: any = null;
+  const COL = 'solicitudes';
+  let eventListeners: { target: EventTarget; type: string; handler: EventListener }[] = [];
+
+  const listen = (target: EventTarget, type: string, handler: EventListener) => {
+    target.addEventListener(type, handler);
+    eventListeners.push({ target, type, handler });
+  };
+
+  const cleanup = () => {
+    eventListeners.forEach(({ target, type, handler }) => {
+      target.removeEventListener(type, handler);
+    });
+    eventListeners = [];
+  };
+
+  const contarPalabras = (txt: string) => {
+    return txt.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
+  const calcularProgreso = (palabras: number, cat: string) => {
+    let puntos = 20; // Nombres + Usuario cargados por defecto
+    if (palabras >= 1) puntos += 10;
+    if (palabras >= 2) puntos += 15;
+    if (palabras >= 3) puntos += 15;
+    if (cat !== '') puntos += 40;
+    return Math.min(puntos, 100);
+  };
+
+  const updateProgress = () => {
+    const motivoEl = document.getElementById('sol_motivo') as HTMLTextAreaElement;
+    const catEl = document.getElementById('sol_categoria') as HTMLSelectElement;
+    const progressText = document.getElementById('sol_progress_text');
+    const progressFill = document.getElementById('sol_progress_fill');
+    const submitBtn = document.getElementById('sol_submit') as HTMLButtonElement;
+
+    if (!motivoEl || !catEl) return;
+
+    const palabras = contarPalabras(motivoEl.value);
+    const catVal = catEl.value;
+    const progreso = calcularProgreso(palabras, catVal);
+
+    if (progressText) progressText.textContent = `Progreso de Postulación ${progreso}%`;
+    if (progressFill) progressFill.style.width = `${progreso}%`;
+
+    const esValido = palabras >= 3 && catVal !== '';
+    if (submitBtn) {
+      submitBtn.disabled = !esValido;
+      submitBtn.style.opacity = esValido ? '1' : '0.4';
+    }
+  };
+
+  const init = async () => {
+    cleanup();
+    u = await protegerRuta(['usuario', 'editor', 'gestor', 'admin']);
+    if (!u) return;
+
+    // Redirección inteligente si ya tiene privilegios de Editor, Gestor o Administrador
+    if (u.rol === 'editor' || u.rol === 'gestor') {
+      window.location.replace('/editor');
+      return;
+    } else if (u.rol === 'admin') {
+      window.location.replace('/admin');
+      return;
+    }
+
+    // Ejecutar animación de entrada inmediatamente
+    herowi('#sol_card');
+
+    const pendingSec = document.getElementById('sol_pending_sec');
+    const formSec = document.getElementById('sol_form_sec');
+    const successSec = document.getElementById('sol_success_sec');
+    const pendingName = document.getElementById('sol_pending_name');
+    const detailsEl = document.getElementById('solicitud_details');
+    const rejectedAlert = document.getElementById('sol_rejected_alert');
+    const rejectedReason = document.getElementById('sol_rejected_reason');
+
+    // Prellenar inputs fijos de inmediato
+    const nameInput = document.getElementById('sol_nombre') as HTMLInputElement;
+    if (nameInput) nameInput.value = `${u.nombre || ''} ${u.apellidos || ''}`.trim() || u.usuario;
+    const userInput = document.getElementById('sol_usuario') as HTMLInputElement;
+    if (userInput) userInput.value = `@${u.usuario || ''}`;
+
+    // Eventos del formulario
+    const motivoEl = document.getElementById('sol_motivo');
+    const catEl = document.getElementById('sol_categoria');
+    if (motivoEl) listen(motivoEl, 'input', updateProgress);
+    if (catEl) listen(catEl, 'change', updateProgress);
+
+    const form = document.getElementById('sol_form');
+    if (form) {
+      listen(form, 'submit', async (e: Event) => {
+        e.preventDefault();
+        const motivoVal = (document.getElementById('sol_motivo') as HTMLTextAreaElement).value.trim();
+        const catVal = (document.getElementById('sol_categoria') as HTMLSelectElement).value;
+
+        if (contarPalabras(motivoVal) < 3) return;
+
+        const errorAlert = document.getElementById('sol_error_alert');
+        const errorMsg = document.getElementById('sol_error_msg');
+        if (errorAlert) errorAlert.style.display = 'none';
+
+        wiSpin('#sol_submit', true, 'Enviando Propuesta...');
+
+        try {
+          const colRef = collection(db, COL);
+          await addDoc(colRef, {
+            userId: u.id,
+            usuario: u.usuario,
+            nombre: u.nombre || '',
+            apellidos: u.apellidos || '',
+            email: u.email,
+            motivo: motivoVal,
+            ejemplos: catVal,
+            estado: 'pendiente',
+            creado: new Date().toISOString()
+          });
+
+          // Mostrar pantalla de éxito
+          if (formSec) formSec.style.display = 'none';
+          if (successSec) successSec.style.display = 'block';
+          Notificacion('¡Postulación enviada! 🚀', 'success');
+        } catch (err: any) {
+          console.error(err);
+          if (errorAlert && errorMsg) {
+            errorAlert.style.display = 'flex';
+            errorMsg.textContent = err.message || 'Error al guardar la solicitud en Firestore.';
+          }
+          wiSpin('#sol_submit', false);
+        }
+      });
+    }
+
+    const retryBtn = document.getElementById('sol_retry_btn');
+    if (retryBtn) {
+      listen(retryBtn, 'click', () => {
+        if (rejectedAlert) rejectedAlert.style.display = 'none';
+        const motivoTextarea = document.getElementById('sol_motivo') as HTMLTextAreaElement;
+        if (motivoTextarea) {
+          motivoTextarea.value = '';
+          motivoTextarea.focus();
+        }
+        updateProgress();
+      });
+    }
+
+    // Ejecutar primer check
+    updateProgress();
+
+    try {
+      // Consultar solicitudes anteriores por email en segundo plano
+      const q = query(
+        collection(db, COL),
+        where('email', '==', u.email)
+      );
+      const snap = await getDocs(q);
+      const solicitudes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+      solicitudes.sort((a, b) => new Date(b.creado).getTime() - new Date(a.creado).getTime());
+
+      const activeSol = solicitudes && solicitudes[0];
+
+      if (activeSol && activeSol.estado === 'pendiente') {
+        // Pantalla de postulación en revisión
+        if (pendingSec) pendingSec.style.display = 'block';
+        if (formSec) formSec.style.display = 'none';
+        if (successSec) successSec.style.display = 'none';
+
+        if (pendingName) pendingName.textContent = u.nombre || u.usuario || 'usuario';
+        if (detailsEl) {
+          const date = activeSol.creado ? new Date(activeSol.creado) : new Date();
+          const dateStr = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+          const timeStr = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+          detailsEl.innerHTML = `Enviada el <strong>${dateStr}</strong> a las ${timeStr}.`;
+        }
+        // Animamos la sección de pendiente
+        herowi('#sol_pending_sec');
+      } else {
+        // Mostrar alerta de rechazado si aplica
+        if (activeSol && activeSol.estado === 'rechazado') {
+          if (rejectedAlert) rejectedAlert.style.display = 'flex';
+          if (rejectedReason) rejectedReason.textContent = `"${activeSol.respuesta || 'Por favor, expande un poco más tus motivos y enfoques.'}"`;
+        } else {
+          if (rejectedAlert) rejectedAlert.style.display = 'none';
+        }
+      }
+    } catch (e: any) {
+      console.error(e);
+      Notificacion('Error al consultar solicitudes', 'error');
+    }
+  };
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-preparation', cleanup);
+</script>

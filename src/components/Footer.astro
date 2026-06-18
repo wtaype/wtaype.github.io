@@ -1,0 +1,94 @@
+---
+// src/components/Footer.astro
+import { app, lanzamiento, by, linkme, version, id } from '../wii.js';
+
+const REDES = [
+  { tit: 'YouTube',   ico: 'fab fa-youtube',   url: `https://www.youtube.com/@${id}`,   bg: '#ff0000' },
+  { tit: 'Facebook',  ico: 'fab fa-facebook-f', url: `https://www.facebook.com/${id}e`, bg: '#1877F2' },
+  { tit: 'Instagram', ico: 'fab fa-instagram',  url: `https://www.instagram.com/${app}e`, bg: 'linear-gradient(45deg,#f58529,#dd2a7b,#515bd4)' },
+  { tit: 'TikTok',    ico: 'fab fa-tiktok',     url: `https://www.tiktok.com/@${id}`,   bg: '#000'    },
+];
+
+const ahora = new Date();
+---
+
+<footer class="foo">
+  <div class="foo_inner">
+    <div class="foo_left">
+      <div class="foo_brand">
+        <span class="foo_app"><a href="/">{app}</a></span>
+        <span class="foo_ver">{version}</span>
+      </div>
+      <div class="foo_links">
+        <a href="/terminos"   class="foo_link nv_item" data-page="terminos"  ><i class="fas fa-file-contract"></i> Términos</a>
+        <a href="/cookies"    class="foo_link nv_item" data-page="cookies"   ><i class="fas fa-cookie-bite"></i> Cookies</a>
+        <a href="/privacidad" class="foo_link nv_item" data-page="privacidad"><i class="fas fa-lock"></i> Privacidad</a>
+        <a href="/feedback"   class="foo_link nv_item" data-page="feedback"  ><i class="fas fa-comment-dots"></i> Feedback</a>
+        <a href="/contacto"   class="foo_link nv_item" data-page="contacto"  ><i class="fas fa-envelope"></i> Contacto</a>
+        {REDES.map(r => (
+          <a href={r.url} class="redsscc" target="_blank" rel="noopener noreferrer" title={r.tit} style={`--rb:${r.bg}`}><i class={r.ico}></i></a>
+        ))}
+      </div>
+    </div>
+    <div class="foo_right">
+      <span>Creado con <i class="fas fa-heart" style="color:var(--mco);"></i> by <a href={linkme} target="_blank"><strong>{by}</strong></a> {lanzamiento} - {ahora.getFullYear()}</span>
+    </div>
+  </div>
+</footer>
+
+<div class="cookiess" id="cookiess" role="dialog" aria-live="polite" aria-label="Aviso de cookies" aria-describedby="cookiess-desc">
+  <p class="cookiess_txt" id="cookiess-desc"> <i class="fas fa-cookie-bite cookiess_ico"></i>
+    Usamos cookies para mejorar tu experiencia y mostrarte anuncios relevantes
+    <a href="/cookies" class="cookiess_link nv_item" data-page="cookies">más info.</a>
+  </p>
+  <div class="cookiess_btns">
+    <button class="cookiess_aceptar" id="ck_aceptar"><i class="fas fa-check"></i> Aceptar</button>
+    <button class="cookiess_rechazar" id="ck_rechazar">Rechazar</button>
+  </div>
+</div>
+
+<script>
+  import { savels, getls } from '../lib/widev.js';
+
+  const CK_KEY = 'cookiesPrivacidad';
+
+  const initCookiesBanner = () => {
+    const banner = document.getElementById('cookiess');
+    if (!banner) return;
+
+    if (getls(CK_KEY) !== null) {
+      banner.remove();
+      return;
+    }
+
+    setTimeout(() => {
+      // Check again to avoid showing if accepted during the delay
+      if (getls(CK_KEY) !== null) {
+        banner.remove();
+        return;
+      }
+      banner.classList.add('cookiess_show');
+    }, 800);
+  };
+
+  const handleAction = (val: boolean) => {
+    const banner = document.getElementById('cookiess');
+    if (!banner) return;
+    savels(CK_KEY, val);
+    banner.classList.remove('cookiess_show');
+    setTimeout(() => banner.remove(), 400);
+  };
+
+  // Click handler delegation for banner actions
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('#ck_aceptar')) {
+      handleAction(true);
+    } else if (target.closest('#ck_rechazar')) {
+      handleAction(false);
+    }
+  });
+
+  // Re-run every page-load since we use ClientRouter
+  document.addEventListener('astro:page-load', initCookiesBanner);
+</script>

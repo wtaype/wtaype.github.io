@@ -1,0 +1,1393 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { app, titulo, descri, keywii, linkweb, by, linkme}  from '../wii.js';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { rutaRoles } from '../lib/rutas.js';
+
+const ROUTE_ROLES = rutaRoles();
+const wtema = "Paz|#29C72E";
+
+interface Props {
+  name?: string;
+  title?: string;
+  description?: string;
+  keywords?: string | string[];
+  path?: string;
+  image?: string;
+  type?: string;
+  robots?: string;
+  audience?: string[];
+  intent?: string;
+}
+
+const {
+  name = app,
+  title = titulo,
+  description = descri,
+  keywords = keywii,
+  path = Astro.url.pathname,
+  image = '/poster.webp',
+  type = 'website',
+  robots = 'index, follow',
+  audience = [],
+  intent = ''
+} = Astro.props;
+
+const canonical = new URL(path, linkweb).toString();
+const imageUrl = image.startsWith('http') ? image : new URL(image, linkweb).toString();
+const keywordContent = Array.isArray(keywords) ? keywords.join(', ') : keywords;
+const schemaType = type === 'article' ? 'Article' : 'WebPage';
+const seoSchema = {
+  '@context': 'https://schema.org',
+  '@type': schemaType,
+  name: title,
+  headline: type === 'article' ? title : undefined,
+  description,
+  url: canonical,
+  image: imageUrl,
+  inLanguage: 'es',
+  keywords: keywordContent,
+  about: intent || undefined,
+  audience: audience.length ? audience.map(item => ({ '@type': 'Audience', audienceType: item })) : undefined,
+  isPartOf: {
+    '@type': 'WebSite',
+    name,
+    url: linkweb,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${linkweb}/citas?q={search_term_string}`,
+      'query-input': 'required name=search_term_string'
+    }
+  },
+  publisher: {
+    '@type': 'Organization',
+    name,
+    url: linkweb,
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/poster.webp', linkweb).toString()
+    }
+  },
+  author: {
+    '@type': 'Person',
+    name: by,
+    url: linkme
+  }
+};
+---
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/avif" href="/smile.avif" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywordContent} />
+    <meta name="robots" content={robots} />
+
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content={type === 'article' ? 'article' : 'website'} />
+    <meta property="og:site_name" content={name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:locale" content="es_ES" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content={by} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <script type="application/ld+json" set:html={JSON.stringify(seoSchema)} />
+    <title>{title}</title>
+
+    <!-- Placeholder de persistencia para fuentes cargadas dinámicamente por wiSmart -->
+    <link id="google-fonts" data-astro-transition-persist="google-fonts" />
+
+    <!-- Carga asíncrona de estilos de iconos de FontAwesome (No bloqueante) -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'" />
+
+    <!-- Habilitamos ClientRouter para navegación instantánea sin F5 -->
+    <ClientRouter />
+
+    <!-- Aplicación del tema síncrona inmediata para evitar parpadeo blanco (flash) -->
+    <script is:inline define:vars={{ wtema }}>(() => { window.wtema = wtema; const a = () => { try { let t = localStorage.wiTema; try { const u = JSON.parse(localStorage.getItem('wiSmile') || '{}').value; if (u?.tema) t = u.tema; } catch (_) {} const [n, c] = (t || wtema).split('|'); document.documentElement.dataset.theme = n; (document.querySelector('meta[name="theme-color"]') || document.head.appendChild(Object.assign(document.createElement('meta'), { name: 'theme-color' }))).content = c; } catch (e) {} }; a(); document.addEventListener('astro:after-swap', a); })();</script>
+
+    <!-- Guardia Unificada de Rutas (Seguridad y Rendimiento) -->
+    <script is:inline define:vars={{ ROUTE_ROLES }}>(() => { const check = (path) => { const p = path.replace(/\/$/, '') || '/'; const roles = ROUTE_ROLES.roles[p]; if (!roles) return ''; try { const u = JSON.parse(localStorage.getItem('wiSmile') || '{}').value; if (u && roles.includes(u.rol)) { return p.split('/').some(s => ROUTE_ROLES.require2FA.includes(s)) && sessionStorage.getItem('vault_unlocked') !== 'true' ? '/verificar' : ''; } } catch (_) {} return '/'; }; const go = (path, e) => { const dest = check(path); if (dest) { if (e) e.preventDefault(); window.location.replace(dest); } }; go(window.location.pathname); document.addEventListener('astro:before-preparation', (e) => go(e.to.pathname, e)); })();</script>
+  </head>
+  <body>
+    <Header />
+
+    <!-- Estilo global base encapsulado en el Layout -->
+    <style is:global data-astro-transition-persist="global-css">
+ /* ==================== VARIABLES GLOBALES ==================== */
+    :root {
+      --fz_s1: clamp(0.625rem, 0.8vh, 0.7rem);
+      --fz_s2: clamp(0.675rem, 0.85vh, 0.75rem);
+      --fz_s3: clamp(0.725rem, 0.9vh, 0.8rem);
+      --fz_s4: clamp(0.775rem, 1vh, 0.85rem);
+      --fz_m: clamp(0.8rem, 1.05vh, 0.9rem);
+      --fz_m1: clamp(0.85rem, 1.1vh, 0.95rem);
+      --fz_m2: clamp(0.9rem, 1.15vh, 1rem);
+      --fz_m3: clamp(0.95rem, 1.2vh, 1.05rem);
+      --fz_m4: clamp(1rem, 1.3vh, 1.1rem);
+      --fz_m5: clamp(1.15rem, 1.5vh, 1.25rem);
+      --fz_l1: clamp(1.5rem, 2vh, 1.7rem);
+      --fz_l2: clamp(1.8rem, 2.3vh, 2rem);
+      --fz_x1: clamp(2.2rem, 3vh, 2.8rem);
+      --fz_x2: clamp(2.5rem, 3.6vh, 3.5rem);
+      --fz_x3: clamp(2.9rem, 5vh, 3.9rem);
+      --fz_x4: clamp(3.3rem, 5.9vh, 4.3rem);
+      --fz_y1: clamp(3rem, 14vh, 8rem);
+      --bs_m: 0 0 0.3vh 0.1vh var(--white);
+      --bs_l: 0 0.4vh 0.8vh rgba(0, 0, 0, 0.15);
+      --tr_s: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      --tr_m: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --tr_f: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      --ff_P: 'Poppins', 'Segoe UI', system-ui;
+      --ff_O: 'Outfit', 'Segoe UI', system-ui;
+      --ff_R: 'Rubik', 'Segoe UI', system-ui;
+      --gradient-dia: linear-gradient(135deg, #0EBEFF 0%, #29C72E 100%);
+      --gradient-noche: linear-gradient(135deg, #21273B 0%, #7000FF 100%);
+
+      --success: #3cd741;
+      --error: #ff3849;
+      --warning: #ffa726;
+      --info: #00a8e6;
+
+      --white: #fff;
+      --offline: #ddd;
+      --Cielo: #0EBEFF;
+      --Dulce: #FF5C69;
+      --Paz: #29C72E;
+      --Oro: #FFDA34;
+      --Mora: #7000FF;
+      --Futuro: #21273B;
+    }
+
+    :root[data-theme="Cielo"] {
+      --bg: #ccefff;
+      --wb: #e5f7ff;
+      --tx: #000;
+      --tx1: #1a1a1a;
+      --tx2: #333;
+      --tx3: #666;
+      --txa: #FFF;
+      --txe: #000;
+      --hv: #00a8e6;
+      --hva: #1873cd;
+      --mco: #1978d7;
+      --mbg: #1978d7;
+      --brd: #b8d9eb;
+      --inp: #f0f9ff;
+      --bg1: #ffffff26;
+      --bg2: #1978d7;
+      --bg3: #e5f7ff;
+      --bg4: rgba(25, 120, 215, 0.1);
+      --bg5: rgba(25, 120, 215, 0.2);
+      --bg6: rgba(204, 239, 255, 0.5);
+      --bg7: #FFF;
+      --bg8: #FFF;
+      --bt: #1978d7;
+    }
+
+    :root[data-theme="Dulce"] {
+      --bg: #ffccd1;
+      --wb: #ffebed;
+      --tx: #000;
+      --tx1: #1a0000;
+      --tx2: #330000;
+      --tx3: #660000;
+      --txa: #FFF;
+      --txe: #000;
+      --hv: #ff7a85;
+      --hva: #ff3849;
+      --mco: #ff3849;
+      --mbg: #ff3849;
+      --brd: #ffb3ba;
+      --inp: #fff5f6;
+      --bg1: #ffffff61;
+      --bg2: #ff3849;
+      --bg3: #ffebed;
+      --bg4: rgba(255, 56, 73, 0.1);
+      --bg5: rgba(255, 56, 73, 0.2);
+      --bg6: rgba(255, 204, 209, 0.5);
+      --bg7: #FFF;
+      --bg8: #FFF;
+      --bt: #ff3849;
+    }
+
+    :root[data-theme="Paz"] {
+      --bg: #ccffce;
+      --wb: #ebffeb;
+      --tx: #000;
+      --tx1: #001a00;
+      --tx2: #003300;
+      --tx3: #006600;
+      --txa: #FFF;
+      --txe: #000;
+      --hv: #3cd741;
+      --hva: #25b62a;
+      --mco: #25b62a;
+      --mbg: #25b62a;
+      --brd: #a8e6ab;
+      --inp: #f0fff1;
+      --bg1: #ffffff42;
+      --bg2: #25b62a;
+      --bg3: #ebffeb;
+      --bg4: rgba(37, 182, 42, 0.1);
+      --bg5: rgba(37, 182, 42, 0.2);
+      --bg6: rgba(204, 255, 206, 0.5);
+      --bg7: #FFF;
+      --bg8: #FFF;
+      --bt: #25b62a;
+    }
+
+    :root[data-theme="Oro"] {
+      --bg: #fff8d1;
+      --wb: #fffde8;
+      --tx: #000;
+      --tx1: #1a1500;
+      --tx2: #332b00;
+      --tx3: #665500;
+      --txa: #000;
+      --txe: #000;
+      --hv: #f0cc00;
+      --hva: #c9a800;
+      --mco: #F5AF00;
+      --mbg: #facc00;
+      --brd: #ffe066;
+      --inp: #fffef5;
+      --bg1: #ffffff42;
+      --bg2: #FFDA34;
+      --bg3: #fffde8;
+      --bg4: rgba(255, 218, 52, 0.1);
+      --bg5: rgba(255, 218, 52, 0.2);
+      --bg6: rgba(255, 243, 176, 0.5);
+      --bg7: #FFF;
+      --bg8: #FFF;
+      --bt: #FFDA34;
+    }
+
+    :root[data-theme="Mora"] {
+      --bg: #e4ccff;
+      --wb: #f4ebff;
+      --tx: #000;
+      --tx1: #1a001a;
+      --tx2: #330033;
+      --tx3: #660066;
+      --txa: #FFF;
+      --txe: #000;
+      --hv: #9442ff;
+      --hva: #5f00db;
+      --mco: #6a00f5;
+      --mbg: #6a00f5;
+      --brd: #c9a3ff;
+      --inp: #faf5ff;
+      --bg1: #ffffff61;
+      --bg2: #6a00f5;
+      --bg3: #f4ebff;
+      --bg4: rgba(106, 0, 245, 0.1);
+      --bg5: rgba(106, 0, 245, 0.2);
+      --bg6: rgba(228, 204, 255, 0.5);
+      --bg7: #FFF;
+      --bg8: #FFF;
+      --bt: #6a00f5;
+    }
+
+    :root[data-theme="Futuro"] {
+      --bg: #0a0e1a;
+      --wb: #151b2e;
+      --tx: #e0e7ff;
+      --tx1: #c7d2fe;
+      --tx2: #a5b4fc;
+      --tx3: #818cf8;
+      --txa: #0a0e1a;
+      --txe: #00f3ff;
+      --hv: #00d4ff;
+      --hva: #00f3ff;
+      --mco: #00f3ff;
+      --mbg: #151b2e;
+      --brd: #2d3a52;
+      --inp: #0f1421;
+      --bg1: rgba(0, 243, 255, 0.08);
+      --bg2: #00f3ff;
+      --bg3: #1a2235;
+      --bg4: rgba(0, 243, 255, 0.12);
+      --bg5: rgba(0, 243, 255, 0.25);
+      --bg6: rgba(26, 34, 53, 0.7);
+      --bg7: #00f3ff;
+      --bg8: #1a2235;
+      --bt: #00f3ff;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    html { scroll-behavior: smooth }
+
+    * {
+      font-family: var(--ff_P);
+      scrollbar-width: thin;
+      scrollbar-color: var(--mco) var(--bg)
+    }
+
+    a {
+      text-decoration: none
+    }
+
+    body {
+      background: url('/wpuntos.svg'), var(--bg);
+    }
+
+    .ad_empty {
+      text-align: center;
+      padding: 5vh 2vh;
+      color: var(--tx3);
+      font-size: var(--fz_m1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1vh;
+    }
+
+    .ad_empty i {
+      font-size: 4vh;
+      opacity: .3;
+    }
+
+    #wimain {
+      max-width: 95vw;
+      margin: auto;
+      padding: 1vh 4vw;
+      min-height: 100vh;
+    }
+
+    #wimain:has(.ini_wrap) {
+      max-width: 100%;
+      padding: 0;
+    }
+
+    /* ==================== ESTILOS ESENCIALES HTML ==================== */
+    p {
+      color: var(--tx);
+      font-size: var(--fz_m2);
+      line-height: 1.6;
+      margin-bottom: 1vh
+    }
+
+    a {
+      color: var(--mco);
+      transition: color var(--tr_f)
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 1vh 1.5vh;
+      background: var(--inp);
+      border: 1px solid var(--brd);
+      border-radius: 0.6vh;
+      color: var(--tx);
+      font-size: var(--fz_m2);
+      transition: all var(--tr_f);
+      outline: none
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--mco);
+      box-shadow: 0 0 0 3px var(--bg4)
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--tx3)
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      width: auto;
+      margin-right: 0.5vh;
+      accent-color: var(--mco)
+    }
+
+    select {
+      cursor: pointer;
+      background-repeat: no-repeat;
+      background-position: right 1vh center;
+      padding-right: 3vh
+    }
+
+    select option {
+      background: var(--wb);
+      color: var(--tx)
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 8vh;
+      font-family: var(--ff_P)
+    }
+
+    button {
+      padding: .3vh 1vh;
+      background: none;
+      color: var(--txa);
+      border: none;
+      border-radius: 0.6vh;
+      font-size: var(--fz_m2);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--tr_f)
+    }
+
+    button:hover {
+      transform: translateY(-0.2vh);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    ul,
+    ol {
+      margin-left: 2.5vh;
+      margin-bottom: 1.5vh;
+      color: var(--tx)
+    }
+
+    li {
+      margin-bottom: 0.5vh;
+      line-height: 1.6;
+      color: var(--tx)
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--wb)
+    }
+
+    th,
+    td {
+      padding: 1vh 1.5vh;
+      text-align: left;
+      border: 1px solid var(--brd);
+      color: var(--tx)
+    }
+
+    th {
+      background: var(--bg4);
+      font-weight: 600;
+      color: var(--tx1)
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.6vh;
+      display: block
+    }
+
+    blockquote {
+      padding: 1.5vh 2vh;
+      margin: 2vh 0;
+      background: var(--bg4);
+      border-left: 4px solid var(--mco);
+      border-radius: 0.6vh;
+      color: var(--tx1);
+      font-style: italic
+    }
+
+    /* ==================== UTILIDADES ==================== */
+    .txc {
+      text-align: center
+    }
+
+    .dpn {
+      display: none
+    }
+
+    .dpc {
+      display: flex;
+      justify-content: center;
+      align-items: center
+    }
+
+    .dpw {
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .dpr {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .dpvc {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center
+    }
+
+    /* ==================== TEMAS ==================== */
+    #wiTema {
+      display: flex;
+      gap: 0.2vh;
+      padding: 0.5vh 0.35vw;
+      background: var(--bg1);
+      border-radius: 0.8vh;
+      position: fixed;
+      flex-direction: column;
+      top: 73vh;
+      right: 0;
+      z-index: 1;
+    }
+
+    .tema {
+      width: var(--fz_l1);
+      height: var(--fz_l1);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all var(--tr_f);
+      border: 2px solid transparent;
+      position: relative
+    }
+
+    .tema:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3)
+    }
+
+    .tema.mtha {
+      border-color: var(--white);
+      box-shadow: 0 0 1.5vh rgba(255, 255, 255, 0.6), inset 0 0 0.5vh rgba(255, 255, 255, 0.3);
+      transform: scale(1.01)
+    }
+
+    .skip-link:focus {
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0
+    }
+
+    .tema[data-ths^="Cielo"] {
+      background: var(--Cielo)
+    }
+
+    .tema[data-ths^="Dulce"] {
+      background: var(--Dulce)
+    }
+
+    .tema[data-ths^="Paz"] {
+      background: var(--Paz)
+    }
+
+    .tema[data-ths^="Mora"] {
+      background: var(--Mora)
+    }
+
+    .tema[data-ths^="Futuro"] {
+      background: var(--Futuro)
+    }
+
+    .tema[data-ths^="Oro"] {
+      background: var(--Oro)
+    }
+
+    #wiTema:hover {
+      transform: translateY(-0.2vh);
+      transition: var(--tr_m)
+    }
+
+    /* ==================== HEADER - FOOTER ==================== */
+    .wiheader {
+      height: 5vh;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2vw;
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      position: sticky;
+      top: 0;
+      width: 100%;
+    }
+
+    .nv_left {
+      display: flex;
+      align-items: center;
+      gap: 2vh
+    }
+
+    .wiheader i:not(.active) {
+      color: var(--mco)
+    }
+
+    .wilogo {
+      display: flex;
+      align-items: center;
+      gap: 0.3vh;
+      font-size: var(--fz_m5);
+      font-weight: 700;
+      color: var(--bg2);
+      cursor: pointer;
+      transition: all var(--tr_f)
+    }
+
+    .wilogo a {
+      color: var(--mco)
+    }
+
+    .wilogo i {
+      font-size: var(--fz_l1)
+    }
+
+    .wilogo_img {
+      height: var(--fz_l1);
+      width: var(--fz_l1);
+      object-fit: contain;
+      border-radius: 0;
+      display: inline-block;
+      vertical-align: middle
+    }
+
+    .wilogo:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 0.5vh var(--mco))
+    }
+
+    .winav {
+      display: flex;
+      gap: .3vh
+    }
+
+    .nv_item {
+      display: flex;
+      align-items: center;
+      gap: 0.4vw;
+      padding: 0.7vh 1vw;
+      background: var(--bg1);
+      border-radius: 0.8vh;
+      color: var(--tx);
+      text-decoration: none;
+      font-size: var(--fz_m1);
+      font-weight: 500;
+      transition: all var(--tr_f);
+      border: 1px solid transparent;
+      box-shadow: 0.2vh 0 0.3vh rgb(0 0 0 / 5%);
+    }
+
+    .nv_item img {
+      height: 2vh;
+      border-radius: 50%;
+      object-fit: cover
+    }
+
+    .nv_avatar_ini {
+      height: 2.5vh;
+      width: 2.5vh;
+      border-radius: 50%;
+      background: var(--mco);
+      color: var(--txa);
+      font-size: var(--fz_s4);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .nv_item i {
+      font-size: var(--fz_m3)
+    }
+
+    .nv_item.active,
+    .nv_item:hover {
+      background: var(--mco);
+      color: var(--txa);
+      transition: background .99s ease-out, color .3s ease-out;
+      font-weight: 600;
+      box-shadow: 0.2vh 0 0.3vh rgb(0 0 0 / 10%)
+    }
+
+    .nv_item.active i,
+    .nv_item:hover i {
+      color: var(--txa);
+      transition: color .6s ease-out
+    }
+
+    .nv_right {
+      display: flex;
+      align-items: center;
+      gap: .5vh
+    }
+
+    .bt_auth {
+      display: flex;
+      align-items: center;
+      gap: 0.4vw;
+      padding: 0.7vh 1vw;
+      background: var(--bg1);
+      border-radius: 0.8vh;
+      color: var(--tx);
+      font-size: var(--fz_m1);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--tr_f);
+      border: 1px solid transparent;
+      box-shadow: 0.2vh 0 0.3vh rgb(0 0 0 / 5%)
+    }
+
+    .bt_auth i {
+      font-size: var(--fz_m3);
+      color: var(--mco)
+    }
+
+    .bt_auth:hover {
+      background: var(--mco);
+      color: var(--txa);
+      font-weight: 600;
+      box-shadow: 0.2vh 0 0.3vh rgb(0 0 0 / 10%);
+      transform: translateY(-0.2vh)
+    }
+
+    .bt_auth:hover i {
+      color: var(--txa)
+    }
+
+    .foo {
+      width: 100%;
+      background: var(--bg);
+      border-top: 1px solid var(--brd);
+      margin-top: auto;
+      padding: 2vh 0;
+    }
+
+    .foo_inner {
+      max-width: 75vw;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5vh;
+    }
+
+    .foo_left {
+      display: flex;
+      align-items: center;
+      gap: 2vh;
+      flex-wrap: wrap;
+    }
+
+    .foo_brand {
+      display: flex;
+      align-items: baseline;
+      gap: 0.8vh;
+    }
+
+    .foo_app {
+      font-size: var(--fz_m2);
+      font-weight: 800;
+      color: var(--tx);
+      letter-spacing: -0.5px;
+    }
+
+    .foo_ver {
+      font-size: var(--fz_s1);
+      font-family: var(--ff_O), monospace;
+      font-weight: 700;
+      color: var(--tx3);
+      background: var(--bg5);
+      padding: 0.2vh 0.6vh;
+      border-radius: 1vh;
+    }
+
+    .foo_links {
+      display: flex;
+      align-items: center;
+      gap: .5vh;
+      padding-left: 1.5vh;
+      border-left: 1px solid var(--brd);
+      flex-wrap: wrap;
+    }
+
+    .foo_link {
+      color: var(--tx2);
+      font-size: var(--fz_s2);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .foo_link:hover {
+      color: var(--mco);
+    }
+
+    .foo_right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: var(--fz_s2);
+      color: var(--tx3);
+      flex-wrap: wrap;
+    }
+
+    .foo_right a {
+      color: var(--tx2);
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .foo_right a:hover {
+      color: var(--mco);
+    }
+
+    @media (max-width: 1400px) {
+      .foo_inner {
+        max-width: 85vw;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .foo_inner {
+        max-width: 90vw;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        gap: 2vh;
+      }
+
+      .foo_left,
+      .foo_right {
+        justify-content: center;
+        flex-direction: column;
+        gap: 1.5vh;
+      }
+
+      .foo_links {
+        padding-left: 0;
+        border-left: none;
+        justify-content: center;
+      }
+    }
+
+    /* ==================== UTILIDADES EXTRA ==================== */
+    .df {
+      display: flex
+    }
+
+    .dfc {
+      display: flex;
+      justify-content: center;
+      align-items: center
+    }
+
+    .dfw {
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .dfcc {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center
+    }
+
+    .mwb {
+      max-width: 87vw;
+      margin: auto;
+      width: 100%
+    }
+
+    .wib {
+      width: 100%
+    }
+
+    /* ==================== WIANIMA GLOBAL v12 ==================== */
+    .wi_fadeUp,
+    .wi_fadeLeft,
+    .wi_fadeRight,
+    .wi_fadeIn,
+    .wi_scale {
+      opacity: 0;
+      transition: opacity .6s cubic-bezier(.4, 0, .2, 1), transform .6s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .wi_fadeUp {
+      transform: translateY(5vh)
+    }
+
+    .wi_fadeLeft {
+      transform: translateX(-5vh)
+    }
+
+    .wi_fadeRight {
+      transform: translateX(5vh)
+    }
+
+    .wi_scale {
+      transform: scale(.95)
+    }
+
+    .wi_visible {
+      opacity: 1 !important;
+      transform: none !important
+    }
+
+    .nv_item:focus-visible,
+    .tema:focus-visible,
+    .wibtn_auth:focus-visible,
+    .bt_salir:focus-visible,
+    .wimenu:focus-visible,
+    .btn_primary:focus-visible,
+    .btn_secondary:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--mco);
+      outline-offset: 2px;
+      border-radius: 0.6vh
+    }
+
+    /* ==================== MOBILE DRAWER ==================== */
+    .movil_overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--tr_m);
+    }
+
+    .movil_drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 80vw;
+      height: 100dvh;
+      background: var(--bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 201;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 3vh 0;
+      overflow-y: auto;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+    }
+
+    body.movil_open { overflow: hidden; }
+    body.movil_open .movil_overlay { opacity: 1; pointer-events: auto; }
+    body.movil_open .movil_drawer { transform: translateX(0); }
+    .movil_close {
+      position: absolute;
+      top: 1.8vh !important;
+      right: 3.5vh !important;
+      width: 4.4vh;
+      height: 4.4vh;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--mco) 10%, transparent) !important;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: none !important;
+      box-shadow: none !important;
+      color: var(--mco) !important;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .movil_close:hover {
+      background: var(--mco) !important;
+      color: var(--wb) !important;
+      transform: scale(1.1) rotate(90deg) !important;
+    }
+    .movil_close i {
+      font-size: var(--fz_m3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .movil_logo {
+      text-align: left;
+      padding: 2.5vh 3.5vh 1.5vh;
+      font-size: var(--fz_m5);
+      font-weight: 800;
+      color: var(--mco) !important; /* Nombre de página a color del tema */
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .movil_logo a,
+    .movil_logo a:hover,
+    .movil_logo a:active,
+    .movil_logo a:focus,
+    .movil_logo a:visited {
+      color: var(--mco) !important;
+      text-decoration: none !important;
+    }
+
+    .movil_nav {
+      display: flex;
+      flex-direction: column;
+      margin-top: 2vh;
+      padding: 0 2vh;
+      gap: 0.8vh;
+    }
+
+    /* Estilo unificado para los enlaces/botones del nav móvil */
+    .movil_nav .nv_item,
+    .movil_nav .bt_auth,
+    .movil_nav .bt_salir {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 2vh !important;
+      padding: 1.5vh 2.5vh !important;
+      color: color-mix(in srgb, var(--tx1) 75%, var(--mco)) !important; /* Mezcla el texto oscuro con el color del tema */
+      font-size: var(--fz_m2) !important;
+      font-weight: 600 !important;
+      background: transparent !important;
+      border-radius: 1.2vh !important;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      border: none !important;
+      box-shadow: none !important;
+      width: 100% !important;
+      text-align: left !important;
+      cursor: pointer !important;
+    }
+
+    /* Color de hover con excelente contraste */
+    .movil_nav .nv_item:hover,
+    .movil_nav .bt_auth:hover {
+      background: var(--bg4) !important;
+      color: var(--tx) !important;
+      transform: translateX(5px) !important;
+    }
+
+    .movil_nav .nv_item i,
+    .movil_nav .bt_auth i,
+    .movil_nav .bt_salir i {
+      font-size: var(--fz_m2) !important; /* Iconos más pequeños y elegantes */
+      color: var(--mco) !important;
+      width: 3vh !important;
+      display: flex !important;
+      justify-content: center !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .movil_nav .nv_item.active {
+      color: #fff !important;
+      background: linear-gradient(135deg, var(--mco), var(--hva)) !important;
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--mco) 20%, transparent) !important;
+    }
+
+    .movil_nav .nv_item.active i {
+      color: #fff !important;
+    }
+
+    .movil_nav .bt_salir {
+      color: var(--tx2) !important;
+    }
+
+    .movil_nav .bt_salir i {
+      color: var(--tx3) !important;
+    }
+
+    .movil_nav .bt_salir:hover {
+      background: color-mix(in srgb, var(--error) 10%, transparent) !important;
+      color: var(--error) !important;
+      transform: translateX(5px) !important;
+    }
+
+    .movil_nav .bt_salir:hover i {
+      color: var(--error) !important;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width:768px) {
+      #wimain {
+        padding: 0
+      }
+
+      .wiheader {
+        height: auto;
+        padding: 1.5vh 4vh 1.5vh 1.5vh
+      }
+
+      .winav,
+      .wiauth,
+      .nv_right {
+        display: none
+      }
+
+      .nv_left {
+        justify-content: space-between;
+        width: 100%
+      }
+
+      .wilogo {
+        font-size: var(--fz_m4)
+      }
+
+      .winav {
+        gap: 1vh
+      }
+
+      .menu {
+        display: flex
+      }
+
+      .nv_item {
+        width: auto;
+        justify-content: center;
+        padding: 1.2vh 1vh
+      }
+
+      .wimenu {
+        display: flex;
+        padding: .5vh 1.5vh .5vh .5vh;
+      }
+
+      .foo_links {
+        gap: 1vh
+      }
+    }
+
+    /* ── REDES SOCIALES FOOTER ── */
+    .redsscc {
+      width: 3.6vh;
+      height: 31.22px;
+      border-radius: .5vh;
+      background: var(--rb, var(--mco));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--fz_s4);
+      text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+      flex-shrink: 0;
+    }
+
+    .redsscc:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+    }
+
+    /* ── BANNER COOKIES ── */
+    .cookiess {
+      position: fixed;
+      bottom: 2vh;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 1.5vh;
+      flex-wrap: wrap;
+      background: var(--wb);
+      border: 1px solid var(--brd);
+      border-radius: 1.5vh;
+      padding: 1.5vh 2.5vh;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .12);
+      max-width: 92vw;
+      width: max-content;
+      transition: transform .2s cubic-bezier(.34, 1.56, .64, 1);
+      backdrop-filter: blur(10px);
+    }
+
+    .cookiess.cookiess_show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .cookiess_ico {
+      color: var(--mco);
+      font-size: var(--fz_m3);
+      flex-shrink: 0;
+    }
+
+    .cookiess_txt {
+      font-size: var(--fz_s3);
+      color: var(--tx2);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .cookiess_link {
+      display: inline;
+      color: var(--mco);
+      font-weight: 500;
+      text-decoration: underline;
+      display: inline-flex; padding: 0.3vh 0; margin-left: 1vh;
+    }
+
+    .cookiess_btns {
+      display: flex;
+      gap: 1vh;
+      flex-shrink: 0;
+    }
+
+    .cookiess_aceptar,
+    .cookiess_rechazar {
+      padding: .8vh 2vh;
+      border-radius: .8vh;
+      font-size: var(--fz_s3);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      border: none;
+    }
+
+    .cookiess_aceptar {
+      background: var(--mco);
+      color: #fff;
+    }
+
+    .cookiess_aceptar:hover {
+      opacity: .85;
+      transform: scale(1.04);
+    }
+
+    .cookiess_rechazar {
+      background: var(--bg5);
+      color: var(--tx3);
+      border: 1px solid var(--brd);
+    }
+
+    .cookiess_rechazar:hover {
+      background: var(--bg4);
+    }
+
+    @media (max-width: 600px) {
+      .cookiess {
+        bottom: 1.5vh;
+        padding: 1.5vh 2vh;
+        gap: 1vh;
+      }
+
+      .cookiess_txt {
+        font-size: var(--fz_s4);
+      }
+    }
+
+    /* ==================== ESTILOS PARA MODALES GENERALES ==================== */
+    .wiModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: saturate(120%) blur(2px);
+      animation: mf .25s ease;
+    }
+    .wiModal.active { display: flex; }
+    body.modal-open { overflow: hidden; }
+    .modalBody {
+      position: relative;
+      border-radius: 1vh;
+      box-shadow: var(--bsh);
+      width: 92%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow: auto;
+      animation: mp .22s ease;
+      z-index: 10001;
+    }
+    .modalX {
+      z-index: 10002;
+      background: 0 0;
+      border: 0;
+      color: var(--mco);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: transform .15s, opacity .15s;
+      text-shadow: 0 1px 2px rgba(0,0,0,.15);
+      position: absolute;
+      top: 12px;
+      right: 12px;
+    }
+    .modalX:hover { transform: scale(1.08); opacity: .95; }
+    @keyframes mf { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes mp { from { transform: translateY(10px) scale(.98); opacity: .6; } to { transform: translateY(0) scale(1); opacity: 1; } }
+    </style>
+    <!-- Slot principal donde se renderizará el contenido de cada página -->
+    <main id="wimain"> 
+      <slot />
+     </main>
+
+    <Footer />
+
+    <div id="wiTema">
+      <div class="tema" data-ths="Cielo|#0EBEFF"></div>
+      <div class="tema" data-ths="Dulce|#FF5C69"></div>
+      <div class="tema mtha" data-ths="Paz|#29C72E"></div>
+      <div class="tema" data-ths="Oro|#FFC107"></div>
+      <div class="tema" data-ths="Mora|#7000FF"></div>
+      <div class="tema" data-ths="Futuro|#21273B"></div>
+    </div>
+
+    <!-- Script Interactivo de Selección de Temas (Optimizado al final del Body) -->
+    <script>
+      import { wiSmart } from '../lib/widev.js';
+      wiSmart({ css: ['https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap'] });
+
+      const getTheme = () => {
+        try {
+          const u = JSON.parse(localStorage.getItem('wiSmile') || '{}').value;
+          return u?.tema || localStorage.wiTema || (window as any).wtema;
+        } catch { return localStorage.wiTema || (window as any).wtema; }
+      };
+
+      const applyTheme = (ths: string) => {
+        if (!ths) return;
+        const [name, color] = ths.split('|');
+        document.documentElement.dataset.theme = name;
+        (document.querySelector('meta[name="theme-color"]') as HTMLMetaElement ||
+          document.head.appendChild(Object.assign(document.createElement('meta'), { name: 'theme-color' })) as HTMLMetaElement
+        ).content = color;
+        localStorage.wiTema = ths;
+        document.querySelectorAll<HTMLElement>('.tema').forEach(x => x.classList.toggle('mtha', x.dataset.ths === ths));
+      };
+
+      document.addEventListener('click', e => {
+        const el = (e.target as HTMLElement).closest<HTMLElement>('.tema');
+        if (el) applyTheme(el.dataset.ths || '');
+      });
+
+      document.addEventListener('astro:page-load', () => applyTheme(getTheme()));
+    </script>
+  </body>
+</html>

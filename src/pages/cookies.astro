@@ -1,0 +1,549 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app } from '../wii.js';
+import { seo } from '../lib/seo.js';
+const year = () => new Date().getFullYear();
+---
+
+<style is:global>
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+@keyframes ac_float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+@keyframes ac_pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+.wi_fadeUp {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wi_fadeUp.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#wimain {
+  opacity: 1 !important;
+}
+
+.ac_wrap {
+  width: 100%;
+  overflow-x: hidden;
+  background: color-mix(in srgb, var(--mco) 3%, var(--bg));
+  color: var(--tx);
+  font-family: var(--ff_P);
+}
+
+/* ── HERO ── */
+.ac_hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10vh 5vw;
+  overflow: hidden;
+}
+
+.ac_hero_orb {
+  position: absolute;
+  filter: blur(80px);
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ac_orb1 { width: 40vw; height: 40vw; background: rgba(14, 190, 255, 0.15); top: -10vh; right: -5vw; animation: ac_float 20s infinite linear; }
+.ac_orb2 { width: 35vw; height: 35vw; background: rgba(255, 92, 105, 0.12); bottom: -10vh; left: -5vw; animation: ac_float 25s infinite linear reverse; }
+.ac_orb3 { width: 25vw; height: 25vw; background: rgba(112, 0, 255, 0.1); top: 30%; left: 40%; animation: ac_pulse 15s infinite ease-in-out; }
+
+.ac_hero_body {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 800px;
+}
+
+.ac_hero_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  padding: 0.8vh 2vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx3);
+  margin-bottom: 3vh;
+}
+.ac_hero_badge i { color: var(--Cielo); }
+
+.ac_hero_tit {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  margin-bottom: 3vh;
+  background: linear-gradient(135deg, var(--tx), var(--tx3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -2px;
+}
+
+.ac_hero_sub {
+  font-size: var(--fz_m3);
+  color: var(--tx2);
+  line-height: 1.6;
+  margin-bottom: 5vh;
+}
+.ac_hero_sub strong { color: var(--tx); }
+
+/* ── SECTIONS ── */
+.ac_sec {
+  padding: 12vh 10vw;
+}
+.ac_sec_alt { background: var(--bg5); }
+
+.ac_sec_head {
+  text-align: center;
+  margin-bottom: 8vh;
+}
+
+.ac_sec_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  color: var(--tx3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: var(--fz_s2);
+  margin-bottom: 2vh;
+}
+
+.ac_sec_tit {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--tx);
+  letter-spacing: -1px;
+}
+
+.ac_grad {
+  background: linear-gradient(135deg, #0EBEFF, #7000FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ac_sec_sub {
+  font-size: var(--fz_m2);
+  color: var(--tx3);
+  margin-top: 1vh;
+}
+
+/* ── BENEFICIOS GRID ── */
+.ac_feat_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3vh;
+}
+
+.ac_feat_card {
+  padding: 5vh 4vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  transition: all 0.3s ease;
+}
+.ac_feat_card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  border-color: var(--sc, var(--tx3));
+}
+
+.ac_feat_ico {
+  width: 6vh;
+  height: 6vh;
+  background: var(--bg);
+  border-radius: 1.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m4);
+  margin-bottom: 3vh;
+  color: var(--sc);
+}
+
+.ac_feat_card h3 {
+  font-size: var(--fz_m3);
+  font-weight: 700;
+  margin-bottom: 2vh;
+  color: var(--tx);
+}
+.ac_feat_card p {
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.6;
+}
+
+.ac_color_cielo { --sc: #0EBEFF; }
+.ac_color_dulce { --sc: #FF5C69; }
+.ac_color_paz { --sc: #29C72E; }
+.ac_color_mora { --sc: #7000FF; }
+
+/* ── CTA SECTION ── */
+.ac_cta_sec { padding: 10vh 5vw; }
+
+.ac_cta_wrap {
+  position: relative;
+  background: var(--bg);
+  color: var(--tx);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  padding: 10vh 5vw;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+}
+
+.ac_cta_glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(14, 190, 255, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.ac_cta_inner { position: relative; z-index: 2; }
+.ac_cta_emoji { font-size: 5rem; display: block; margin-bottom: 2vh; }
+.ac_cta_inner h2 { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 2vh; }
+.ac_cta_inner p { font-size: var(--fz_m2); opacity: 0.8; margin-bottom: 5vh; }
+
+.ac_cta_btns {
+  display: flex;
+  justify-content: center;
+  gap: 2vh;
+  flex-wrap: wrap;
+}
+
+.ac_btn_p, .ac_btn_s {
+  padding: 1.8vh 4vh;
+  border-radius: 1.5vh;
+  font-size: var(--fz_m1);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ac_btn_p { background: var(--mco); color: #fff; border: none; }
+.ac_btn_p:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+
+.ac_btn_s { background: var(--wb); color: var(--tx); border: 1px solid var(--brd); }
+.ac_btn_s:hover { background: var(--bg5); border-color: var(--tx3); }
+
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+/* ── HERO TERMINOS ── */
+.tm_hero .ac_hero_tit { font-size: clamp(2.5rem, 8vw, 5rem); }
+
+.tm_hero_chips {
+  display: flex;
+  justify-content: center;
+  gap: 1.5vh;
+  flex-wrap: wrap;
+  margin-bottom: 4vh;
+}
+
+.tm_chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8vh;
+  padding: 0.8vh 2vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 5vh;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx2);
+}
+.tm_chip i { color: var(--mco); }
+
+.tm_last_upd {
+  font-size: var(--fz_s2);
+  color: var(--tx3);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8vh;
+}
+.tm_last_upd i { color: var(--mco); }
+
+/* ── SECCIONES GRID ── */
+.ck_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3vh;
+  margin-top: 6vh;
+}
+.ck_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  padding: 4vh;
+  transition: all 0.3s;
+}
+.ck_card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+.ck_card_top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2vh; }
+.ck_tag { font-size: var(--fz_s2); font-weight: 700; padding: 0.5vh 1.5vh; border-radius: 5vh; }
+.ck_tit { font-size: var(--fz_m3); font-weight: 800; color: var(--tx); margin-bottom: 1.5vh; }
+.ck_desc { font-size: var(--fz_m1); color: var(--tx2); line-height: 1.6; margin-bottom: 2vh; }
+
+.tm_sec_ico {
+  width: 6vh;
+  height: 6vh;
+  border-radius: 1.5vh;
+  background: color-mix(in srgb, var(--tc) 12%, transparent);
+  color: var(--tc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m3);
+  flex-shrink: 0;
+  margin-top: 0.3vh;
+}
+
+.tm_list {
+  list-style: none;
+  margin: 0 0 2vh 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vh;
+}
+.tm_list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2vh;
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.6;
+  margin: 0;
+}
+.tm_list li i {
+  color: var(--mco);
+  margin-top: 0.2vh;
+  flex-shrink: 0;
+  font-size: var(--fz_s4);
+}
+
+.tm_alert {
+  display: flex;
+  gap: 2vh;
+  align-items: flex-start;
+  background: var(--bg4);
+  border: 1px solid var(--bg5);
+  border-radius: 1.5vh;
+  padding: 2vh 2.5vh;
+  margin-top: 2.5vh;
+}
+.tm_alert i { color: var(--mco); flex-shrink: 0; font-size: var(--fz_m2); margin-top: 0.2vh; }
+.tm_alert p { margin: 0; font-size: var(--fz_s4); color: var(--tx2); line-height: 1.6; }
+
+.ck_ext_link {
+  display: inline-flex; align-items: center; gap: 0.8vh;
+  font-size: var(--fz_s3); font-weight: 700; margin-top: 2vh;
+  text-decoration: none; transition: opacity 0.2s;
+}
+.ck_ext_link:hover { opacity: 0.7; }
+</style>
+
+<Layout {...seo.cookies}>
+<div class="ac_wrap tm_wrap">
+  <section class="ac_hero tm_hero">
+    <div class="ac_hero_orb ac_orb1"></div><div class="ac_hero_orb ac_orb2"></div><div class="ac_hero_orb ac_orb3"></div>
+    <div class="ac_hero_body">
+      <div class="ac_hero_badge"><i class="fas fa-cookie-bite"></i> Total transparencia</div>
+      <h1 class="ac_hero_tit">Política de<br><span class="ac_grad">Cookies</span></h1>
+      <p class="ac_hero_sub">Te explicamos qué cookies usamos, para qué sirven y <strong>cómo puedes controlarlas.</strong></p>
+      <div class="tm_hero_chips">
+        <span class="tm_chip"><i class="fas fa-cookie-bite"></i> 4 tipos de cookies</span>
+        <span class="tm_chip"><i class="fas fa-user-shield"></i> Tú decides</span>
+        <span class="tm_chip"><i class="fas fa-heart"></i> Sin sorpresas</span>
+      </div>
+      <div class="tm_last_upd"><i class="fas fa-calendar-check"></i> Última actualización: Abril <span id="year"></span></div>
+    </div>
+  </section>
+
+  <section class="ac_sec">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-list-check"></i> Tipos</div>
+      <h2 class="ac_sec_tit">¿Qué cookies <span class="ac_grad">usamos?</span></h2>
+      <p class="ac_sec_sub">Cada cookie tiene un propósito claro.</p>
+    </div>
+    <div class="ck_grid">
+      <div class="ck_card wi_fadeUp">
+        <div class="ck_card_top">
+          <div class="tm_sec_ico" style="--tc:#0EBEFF"><i class="fas fa-shield-halved"></i></div>
+          <span class="ck_tag" style="background:color-mix(in srgb,#0EBEFF 15%,transparent);color:#0EBEFF">Esencial</span>
+        </div>
+        <h3 class="ck_tit">Cookies de Sesión y Autenticación</h3>
+        <p class="ck_desc">Necesarias para que {app} funcione. Sin ellas no puedes iniciar sesión.</p>
+        <ul class="tm_list">
+          <li><i class="fas fa-check"></i>Firebase Auth mantiene tu sesión mediante tokens seguros.</li>
+          <li><i class="fas fa-check"></i>Se eliminan automáticamente al cerrar sesión.</li>
+          <li><i class="fas fa-check"></i>No pueden desactivarse sin afectar la app.</li>
+        </ul>
+      </div>
+
+      <div class="ck_card wi_fadeUp">
+        <div class="ck_card_top">
+          <div class="tm_sec_ico" style="--tc:#29C72E"><i class="fas fa-hard-drive"></i></div>
+          <span class="ck_tag" style="background:color-mix(in srgb,#29C72E 15%,transparent);color:#29C72E">Funcional</span>
+        </div>
+        <h3 class="ck_tit">LocalStorage (Preferencias y Caché)</h3>
+        <p class="ck_desc">Almacenamiento local para una experiencia ultrarrápida sin depender de internet.</p>
+        <ul class="tm_list">
+          <li><i class="fas fa-check"></i>Guarda borradores de CV locales y configuraciones del editor.</li>
+          <li><i class="fas fa-check"></i>Almacena tu tema visual preferido (Cielo, Mora, Futuro…).</li>
+          <li><i class="fas fa-check"></i>Caché de la app para carga instantánea.</li>
+          <li><i class="fas fa-check"></i>Borrable desde Configuración → Privacidad de tu navegador.</li>
+        </ul>
+      </div>
+
+      <div class="ck_card wi_fadeUp">
+        <div class="ck_card_top">
+          <div class="tm_sec_ico" style="--tc:#FF5C69"><i class="fas fa-bullhorn"></i></div>
+          <span class="ck_tag" style="background:color-mix(in srgb,#FF5C69 15%,transparent);color:#FF5C69">Publicidad</span>
+        </div>
+        <h3 class="ck_tit">Cookies de Google AdSense</h3>
+        <p class="ck_desc">{app} usa Google AdSense para mostrar anuncios que financian el servicio gratuito.</p>
+        <ul class="tm_list">
+          <li><i class="fas fa-check"></i>Google usa cookies como NID o IDE para personalizar anuncios.</li>
+          <li><i class="fas fa-check"></i>Basadas en tu historial de navegación.</li>
+          <li><i class="fas fa-check"></i>Desactívalas en Google Ads Settings o con un bloqueador.</li>
+          <li><i class="fas fa-check"></i>No compartimos tu información con anunciantes.</li>
+        </ul>
+        <a href="https://adssettings.google.com" target="_blank" rel="noopener" class="ck_ext_link" style="color:#FF5C69"><i class="fas fa-arrow-up-right-from-square"></i> Gestionar preferencias de anuncios →</a>
+      </div>
+
+      <div class="ck_card wi_fadeUp">
+        <div class="ck_card_top">
+          <div class="tm_sec_ico" style="--tc:#7000FF"><i class="fas fa-chart-line"></i></div>
+          <span class="ck_tag" style="background:color-mix(in srgb,#7000FF 15%,transparent);color:#7000FF">Analítica</span>
+        </div>
+        <h3 class="ck_tit">Cookies de Analítica Web</h3>
+        <p class="ck_desc">Usamos Analytics para entender cómo se usa {app} y poder mejorarlo.</p>
+        <ul class="tm_list">
+          <li><i class="fas fa-check"></i>Miden visitas, páginas populares y tiempo de sesión.</li>
+          <li><i class="fas fa-check"></i>Los datos son anónimos y no te identifican.</li>
+          <li><i class="fas fa-check"></i>Ayudan a detectar errores y optimizar el rendimiento.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="ac_sec ac_sec_alt">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-sliders"></i> Control</div>
+      <h2 class="ac_sec_tit">Cómo <span class="ac_grad">gestionar</span> tus cookies</h2>
+      <p class="ac_sec_sub">Puedes borrar o bloquear cookies desde la configuración de tu navegador</p>
+    </div>
+    <div class="ac_feat_grid">
+      <div class="ac_feat_card wi_fadeUp" style="--sc:#0EBEFF">
+        <div class="ac_feat_ico"><i class="fab fa-chrome"></i></div>
+        <h3>Chrome / Edge</h3>
+        <p>Configuración → Privacidad y seguridad → Cookies y otros datos de sitios</p>
+      </div>
+      <div class="ac_feat_card wi_fadeUp" style="--sc:#FF5C69">
+        <div class="ac_feat_ico"><i class="fab fa-firefox-browser"></i></div>
+        <h3>Firefox</h3>
+        <p>Opciones → Privacidad y seguridad → Cookies y datos del sitio</p>
+      </div>
+      <div class="ac_feat_card wi_fadeUp" style="--sc:#29C72E">
+        <div class="ac_feat_ico"><i class="fab fa-safari"></i></div>
+        <h3>Safari</h3>
+        <p>Preferencias → Privacidad → Gestionar datos de sitios web</p>
+      </div>
+      <div class="ac_feat_card wi_fadeUp" style="--sc:#7000FF">
+        <div class="ac_feat_ico"><i class="fas fa-mobile-screen"></i></div>
+        <h3>Móvil (Android/iOS)</h3>
+        <p>Configuración del navegador → Privacidad → Borrar datos de navegación</p>
+      </div>
+    </div>
+    <div class="tm_alert" style="max-width:800px;margin:6vh auto 0">
+      <i class="fas fa-triangle-exclamation"></i>
+      <p>Deshabilitar ciertas cookies puede afectar el inicio de sesión y la sincronización de tus datos en {app}.</p>
+    </div>
+  </section>
+
+  <section class="ac_cta_sec">
+    <div class="ac_cta_wrap wi_fadeUp">
+      <div class="ac_hero_orb ac_orb1"></div>
+      <div class="ac_hero_orb ac_orb2"></div>
+      <div class="ac_cta_glow"></div>
+      <div class="ac_cta_inner">
+        <span class="ac_cta_emoji">🍪</span>
+        <h2>¿Más preguntas sobre cookies?</h2>
+        <p>Escríbenos sin problema, estamos para ayudarte.</p>
+        <div class="ac_cta_btns">
+          <a href="mailto:wilder.taype@hotmail.com" class="ac_btn_p ac_btn_lg"><i class="fas fa-envelope"></i> Contactar al equipo</a>
+          <a href="/privacidad" class="ac_btn_s ac_btn_lg"><i class="fas fa-lock"></i> Ver Privacidad</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</Layout>
+
+<script>
+  import { app } from '../wii.js';
+
+  const initCookies = () => {
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.wi_fadeUp').forEach(el => {
+      observer.observe(el);
+    });
+
+    document.querySelectorAll('.ac_btn_s[href^="/"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        if (href) window.location.href = href;
+      });
+    });
+
+    console.log('🍪 ' + app + ' Cookies cargada');
+    (window as any).__WIREADY__ = true;
+  };
+
+  document.addEventListener('astro:page-load', initCookies);
+</script>

@@ -1,0 +1,897 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app, id } from '../wii.js';
+import { seo } from '../lib/seo.js';
+---
+
+<style is:global>
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+@keyframes ac_float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+@keyframes ac_pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+.wi_fadeUp {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wi_fadeUp.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#wimain {
+  opacity: 1 !important;
+}
+
+.ac_wrap {
+  width: 100%;
+  overflow-x: hidden;
+  background: color-mix(in srgb, var(--mco) 3%, var(--bg));
+  color: var(--tx);
+  font-family: var(--ff_P);
+}
+
+/* ── HERO ── */
+.ac_hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10vh 5vw;
+  overflow: hidden;
+}
+
+.ac_hero_orb {
+  position: absolute;
+  filter: blur(80px);
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ac_orb1 { width: 40vw; height: 40vw; background: rgba(14, 190, 255, 0.15); top: -10vh; right: -5vw; animation: ac_float 20s infinite linear; }
+.ac_orb2 { width: 35vw; height: 35vw; background: rgba(255, 92, 105, 0.12); bottom: -10vh; left: -5vw; animation: ac_float 25s infinite linear reverse; }
+.ac_orb3 { width: 25vw; height: 25vw; background: rgba(112, 0, 255, 0.1); top: 30%; left: 40%; animation: ac_pulse 15s infinite ease-in-out; }
+
+.ac_hero_body {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 800px;
+}
+
+.ac_hero_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  padding: 0.8vh 2vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx3);
+  margin-bottom: 3vh;
+}
+.ac_hero_badge i { color: var(--Cielo); }
+
+.ac_hero_tit {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  margin-bottom: 3vh;
+  background: linear-gradient(135deg, var(--tx), var(--tx3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -2px;
+}
+
+.ac_hero_sub {
+  font-size: var(--fz_m3);
+  color: var(--tx2);
+  line-height: 1.6;
+  margin-bottom: 5vh;
+}
+.ac_hero_sub strong { color: var(--tx); }
+
+/* ── SECTIONS ── */
+.ac_sec {
+  padding: 12vh 10vw;
+}
+.ac_sec_alt { background: var(--bg5); }
+
+.ac_sec_head {
+  text-align: center;
+  margin-bottom: 8vh;
+}
+
+.ac_sec_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  color: var(--tx3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: var(--fz_s2);
+  margin-bottom: 2vh;
+}
+
+.ac_sec_tit {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--tx);
+  letter-spacing: -1px;
+}
+
+.ac_grad {
+  background: linear-gradient(135deg, #0EBEFF, #7000FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ac_sec_sub {
+  font-size: var(--fz_m2);
+  color: var(--tx3);
+  margin-top: 1vh;
+}
+
+/* ── BENEFICIOS GRID ── */
+.ac_feat_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3vh;
+}
+
+.ac_feat_card {
+  padding: 5vh 4vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  transition: all 0.3s ease;
+}
+.ac_feat_card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  border-color: var(--sc, var(--tx3));
+}
+
+.ac_feat_ico {
+  width: 6vh;
+  height: 6vh;
+  background: var(--bg);
+  border-radius: 1.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m4);
+  margin-bottom: 3vh;
+  color: var(--sc);
+}
+
+.ac_feat_card h3 {
+  font-size: var(--fz_m3);
+  font-weight: 700;
+  margin-bottom: 2vh;
+  color: var(--tx);
+}
+.ac_feat_card p {
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.6;
+}
+
+.ac_color_cielo { --sc: #0EBEFF; }
+.ac_color_dulce { --sc: #FF5C69; }
+.ac_color_paz { --sc: #29C72E; }
+.ac_color_mora { --sc: #7000FF; }
+
+/* ── CTA SECTION ── */
+.ac_cta_sec { padding: 10vh 5vw; }
+
+.ac_cta_wrap {
+  position: relative;
+  background: var(--bg);
+  color: var(--tx);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  padding: 10vh 5vw;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+}
+
+.ac_cta_glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(14, 190, 255, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.ac_cta_inner { position: relative; z-index: 2; }
+.ac_cta_emoji { font-size: 5rem; display: block; margin-bottom: 2vh; }
+.ac_cta_inner h2 { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 2vh; }
+.ac_cta_inner p { font-size: var(--fz_m2); opacity: 0.8; margin-bottom: 5vh; }
+
+.ac_cta_btns {
+  display: flex;
+  justify-content: center;
+  gap: 2vh;
+  flex-wrap: wrap;
+}
+
+.ac_btn_p, .ac_btn_s {
+  padding: 1.8vh 4vh;
+  border-radius: 1.5vh;
+  font-size: var(--fz_m1);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ac_btn_p { background: var(--mco); color: #fff; border: none; }
+.ac_btn_p:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+
+.ac_btn_s { background: var(--wb); color: var(--tx); border: 1px solid var(--brd); }
+.ac_btn_s:hover { background: var(--bg5); border-color: var(--tx3); }
+
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+/* ── HERO TERMINOS ── */
+.tm_hero .ac_hero_tit { font-size: clamp(2.5rem, 8vw, 5rem); }
+
+.tm_hero_chips {
+  display: flex;
+  justify-content: center;
+  gap: 1.5vh;
+  flex-wrap: wrap;
+  margin-bottom: 4vh;
+}
+
+.tm_chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8vh;
+  padding: 0.8vh 2vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 5vh;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx2);
+}
+.tm_chip i { color: var(--mco); }
+
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+.ct_sec { 
+  padding: clamp(4vh, 8vh, 10vh) clamp(1rem, 5vw, 8vw); 
+}
+
+.ct_grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: clamp(2rem, 5vh, 4rem);
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ct_form_wrap {
+  background: var(--wb);
+  padding: clamp(1.5rem, 4vh, 3rem);
+  border-radius: 2.5vh;
+  border: 1px solid var(--brd);
+  box-shadow: var(--bs_l);
+}
+
+.ct_form { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 2.5vh; 
+}
+
+.ct_field { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 0.8vh; 
+}
+
+.ct_field label {
+  font-size: var(--fz_m1);
+  font-weight: 700;
+  color: var(--tx1);
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+}
+
+.ct_field label i { 
+  color: var(--mco); 
+  font-size: 1.1em; 
+}
+
+.ct_field input, 
+.ct_field select, 
+.ct_field textarea {
+  font-size: 1rem;
+  padding: 1.5vh 2vh;
+  border-radius: 1.2vh;
+  background: var(--inp);
+  border: 1.5px solid var(--brd);
+  transition: all var(--tr_f);
+}
+
+.ct_field input:focus, 
+.ct_field select:focus, 
+.ct_field textarea:focus {
+  border-color: var(--mco);
+  background: var(--wb);
+  box-shadow: 0 0 0 4px var(--bg4);
+}
+
+.ct_chars {
+  font-size: var(--fz_s2);
+  color: var(--tx3);
+  text-align: right;
+  margin-top: 0.5vh;
+  font-weight: 600;
+}
+
+.ct_actions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1vh;
+}
+
+.ct_btn_submit {
+  flex: 2;
+  height: 6vh;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1vh;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.ct_actions .ac_btn_s {
+  flex: 1;
+  height: 6vh;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* ── INFO CARDS ── */
+.ct_info_wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+}
+
+.ct_info_card {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2.5vh;
+  padding: clamp(1.5rem, 4vh, 2.5rem);
+  box-shadow: var(--bs_l);
+}
+
+.ct_info_card h3 {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 800;
+  color: var(--tx);
+  margin-bottom: 2.5vh;
+  display: flex;
+  align-items: center;
+  gap: 1.2vh;
+}
+
+.ct_info_items { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 2vh; 
+}
+
+.ct_info_item {
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  padding: 1.2vh;
+  border-radius: 1.5vh;
+  transition: background 0.2s;
+}
+
+.ct_info_ico {
+  width: clamp(40px, 5vh, 60px);
+  height: clamp(40px, 5vh, 60px);
+  border-radius: 1.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.ct_info_data { 
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+.ct_info_label { 
+  font-size: 0.75rem; 
+  color: var(--tx3); 
+  font-weight: 700; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+}
+
+.ct_info_value { 
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem); 
+  color: var(--tx); 
+  font-weight: 600; 
+  word-break: break-all;
+}
+
+.ct_copy {
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 1vh;
+  color: var(--tx3);
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  transition: all var(--tr_f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ct_copy:hover { 
+  background: var(--mco); 
+  color: #fff; 
+  border-color: var(--mco);
+  transform: scale(1.1);
+}
+
+/* ── REDES ── */
+.ct_redes { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.5vh; 
+}
+
+.ct_red {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1vh;
+  padding: 1.2vh 1.5vh;
+  background: var(--bg);
+  border: 1px solid var(--brd);
+  border-radius: 1.2vh;
+  text-decoration: none;
+  color: var(--tx1);
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: all var(--tr_f);
+}
+
+.ct_red:hover {
+  background: var(--rc);
+  color: #fff;
+  border-color: var(--rc);
+  transform: translateY(-4px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* ── FAQ ── */
+.ct_faq { 
+  max-width: 850px; 
+  margin: 5vh auto 0; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1.5vh; 
+  padding: 0 1rem;
+}
+
+.ct_faq_item {
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 1.8vh;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.ct_faq_item.active { 
+  border-color: var(--mco); 
+  box-shadow: var(--bs_l);
+}
+
+.ct_faq_q {
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  padding: 2.2vh 2.5vh;
+  cursor: pointer;
+}
+
+.ct_faq_q h3 { 
+  flex: 1; 
+  font-size: 1rem; 
+  font-weight: 700; 
+  color: var(--tx); 
+  margin: 0; 
+}
+
+.ct_faq_a { 
+  padding: 0 2.5vh 2.2vh 6vh; 
+}
+
+.ct_faq_a p { 
+  font-size: 0.95rem; 
+  color: var(--tx2); 
+  line-height: 1.6; 
+}
+
+@media (max-width: 1024px) {
+  .ct_grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<Layout {...seo.contacto}>
+<div class="ac_wrap ct_wrap">
+  <section class="ac_hero ct_hero">
+    <div class="ac_hero_orb ac_orb1"></div>
+    <div class="ac_hero_orb ac_orb2"></div>
+    <div class="ac_hero_orb ac_orb3"></div>
+    <div class="ac_hero_body">
+      <div class="ac_hero_badge"><i class="fas fa-paper-plane"></i> Estamos para ti</div>
+      <h1 class="ac_hero_tit">Escríbenos<br><span class="ac_grad">tu mensaje 💬</span></h1>
+      <p class="ac_hero_sub">
+        ¿Tienes alguna sugerencia, consulta o reporte de error sobre {app}?
+        <strong>Tu mensaje nos ayuda a seguir mejorando las herramientas.</strong>
+      </p>
+      <div class="tm_hero_chips">
+        <span class="tm_chip"><i class="fas fa-clock"></i> Respuesta en 24–48h</span>
+        <span class="tm_chip"><i class="fas fa-lock"></i> 100% Confidencial</span>
+        <span class="tm_chip"><i class="fas fa-heart"></i> Soporte dedicado</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="ac_sec ct_sec">
+    <div class="ct_grid">
+      <div class="ct_form_wrap">
+        <div class="ac_sec_head" style="text-align:left;margin-bottom:4vh">
+          <div class="ac_sec_badge"><i class="fas fa-comment-dots"></i> Formulario</div>
+          <h2 class="ac_sec_tit">Envíanos un <span class="ac_grad">mensaje</span></h2>
+        </div>
+        <form id="ctForm" class="ct_form" novalidate autocomplete="off">
+          <div class="ct_field">
+            <label for="ct_nombre"><i class="fas fa-user"></i> Nombre</label>
+            <input type="text" id="ct_nombre" placeholder="Tu nombre" required maxlength="80">
+          </div>
+          <div class="ct_field">
+            <label for="ct_email"><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" id="ct_email" placeholder="tu@email.com" required maxlength="120">
+          </div>
+          <div class="ct_field">
+            <label for="ct_telefono"><i class="fas fa-phone"></i> Celular (opcional)</label>
+            <input type="tel" id="ct_telefono" placeholder="Tu número" maxlength="20">
+          </div>
+          <div class="ct_field">
+            <label for="ct_asunto"><i class="fas fa-tag"></i> Asunto</label>
+            <select id="ct_asunto" required>
+              <option value="">Selecciona un motivo</option>
+              <option value="Sugerencia o Idea">Sugerencia o Idea</option>
+              <option value="Reporte de Error">Reporte de Error</option>
+              <option value="Pregunta sobre el Editor">Pregunta sobre el Editor / CV</option>
+              <option value="Colaboración o Alianza">Colaboración o Alianza</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div class="ct_field">
+            <label for="ct_mensaje"><i class="fas fa-comment-dots"></i> Mensaje</label>
+            <textarea id="ct_mensaje" rows="6" placeholder="Cuéntanos…" required maxlength="500"></textarea>
+            <div class="ct_chars"><span id="ct_count">0</span> / 500</div>
+          </div>
+          <div class="ct_actions">
+            <button type="submit" class="ac_btn_p ct_btn_submit">
+              <i class="fas fa-paper-plane"></i> <span>Enviar Mensaje</span>
+            </button>
+            <button type="reset" class="ac_btn_s">
+              <i class="fas fa-redo"></i> <span>Limpiar</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="ct_info_wrap">
+        <div class="ct_info_card wi_fadeUp">
+          <h3><i class="fas fa-address-card"></i> Información de Contacto</h3>
+          <div class="ct_info_items">
+            <div class="ct_info_item">
+              <div class="ct_info_ico" style="background:color-mix(in srgb,#0EBEFF 15%,transparent);color:#0EBEFF">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="ct_info_data">
+                <span class="ct_info_label">Email</span>
+                <span class="ct_info_value">wilder.taype@hotmail.com</span>
+              </div>
+              <button class="ct_copy" data-copy="wilder.taype@hotmail.com" title="Copiar"><i class="fas fa-copy"></i></button>
+            </div>
+            <div class="ct_info_item">
+              <div class="ct_info_ico" style="background:color-mix(in srgb,#FF5C69 15%,transparent);color:#FF5C69">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="ct_info_data">
+                <span class="ct_info_label">Ubicación</span>
+                <span class="ct_info_value">Lima, Perú</span>
+              </div>
+            </div>
+            <div class="ct_info_item">
+              <div class="ct_info_ico" style="background:color-mix(in srgb,#29C72E 15%,transparent);color:#29C72E">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="ct_info_data">
+                <span class="ct_info_label">Respuesta</span>
+                <span class="ct_info_value">24/7 Disponible</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ct_info_card wi_fadeUp" style="margin-top:3vh">
+          <h3><i class="fas fa-share-nodes"></i> También nos encuentras en</h3>
+          <div class="ct_redes">
+            <a href={`https://github.com/wtaype/${id}`} target="_blank" rel="noopener" class="ct_red" style="--rc:#24292e">
+              <i class="fab fa-github"></i><span>GitHub</span>
+            </a>
+            <a href="https://wtaype.github.io/" target="_blank" rel="noopener" class="ct_red" style="--rc:#0EBEFF">
+              <i class="fas fa-globe"></i><span>Portfolio</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ac_sec ac_sec_alt">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-circle-question"></i> FAQ</div>
+      <h2 class="ac_sec_tit">Preguntas <span class="ac_grad">frecuentes</span></h2>
+    </div>
+    <div class="ct_faq">
+      <div class="ct_faq_item wi_fadeUp">
+        <div class="ct_faq_q">
+          <i class="fas fa-circle-question"></i>
+          <h3>¿Responden todos los mensajes?</h3>
+          <i class="fas fa-chevron-down ct_faq_arr"></i>
+        </div>
+        <div class="ct_faq_a"><p>Sí. Cada mensaje que recibimos es leído personalmente. Respondemos en un plazo máximo de 48 horas.</p></div>
+      </div>
+      <div class="ct_faq_item wi_fadeUp">
+        <div class="ct_faq_q">
+          <i class="fas fa-circle-question"></i>
+          <h3>¿Puedo sugerir nuevas funciones para el editor de CV?</h3>
+          <i class="fas fa-chevron-down ct_faq_arr"></i>
+        </div>
+        <div class="ct_faq_a"><p>Por supuesto. Constantemente agregamos herramientas y mejoras de UX. Envía tu sugerencia con el asunto "Sugerencia o Idea".</p></div>
+      </div>
+      <div class="ct_faq_item wi_fadeUp">
+        <div class="ct_faq_q">
+          <i class="fas fa-circle-question"></i>
+          <h3>¿{app} es completamente gratuito?</h3>
+          <i class="fas fa-chevron-down ct_faq_arr"></i>
+        </div>
+        <div class="ct_faq_a"><p>Sí, {app} es y siempre será 100% gratuito para que puedas redactar y preparar tus postulaciones sin barreras.</p></div>
+      </div>
+      <div class="ct_faq_item wi_fadeUp">
+        <div class="ct_faq_q">
+          <i class="fas fa-circle-question"></i>
+          <h3>¿Mis mensajes son confidenciales?</h3>
+          <i class="fas fa-chevron-down ct_faq_arr"></i>
+        </div>
+        <div class="ct_faq_a"><p>Absolutamente. Tus mensajes solo los lee el equipo de {app}. Nunca compartimos tu información personal con terceros.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ac_cta_sec">
+    <div class="ac_cta_wrap wi_fadeUp">
+      <div class="ac_hero_orb ac_orb1"></div>
+      <div class="ac_hero_orb ac_orb2"></div>
+      <div class="ac_cta_glow"></div>
+      <div class="ac_cta_inner">
+        <span class="ac_cta_emoji"><i class="fas fa-envelope-open-text" style="font-size:4.5rem;color:var(--mco);"></i></span>
+        <h2>¿Prefieres el correo directo?</h2>
+        <p>También puedes escribirnos directamente a nuestro email.</p>
+        <div class="ac_cta_btns">
+          <a href="mailto:wilder.taype@hotmail.com" class="ac_btn_p ac_btn_lg">
+            <i class="fas fa-envelope"></i> Enviar email
+          </a>
+          <a href={`https://github.com/wtaype/${id}/issues`} target="_blank" rel="noopener" class="ac_btn_s ac_btn_lg">
+            <i class="fab fa-github"></i> GitHub Issues
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</Layout>
+
+<script>
+  import { app } from '../wii.js';
+  import { wicopy, showi, herowi, Notificacion } from '../lib/widev.js';
+
+  const initContacto = () => {
+    // Contador de caracteres
+    const msgField = document.getElementById('ct_mensaje') as HTMLTextAreaElement;
+    const countField = document.getElementById('ct_count');
+    
+    if (msgField && countField) {
+      msgField.addEventListener('input', () => {
+        let len = msgField.value.length;
+        if (len > 500) msgField.value = msgField.value.slice(0, 500);
+        countField.textContent = String(Math.min(len, 500));
+      });
+    }
+
+    const ctForm = document.getElementById('ctForm') as HTMLFormElement;
+    if (ctForm && countField) {
+      ctForm.addEventListener('reset', () => {
+        setTimeout(() => { countField.textContent = '0'; }, 10);
+      });
+
+      ctForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const nombre = (document.getElementById('ct_nombre') as HTMLInputElement).value.trim();
+        const email = (document.getElementById('ct_email') as HTMLInputElement).value.trim();
+        const telefono = (document.getElementById('ct_telefono') as HTMLInputElement).value.trim();
+        const asunto = (document.getElementById('ct_asunto') as HTMLSelectElement).value;
+        const mensaje = (document.getElementById('ct_mensaje') as HTMLTextAreaElement).value.trim();
+
+        if (!nombre || !email || !asunto || !mensaje) {
+          Notificacion('Por favor, completa todos los campos requeridos ⚠️', 'warning');
+          return;
+        }
+
+        const submitBtn = ctForm.querySelector('.ct_btn_submit') as HTMLButtonElement;
+        const submitText = submitBtn ? submitBtn.querySelector('span') : null;
+        const originalText = submitText ? submitText.textContent : 'Enviar Mensaje';
+
+        try {
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            if (submitText) submitText.textContent = 'Enviando...';
+          }
+
+          // Enviar correo vía EmailJS REST API
+          const serviceId = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID;
+          const templateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
+          const publicKey = import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY;
+
+          const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              service_id: serviceId,
+              template_id: templateId,
+              user_id: publicKey,
+              template_params: {
+                from_name: nombre,
+                from_email: email,
+                phone: telefono,
+                subject: asunto,
+                message: mensaje
+              }
+            })
+          });
+
+          if (res.ok) {
+            Notificacion('¡Mensaje enviado con éxito! 🚀', 'success');
+            ctForm.reset();
+          } else {
+            throw new Error('Error al enviar el correo');
+          }
+        } catch (error) {
+          console.error(error);
+          Notificacion('Hubo un error al enviar el mensaje. Inténtalo de nuevo ❌', 'error');
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            if (submitText) submitText.textContent = originalText;
+          }
+        }
+      });
+    }
+
+    // FAQ acordeón
+    document.querySelectorAll('.ct_faq_q').forEach(q => {
+      q.addEventListener('click', function(this: HTMLElement) {
+        const item = this.closest('.ct_faq_item');
+        if (!item) return;
+        const isOpen = item.classList.contains('active');
+        
+        document.querySelectorAll('.ct_faq_item').forEach(i => {
+          i.classList.remove('active');
+          const ans = i.querySelector('.ct_faq_a') as HTMLElement;
+          if (ans) ans.style.display = 'none';
+          const arr = i.querySelector('.ct_faq_arr');
+          if (arr) arr.classList.remove('rotated');
+        });
+        
+        if (!isOpen) {
+          item.classList.add('active');
+          const ans = item.querySelector('.ct_faq_a') as HTMLElement;
+          if (ans) ans.style.display = 'block';
+          const arr = item.querySelector('.ct_faq_arr');
+          if (arr) arr.classList.add('rotated');
+        }
+      });
+    });
+
+    // Copiar datos
+    document.querySelectorAll('.ct_copy').forEach(btn => {
+      btn.addEventListener('click', function(this: HTMLElement) {
+        const text = this.dataset.copy;
+        if (text) {
+          wicopy(text, this as any, '¡Copiado! 📋');
+        }
+      });
+    });
+
+    // IntersectionObserver para animaciones
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.wi_fadeUp').forEach(el => {
+      observer.observe(el);
+    });
+
+    if (typeof herowi === 'function') herowi();
+    if (typeof showi === 'function') showi();
+  };
+
+  document.addEventListener('astro:page-load', initContacto);
+</script>

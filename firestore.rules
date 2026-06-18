@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function conAuth()    { return request.auth != null; } // Logueado
+    function getRol()     { return get(/databases/$(database)/documents/smiles/$(request.auth.uid)).data.rol } // BD
+    function esAdmin()    { return conAuth() && getRol() == 'admin'; } // Admin
+    function esGestor()   { return esAdmin() || getRol() == 'gestor'; } // Gestor
+    function esEditor()   { return esGestor() || getRol() == 'editor'; } // Editor
+    function esDueno(r)   { return conAuth() && (r == null ? request.resource.data.userId : r.data.userId) == request.auth.uid; } // Dueño
+    function esAutor(uid) { return conAuth() && uid == request.auth.uid; } // Mismo usuario
+    function maxSize(kb)  { return request.resource == null || request.resource.data.size() < kb * 1024; } // Tamaño DoS
+
+    match /configwii/{d}  { allow read, write: if esAdmin(); } // Configwii
+    match /smiles/{uid}   { allow read: if true; allow write: if esAutor(uid) || esAdmin(); } // Perfiles: Lectura libre para evitar fallos en queries de login
+    match /blog/{slug}    { allow read: if true; allow create, delete: if esEditor(); allow update: if esEditor() || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['vistas', 'likes']); } // Blog
+    match /mensajes/{d}   { allow read: if esDueno(resource); allow write: if esDueno(resource) && maxSize(20); } // Mensajes
+    match /notas/{d}   { allow read: if esDueno(resource); allow write: if esDueno(resource) && maxSize(20); } // Notas 
+    match /solicitudes/{d}{ allow read: if esDueno(resource) || esGestor(); allow write: if (esDueno(resource) || esGestor()) && maxSize(20); } // Solicitudes
+    match /word/{d}       { allow read: if conAuth(); allow write: if esEditor() && maxSize(100); } // Word
+    match /config/{d}     { allow read: if conAuth(); allow write: if esAdmin(); } // Ajustes
+    match /proyectos/{d}  { allow read: if true; allow write: if esEditor(); } // Proyectos
+  }
+}

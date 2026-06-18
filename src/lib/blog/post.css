@@ -1,0 +1,176 @@
+/* src/lib/blog/post.css */
+
+.po_contenido {
+  padding-top: 0;
+  padding-block: 2vh;
+  border-bottom: 1px solid var(--brd);
+  color: var(--tx);
+  line-height: 1.95;
+  font-size: var(--fz_m3);
+}
+.po_contenido h2 {
+  font-size: var(--fz_l1);
+  font-weight: 700;
+  color: var(--tx1);
+  margin: 3vh 0 1.2vh;
+  padding-bottom: .5vh;
+  border-bottom: 2px solid var(--bg5);
+}
+.po_contenido h3 { font-size: var(--fz_m5); font-weight: 700; color: var(--mco); margin: 2.5vh 0 .8vh; }
+.po_contenido p { margin-bottom: 1.8vh; }
+
+.po_figure {
+  margin: 2.5vh 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.po_figure img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto 16 / 9;
+  object-fit: cover;
+  border-radius: 1.2vh;
+  margin: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,.05);
+}
+.po_figcaption {
+  font-size: var(--fz_s3);
+  color: var(--tx3);
+  margin-top: 1.2vh;
+  text-align: center;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.po_contenido blockquote {
+  margin: 2.5vh 0; padding: 1.5vh 2vh;
+  background: var(--bg4);
+  border-left: 3px solid var(--mco);
+  border-radius: 0 1vh 1vh 0;
+  font-style: italic; color: var(--tx2); font-size: var(--fz_m3);
+}
+.po_contenido a { color: var(--mco); font-weight: 500; text-underline-offset: 2px; }
+.po_contenido a:hover { text-decoration: underline; }
+
+/* Listas Pro */
+.po_contenido ul { 
+  list-style: none; 
+  padding: 0; 
+  margin: 2vh 0 2.5vh 0; 
+}
+.po_contenido ol { 
+  list-style: decimal; 
+  padding-left: 3.5vh; 
+  margin: 2vh 0 2.5vh 0; 
+}
+.po_contenido ul li { 
+  position: relative;
+  padding-left: 3vh;
+  margin-bottom: 1.2vh; 
+  line-height: 1.7;
+}
+.po_contenido ul li:has(> i) {
+  padding-left: 0;
+}
+.po_contenido ol li { 
+  margin-bottom: 1.2vh; 
+  line-height: 1.7;
+}
+.po_contenido ul li::before {
+  content: '\f004'; /* Font Awesome Heart */
+  font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free', sans-serif;
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  top: 0.4vh;
+  font-size: var(--fz_s4);
+  opacity: 0.8;
+  color: var(--mco);
+}
+.po_contenido ul li:has(> i)::before {
+  display: none;
+}
+.po_contenido ul li > i {
+  margin-right: 1vh;
+}
+
+/* Tablas Pro */
+.po_table_wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 3vh 0;
+  border-radius: 1.5vh;
+  border: 1px solid color-mix(in srgb, var(--mco) 25%, var(--brd));
+  box-shadow: 0 8px 30px rgba(0,0,0,.02);
+  background: var(--wb);
+}
+.po_table_wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 500px;
+  margin: 0;
+}
+.po_table_wrap th {
+  background: color-mix(in srgb, var(--mco) 8%, var(--wb));
+  color: var(--mco);
+  font-weight: 700;
+  text-align: left;
+  padding: 1.8vh 2.5vh;
+  border-bottom: 2px solid color-mix(in srgb, var(--mco) 25%, var(--brd));
+  border-right: 1px solid color-mix(in srgb, var(--mco) 15%, var(--brd));
+  font-size: var(--fz_m2);
+}
+.po_table_wrap td {
+  padding: 1.5vh 2.5vh;
+  border-bottom: 1px solid color-mix(in srgb, var(--mco) 10%, var(--bg5));
+  border-right: 1px solid color-mix(in srgb, var(--mco) 10%, var(--bg5));
+  color: var(--tx2);
+  font-size: var(--fz_m1);
+  transition: background var(--tr_f);
+}
+.po_table_wrap th:last-child,
+.po_table_wrap td:last-child {
+  border-right: none;
+}
+.po_table_wrap tr:last-child td { border-bottom: none; }
+.po_table_wrap tr:hover td { background: color-mix(in srgb, var(--mco) 5%, var(--wb)); }
+
+/* YouTube Links y Utilidades WPO */
+.po_hr {
+  border: none;
+  border-top: 1px solid var(--brd);
+  margin: 2vh 0;
+}
+.po_todo_check {
+  margin-right: 0.5vh;
+}
+.po_yt_link {
+  color: var(--mco);
+  font-weight: 600;
+  text-underline-offset: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6vh;
+}
+.po_yt_link:hover {
+  text-decoration: underline;
+}
+.po_ico_youtube {
+  color: #fe0149;
+  font-size: 1.15em;
+  margin-right: 2px;
+}
+
+/* Colores de Iconos Personalizados */
+.po_ico_red { color: #fe0149; }
+.po_ico_yellow { color: #FFB636; }
+.po_ico_green { color: #3cd741; }
+.po_ico_cyan { color: #0edeFF; }
+.po_ico_gold { color: #e0a910; }
+.po_ico_mco { color: var(--mco); }
+.po_ico_warning { color: var(--warning); }
+
+.po_contenido strong { color: var(--tx1); }

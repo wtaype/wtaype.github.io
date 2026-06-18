@@ -1,0 +1,439 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { app, id } from '../wii.js';
+import { seo } from '../lib/seo.js';
+---
+
+<style is:global>
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+@keyframes ac_float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+@keyframes ac_pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+.wi_fadeUp {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wi_fadeUp.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#wimain {
+  opacity: 1 !important;
+}
+
+.ac_wrap {
+  width: 100%;
+  overflow-x: hidden;
+  background: color-mix(in srgb, var(--mco) 3%, var(--bg));
+  color: var(--tx);
+  font-family: var(--ff_P);
+}
+
+/* ── HERO ── */
+.ac_hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10vh 5vw;
+  overflow: hidden;
+}
+
+.ac_hero_orb {
+  position: absolute;
+  filter: blur(80px);
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ac_orb1 { width: 40vw; height: 40vw; background: rgba(14, 190, 255, 0.15); top: -10vh; right: -5vw; animation: ac_float 20s infinite linear; }
+.ac_orb2 { width: 35vw; height: 35vw; background: rgba(255, 92, 105, 0.12); bottom: -10vh; left: -5vw; animation: ac_float 25s infinite linear reverse; }
+.ac_orb3 { width: 25vw; height: 25vw; background: rgba(112, 0, 255, 0.1); top: 30%; left: 40%; animation: ac_pulse 15s infinite ease-in-out; }
+
+.ac_hero_body {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 800px;
+}
+
+.ac_hero_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  padding: 0.8vh 2vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx3);
+  margin-bottom: 3vh;
+}
+.ac_hero_badge i { color: var(--Cielo); }
+
+.ac_hero_tit {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  margin-bottom: 3vh;
+  background: linear-gradient(135deg, var(--tx), var(--tx3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -2px;
+}
+
+.ac_hero_sub {
+  font-size: var(--fz_m3);
+  color: var(--tx2);
+  line-height: 1.6;
+  margin-bottom: 5vh;
+}
+.ac_hero_sub strong { color: var(--tx); }
+
+/* ── SECTIONS ── */
+.ac_sec {
+  padding: 12vh 10vw;
+}
+.ac_sec_alt { background: var(--bg5); }
+
+.ac_sec_head {
+  text-align: center;
+  margin-bottom: 8vh;
+}
+
+.ac_sec_badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1vh;
+  color: var(--tx3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: var(--fz_s2);
+  margin-bottom: 2vh;
+}
+
+.ac_sec_tit {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--tx);
+  letter-spacing: -1px;
+}
+
+.ac_grad {
+  background: linear-gradient(135deg, #0EBEFF, #7000FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ac_sec_sub {
+  font-size: var(--fz_m2);
+  color: var(--tx3);
+  margin-top: 1vh;
+}
+
+/* ── BENEFICIOS GRID ── */
+.ac_feat_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3vh;
+}
+
+.ac_feat_card {
+  padding: 5vh 4vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  transition: all 0.3s ease;
+}
+.ac_feat_card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  border-color: var(--sc, var(--tx3));
+}
+
+.ac_feat_ico {
+  width: 6vh;
+  height: 6vh;
+  background: var(--bg);
+  border-radius: 1.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m4);
+  margin-bottom: 3vh;
+  color: var(--sc);
+}
+
+.ac_feat_card h3 {
+  font-size: var(--fz_m3);
+  font-weight: 700;
+  margin-bottom: 2vh;
+  color: var(--tx);
+}
+.ac_feat_card p {
+  font-size: var(--fz_m1);
+  color: var(--tx2);
+  line-height: 1.6;
+}
+
+.ac_color_cielo { --sc: #0EBEFF; }
+.ac_color_dulce { --sc: #FF5C69; }
+.ac_color_paz { --sc: #29C72E; }
+.ac_color_mora { --sc: #7000FF; }
+
+/* ── CTA SECTION ── */
+.ac_cta_sec { padding: 10vh 5vw; }
+
+.ac_cta_wrap {
+  position: relative;
+  background: var(--bg);
+  color: var(--tx);
+  border: 1px solid var(--brd);
+  border-radius: 4vh;
+  padding: 10vh 5vw;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+}
+
+.ac_cta_glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(14, 190, 255, 0.4) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.ac_cta_inner { position: relative; z-index: 2; }
+.ac_cta_emoji { font-size: 5rem; display: block; margin-bottom: 2vh; }
+.ac_cta_inner h2 { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 2vh; }
+.ac_cta_inner p { font-size: var(--fz_m2); opacity: 0.8; margin-bottom: 5vh; }
+
+.ac_cta_btns {
+  display: flex;
+  justify-content: center;
+  gap: 2vh;
+  flex-wrap: wrap;
+}
+
+.ac_btn_p, .ac_btn_s {
+  padding: 1.8vh 4vh;
+  border-radius: 1.5vh;
+  font-size: var(--fz_m1);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 1.5vh;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ac_btn_p { background: var(--mco); color: #fff; border: none; }
+.ac_btn_p:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+
+.ac_btn_s { background: var(--wb); color: var(--tx); border: 1px solid var(--brd); }
+.ac_btn_s:hover { background: var(--bg5); border-color: var(--tx3); }
+
+/* =========================================================================
+   CSS PREMIUM
+   ========================================================================= */
+
+/* ── HERO TERMINOS ── */
+.tm_hero .ac_hero_tit { font-size: clamp(2.5rem, 8vw, 5rem); }
+
+.tm_hero_chips {
+  display: flex;
+  justify-content: center;
+  gap: 1.5vh;
+  flex-wrap: wrap;
+  margin-bottom: 4vh;
+}
+
+.tm_chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8vh;
+  padding: 0.8vh 2vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 5vh;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx2);
+}
+.tm_chip i { color: var(--mco); }
+
+/* ── CANALES/INFO GRID ── */
+.fb_canales { display: flex; flex-direction: column; gap: 2.5vh; max-width: 700px; margin: 6vh auto 0; }
+.fb_canal {
+  display: flex; align-items: center; gap: 3vh;
+  padding: 3vh 4vh;
+  background: var(--wb);
+  border: 1px solid var(--brd);
+  border-radius: 2vh;
+  text-decoration: none;
+  color: var(--tx);
+  transition: all 0.3s;
+}
+.fb_canal:hover { transform: translateX(10px); border-color: var(--cc); box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.fb_canal_ico {
+  width: 6vh; height: 6vh; border-radius: 1.5vh;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fz_m4); flex-shrink: 0;
+}
+.fb_canal_info { flex: 1; display: flex; flex-direction: column; gap: 0.4vh; }
+.fb_canal_info strong { font-size: var(--fz_m2); font-weight: 800; color: var(--tx); }
+.fb_canal_info span { font-size: var(--fz_s3); color: var(--tx3); }
+.fb_canal_cta { font-size: var(--fz_s3); font-weight: 700; white-space: nowrap; display: flex; align-items: center; gap: 0.8vh; }
+
+@media (max-width: 600px) {
+  .fb_canal { flex-direction: column; align-items: flex-start; gap: 2vh; }
+  .fb_canal_cta { display: none; }
+}
+</style>
+
+<Layout {...seo.feedback}>
+<div class="ac_wrap tm_wrap">
+  <section class="ac_hero tm_hero">
+    <div class="ac_hero_orb ac_orb1"></div>
+    <div class="ac_hero_orb ac_orb2"></div>
+    <div class="ac_hero_orb ac_orb3"></div>
+    <div class="ac_hero_body">
+      <div class="ac_hero_badge"><i class="fas fa-heart-pulse"></i> Tu opinión nos importa</div>
+      <h1 class="ac_hero_tit">Feedback &<br><span class="ac_grad">Contacto</span></h1>
+      <p class="ac_hero_sub">
+        {app} crece gracias a ti. Tu opinión, sugerencia o reporte de error
+        nos ayuda a crear <strong>una plataforma cada vez más útil y potente.</strong>
+      </p>
+      <div class="tm_hero_chips">
+        <span class="tm_chip"><i class="fas fa-bolt"></i> Respuesta rápida</span>
+        <span class="tm_chip"><i class="fas fa-heart"></i> Soporte dedicado</span>
+        <span class="tm_chip"><i class="fas fa-lock"></i> Confidencial</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="ac_sec">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-comments"></i> Canales</div>
+      <h2 class="ac_sec_tit">¿Cómo quieres <span class="ac_grad">contactarnos?</span></h2>
+      <p class="ac_sec_sub">Elige el canal que más te acomode</p>
+    </div>
+    <div class="fb_canales">
+      <a href={`https://github.com/wtaype/${id}/issues`} target="_blank" rel="noopener" class="fb_canal wi_fadeUp" style="--cc:#24292e">
+        <div class="fb_canal_ico" style="background:#24292e;color:#fff"><i class="fab fa-github"></i></div>
+        <div class="fb_canal_info">
+          <strong>GitHub Issues</strong>
+          <span>Reporta errores o solicita nuevas funciones directamente en el repositorio.</span>
+        </div>
+        <div class="fb_canal_cta" style="color:#24292e">Abrir un Issue <i class="fas fa-arrow-right"></i></div>
+      </a>
+      <a href="mailto:wilder.taype@hotmail.com" class="fb_canal wi_fadeUp" style="--cc:#0EBEFF">
+        <div class="fb_canal_ico" style="background:var(--wb);color:#0EBEFF"><i class="fas fa-envelope"></i></div>
+        <div class="fb_canal_info">
+          <strong>Correo Directo</strong>
+          <span>Escríbenos con tus comentarios, sugerencias o cualquier duda que tengas.</span>
+        </div>
+        <div class="fb_canal_cta" style="color:#0EBEFF">Enviar correo <i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="ac_sec ac_sec_alt">
+    <div class="ac_sec_head">
+      <div class="ac_sec_badge"><i class="fas fa-layer-group"></i> Categorías</div>
+      <h2 class="ac_sec_tit">¿Sobre qué es tu <span class="ac_grad">mensaje?</span></h2>
+      <p class="ac_sec_sub">Cuéntanos qué tipo de feedback tienes para nosotros</p>
+    </div>
+    <div class="ac_feat_grid">
+      <div class="ac_feat_card wi_fadeUp" style="--sc:#FF5C69">
+        <div class="ac_feat_ico"><i class="fas fa-bug"></i></div>
+        <h3>Reportar un error</h3>
+        <p>Algo no funciona como debería en la aplicación.</p>
+      </div>
+      <div class="ac_feat_card wi_fadeUp" style="--sc:#FFDA34">
+        <div class="ac_feat_ico"><i class="fas fa-lightbulb"></i></div>
+        <h3>Sugerir una idea</h3>
+        <p>Tienes una función que mejoraría {app}.</p>
+      </div>
+      <div class="ac_feat_card wi_fadeUp" style="--sc:#0EBEFF">
+        <div class="ac_feat_ico"><i class="fas fa-star"></i></div>
+        <h3>Dejar una opinión</h3>
+        <p>Cuéntanos cómo ha sido tu experiencia con las herramientas.</p>
+      </div>
+      <div class="ac_feat_card wi_fadeUp" style="--sc:#29C72E">
+        <div class="ac_feat_ico"><i class="fas fa-cloud-arrow-up"></i></div>
+        <h3>Uso del Editor / Nube</h3>
+        <p>Soporte técnico o dudas con el guardado en la nube.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ac_cta_sec">
+    <div class="ac_cta_wrap wi_fadeUp">
+      <div class="ac_hero_orb ac_orb1"></div>
+      <div class="ac_hero_orb ac_orb2"></div>
+      <div class="ac_cta_glow"></div>
+      <div class="ac_cta_inner">
+        <span class="ac_cta_emoji">💬</span>
+        <h2>¡Gracias por ayudarnos<br>a crecer!</h2>
+        <p>Cada mensaje que recibimos nos motiva a seguir construyendo {app} con dedicación.</p>
+        <div class="ac_cta_btns">
+          <a href={`https://github.com/wtaype/${id}/issues`} target="_blank" rel="noopener" class="ac_btn_p ac_btn_lg">
+            <i class="fab fa-github"></i> GitHub Issues
+          </a>
+          <a href="mailto:wilder.taype@hotmail.com" class="ac_btn_s ac_btn_lg">
+            <i class="fas fa-envelope"></i> Enviar correo
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</Layout>
+
+<script>
+  import { app } from '../wii.js';
+
+  const initFeedback = () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.wi_fadeUp').forEach(el => {
+      observer.observe(el);
+    });
+
+    console.log('💬 ' + app + ' Feedback cargado');
+    (window as any).__WIREADY__ = true;
+  };
+
+  document.addEventListener('astro:page-load', initFeedback);
+</script>

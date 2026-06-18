@@ -1,0 +1,102 @@
+---
+// src/components/Header.astro
+import { NAV_CONFIG } from '../lib/rutas.js';
+import { app, icon } from '../wii.js';
+const defaultLeft = NAV_CONFIG.todos.left;
+const defaultRight = NAV_CONFIG.todos.right;
+---
+<header class="wiheader">
+  <div class="nv_left">
+    <h1 class="wilogo">
+      <a href="/"><i class={`fa-solid ${icon}`}></i> {app}</a>
+    </h1>
+    <nav class="winav" id="header-nav-left">
+      {defaultLeft.map(i => (
+        <a href={i.href} class="nv_item" data-page={i.href === '/' ? 'inicio' : i.href.slice(1)}>
+          <i class={`fa-solid ${i.ico}`}></i> <span>{i.txt}</span>
+        </a>
+      ))}
+    </nav>
+  </div>
+  <div class="nv_right" id="header-nav-right">
+    {defaultRight.map(i => (
+      <button class={i.cls}>
+        <i class={`fa-solid ${i.ico}`}></i> <span>{i.txt}</span>
+      </button>
+    ))}
+  </div>
+  <button class="wimenu dpn" aria-label="Abrir menú móvil" id="mobile-menu-btn">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+</header>
+
+<!-- Menú móvil -->
+<div class="movil_overlay" id="mobile-menu-overlay"></div>
+<nav class="movil_drawer" id="mobile-menu-drawer" role="navigation" aria-label="Menú móvil">
+  <button class="movil_close" aria-label="Cerrar menú" id="mobile-menu-close"><i class="fa-solid fa-xmark"></i></button>
+  <div class="movil_logo">
+    <a href="/"><i class={`fa-solid ${icon}`}></i> {app}</a>
+  </div>
+  <div class="movil_nav" id="mobile-nav-links"></div>
+</nav>
+
+<script>
+  import { wiAuth, avatar } from '../lib/widev.js';
+  import { NAV_CONFIG } from '../lib/rutas.js';
+
+  const initHeader = () => {
+    const wi = wiAuth.user;
+    const config = (NAV_CONFIG as any)[wi?.rol] || NAV_CONFIG.todos;
+
+    const buildNav = (items: any[]) => items.map(i => {
+      if (i.isPerfil) return `<a href="/perfil" class="nv_item" data-page="perfil">${wi?.avatar ? `<img src="${wi.avatar}" alt="${wi?.nombre || ''}">` : `<div class="nv_avatar_ini">${avatar(wi?.nombre || '')}</div>`}<span>${wi?.nombre || ''}</span></a>`;
+      if (i.isSalir) return `<button class="nv_item bt_salir"><i class="fa-solid fa-sign-out-alt"></i> <span>Salir</span></button>`;
+      if (i.isBtn) return `<button class="${i.cls}"><i class="fa-solid ${i.ico}"></i> <span>${i.txt}</span></button>`;
+      return `<a href="${i.href}" class="nv_item" data-page="${i.href === '/' ? 'inicio' : i.href.slice(1)}"><i class="fa-solid ${i.ico}"></i> <span>${i.txt}</span></a>`;
+    }).join('');
+
+    const el = (id: string) => document.getElementById(id);
+    const nl = el('header-nav-left'), nr = el('header-nav-right'), mn = el('mobile-nav-links');
+    if (nl) nl.innerHTML = buildNav(config.left);
+    if (nr) nr.innerHTML = buildNav(config.right);
+    if (mn) mn.innerHTML = buildNav([...config.left, ...config.right]);
+
+    // Marcar enlace activo según la URL actual
+    const path = window.location.pathname.replace(/\/$/, '') || '/';
+    let cleanPath = path === '/' ? 'inicio' : path.slice(1);
+
+    document.querySelectorAll('.nv_item').forEach(el => el.classList.toggle('active', el.getAttribute('data-page') === cleanPath));
+  };
+
+  // Listeners globales delegados en el document
+  document.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+
+    // Modales de Registrar / Ingresar (.bt_auth)
+    const btnAuth = target.closest('.bt_auth');
+    if (btnAuth) {
+      e.preventDefault();
+      const { abrirLogin } = await import('../lib/login.js');
+      abrirLogin(btnAuth.classList.contains('registrar') ? 'registrar' : 'login');
+      return;
+    }
+
+    // Botón Salir (.bt_salir)
+    if (target.closest('.bt_salir')) {
+      e.preventDefault();
+      const { salir } = await import('../lib/login.js');
+      await salir(['wiTema','wiSmart', 'cookiesPrivacidad']);
+      window.location.href = '/';
+      return;
+    }
+
+    // Menú móvil (abrir y cerrar)
+    if (target.closest('#mobile-menu-btn')) {
+      document.body.classList.add('movil_open');
+    } else if (target.closest('#mobile-menu-close') || target.closest('#mobile-menu-overlay') || target.closest('#mobile-nav-links .nv_item') || target.closest('#mobile-nav-links button')) {
+      document.body.classList.remove('movil_open');
+    }
+  });
+
+  document.addEventListener('astro:page-load', initHeader);
+</script>

@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../lib/login.css';
+---
+
+<Layout title="Iniciar Sesión" robots="noindex, nofollow">
+  <script is:inline>
+    try {
+      const item = localStorage.getItem('wiSmile');
+      if (item) {
+        const parsed = JSON.parse(item);
+        if (parsed && parsed.value && parsed.expiry > Date.now()) {
+          const ROL_PATH = { smile: '/smile', editor: '/editor', admin: '/admin' };
+          window.location.replace(ROL_PATH[parsed.value.rol] || '/');
+        }
+      }
+    } catch (e) {}
+  </script>
+
+  <div class="wilg_wrap">
+    <div class="wilg_card">
+      <form id="liForm">
+        <!-- Se poblará dinámicamente mediante el cliente -->
+      </form>
+    </div>
+  </div>
+
+  <script>
+    import { init } from '../lib/login.js';
+
+    document.addEventListener('astro:page-load', () => {
+      init();
+    });
+  </script>
+</Layout>
