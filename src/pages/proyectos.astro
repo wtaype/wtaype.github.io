@@ -215,9 +215,13 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
 /* ==================== CONTENEDOR GENERAL ==================== */
 .proyectos_container {
   margin: 0 auto;
-  padding: 4vh 5vw 8vh;
+  padding: 4vh 2vw 8vh;
 }
-
+#destacadosGrid {
+    grid-template-columns: repeat(auto-fit, minmax(min(20vw, 100%), 320px));
+    justify-content: center;
+    gap: 4vh;
+}
 /* ==================== HERO SECTION ==================== */
 .proyectos_hero {
   text-align: center;
@@ -588,8 +592,9 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
   flex: 1;
 }
 .project_title {
+  font-family:var(--ff_O);
   font-size: var(--fz_m3);
-  font-weight: 800;
+  font-weight: 600;
   color: var(--tx);
   margin-bottom: 1.5vh;
   line-height: 1.3;
