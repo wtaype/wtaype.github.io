@@ -97,8 +97,16 @@ if (modifiedContenido) {
     return `<i class="${classes} ${colorClass}"></i>`;
   });
 
-  // 4. Inyección automática de Lazy Loading y Async Decoding en imágenes de contenido
-  modifiedContenido = modifiedContenido.replace(/<img\s+(?!([^>]*?\bloading\b))([^>]*?)>/gi, '<img loading="lazy" decoding="async" $1$2>');
+  // _____________ LAZY LOADING (Skeletons y Carga diferida) _____________
+  // 4. Inyección automática de wiImgs (Skeletons y Lazy Loading) en imágenes de contenido
+  modifiedContenido = modifiedContenido.replace(/<img\s+([^>]*?)src=(['"])(.*?)\2([^>]*?)>/gi, (match: string, before: string, quote: string, src: string, after: string) => {
+    const rest = (before + ' ' + after).trim();
+    if (rest.includes('class=')) {
+      return `<img data-src="${src}" ${rest.replace(/class=(['"])(.*?)\1/gi, 'class=$1$2 wi_skeleton img_fade$1')}>`;
+    } else {
+      return `<img data-src="${src}" class="wi_skeleton img_fade" ${rest}>`;
+    }
+  });
 
   // 5. Procesamiento de encabezados (TOC)
   let headingCount = 0;
@@ -788,7 +796,7 @@ const keywords = seoMeta.keywords || '';
 <script>
   import { db } from '../lib/firebase.js';
   import { doc, updateDoc, increment, getDoc } from 'firebase/firestore';
-  import { wicopy, showi, herowi } from '../lib/widev.js';
+  import { wicopy, showi, herowi, wiImgs } from '../lib/widev.js';
 
   let scrollListener: any = null;
   let handleYtClickRef: any = null;
@@ -800,6 +808,9 @@ const keywords = seoMeta.keywords || '';
     const slug = postEl.dataset.slug;
     const postId = postEl.dataset.id;
     if (!slug) return;
+
+    // _____________ LAZY LOADING (Inicializar skeletons en el contenedor principal) _____________
+    wiImgs('.po_wrap');
 
     // 1. Aumentar vistas (solo una vez por sesión del navegador)
     if (!sessionStorage.getItem(`wi_view_${slug}`)) {

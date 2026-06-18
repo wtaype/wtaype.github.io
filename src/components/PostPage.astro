@@ -84,7 +84,7 @@ const formatLongDate = (dateVal: any) => {
             {prevPost ? (
               <a href={`/${prevPost.slug || prevPost.id}`} class="po_pn_card pn_prev" data-witip="Anterior">
                 <div class="po_pn_img">
-                  <img src={prevPost.imagen} alt="" loading="lazy" />
+                  <img data-src={prevPost.imagen} alt="" class="wi_skeleton img_fade" />
                 </div>
                 <div class="po_pn_info">
                   <span class="po_pn_lb"><i class="fas fa-arrow-left"></i> Anterior</span>
@@ -101,7 +101,7 @@ const formatLongDate = (dateVal: any) => {
                   <strong class="po_pn_tit">{nextPost.titulo}</strong>
                 </div>
                 <div class="po_pn_img">
-                  <img src={nextPost.imagen} alt="" loading="lazy" />
+                  <img data-src={nextPost.imagen} alt="" class="wi_skeleton img_fade" />
                 </div>
               </a>
             ) : (

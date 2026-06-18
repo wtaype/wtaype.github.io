@@ -40,7 +40,7 @@ const formatShortDate = (dateVal: any) => {
         {latest.map(r => (
           <a href={`/${r.slug || r.id}`} class="po_rel_card" data-witip={r.resumen || r.titulo}>
             <div class="po_rel_img">
-              <img src={r.imagen} alt={r.imagenAlt || r.titulo} loading="lazy" />
+              <img data-src={r.imagen} alt={r.imagenAlt || r.titulo} class="wi_skeleton img_fade" />
             </div>
             <div class="po_rel_info">
               <span class="po_rel_cat"><i class={`fas ${icon}`}></i> {r.categoria}</span>
@@ -63,7 +63,7 @@ const formatShortDate = (dateVal: any) => {
         {related.map(r => (
           <a href={`/${r.slug || r.id}`} class="po_rel_card" data-witip={r.resumen || r.titulo}>
             <div class="po_rel_img">
-              <img src={r.imagen} alt={r.imagenAlt || r.titulo} loading="lazy" />
+              <img data-src={r.imagen} alt={r.imagenAlt || r.titulo} class="wi_skeleton img_fade" />
             </div>
             <div class="po_rel_info">
               <span class="po_rel_cat"><i class={`fas ${icon}`}></i> {r.categoria}</span>
