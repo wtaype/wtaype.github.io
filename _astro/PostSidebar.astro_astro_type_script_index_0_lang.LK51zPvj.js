@@ -1,0 +1,1 @@
+import{_ as e}from"./preload-helper.CVfkMyKi.js";import{wiSmart as r}from"./widev.BLk-9U7U.js";r({fn:[async()=>{const t=document.getElementById("po_ad_sidebar");t&&(t.innerHTML=(await e(async()=>{const{adLeft:a}=await import("./wiad.Ch5b-jx0.js");return{adLeft:a}},[])).adLeft)}]});
