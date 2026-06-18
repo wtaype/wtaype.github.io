@@ -2,20 +2,41 @@
 import Layout from '../layouts/Layout.astro';
 import PostPage from '../components/PostPage.astro';
 import PostSidebar from '../components/PostSidebar.astro';
-import { db } from '../lib/firebase.js';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-
 export async function getStaticPaths() {
+  const firebaseProjectId = import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || 'wtaype';
+  let posts: any[] = [];
+
+  function parseFirestore(doc: any) {
+    const fields = doc.fields || {};
+    const res: any = {};
+    for (const [k, v] of Object.entries(fields)) {
+      const val: any = v;
+      res[k] = val.stringValue ?? val.timestampValue ?? val.booleanValue ?? val.integerValue ?? val.doubleValue ?? val.arrayValue?.values?.map((x: any) => x.stringValue) ?? null;
+    }
+    res.id = doc.name.split('/').pop();
+    return res;
+  }
+
   try {
-    const q = query(collection(db, 'blog'), where('activo', '==', true));
-    const snap = await getDocs(q);
-    const posts = snap.docs.map(doc => ({ ...doc.data(), id: doc.id } as any));
+    const res = await fetch(`https://firestore.googleapis.com/v1/projects/${firebaseProjectId}/databases/(default)/documents/blog`);
+    if (res.ok) {
+      const rawData = await res.json();
+      if (rawData.documents) {
+        posts = rawData.documents
+          .map(parseFirestore)
+          .filter((p: any) => p.activo !== false);
+      }
+    }
+
     if (!posts || !posts.length) {
       return [{
         params: { slug: 'ejemplo-de-articulo-con-mas-de-11-caracteres' },
         props: { post: {} as any, related: [] as any[], latest: [] as any[], prevPost: null as any, nextPost: null as any }
       }];
     }
+
+    // Ordenar cronológicamente descendente
+    posts.sort((a: any, b: any) => new Date(b.creado || b.creadoEn || 0).getTime() - new Date(a.creado || a.creadoEn || 0).getTime());
 
     return posts.map((post: any, index: number) => {
       const related = posts.filter((p: any) => p.categoria === post.categoria && p.slug !== post.slug).slice(0, 3);

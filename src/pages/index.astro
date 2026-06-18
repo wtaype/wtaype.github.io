@@ -120,7 +120,7 @@ try {
       posts = parsedBlog
         .filter((p: any) => p.activo !== false)
         .sort((a: any, b: any) => new Date(b.creado || b.creadoEn || 0).getTime() - new Date(a.creado || a.creadoEn || 0).getTime())
-        .slice(0, 12);
+        .slice(0, 4);
     }
   }
 } catch (e) {
