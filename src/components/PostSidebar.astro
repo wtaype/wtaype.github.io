@@ -78,11 +78,13 @@ const formatShortDate = (dateVal: any) => {
     </div>
   )}
 
-  <!-- AdSense Sticky Sidebar -->
-  <div class="po_ad_sticky po_fade po_visible" style="--d:.3s;">
-    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1362457560630815" data-ad-slot="1800353788" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    <div class="wi_ad_fallback">
-      <div class="po_ad_fallback_text">Publicidad</div>
-    </div>
-  </div>
+  <!-- Custom Ad Target -->
+  <div class="po_ad_sticky po_fade po_visible" style="--d:.3s;" id="po_ad_sidebar"></div>
+  <script>
+    import { wiSmart } from '../lib/widev.js';
+    wiSmart({ fn: [async () => {
+      const el = document.getElementById('po_ad_sidebar');
+      if (el) el.innerHTML = (await import('../lib/wiad.js')).adLeft;
+    }] });
+  </script>
 </aside>
