@@ -1,0 +1,1 @@
+import{a as t}from"./wii.QxhGZP-6.js";const a=()=>{const r=new IntersectionObserver(e=>{e.forEach(o=>{o.isIntersecting&&o.target.classList.add("visible")})},{threshold:.1});document.querySelectorAll(".wi_fadeUp").forEach(e=>{r.observe(e)}),console.log("💬 "+t+" Feedback cargado"),window.__WIREADY__=!0};document.addEventListener("astro:page-load",a);

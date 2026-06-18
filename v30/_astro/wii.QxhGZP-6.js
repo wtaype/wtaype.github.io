@@ -1,0 +1,1 @@
+let e="Wtaype",a="javascript, firebase, full stack, wilder taype, portafolio web",s="Desarrollador Full Stack experto en JavaScript, Firebase y webs modernas. +60 proyectos reales y 6 años de experiencia creando soluciones de software.",r="https://wtaype.me";export{e as a,s as d,a as k,r as l};
