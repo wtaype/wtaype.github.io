@@ -1291,7 +1291,7 @@ try {
             const fechaVal = p.creado || p.creadoEn;
             const formattedDate = fechaVal ? new Date(fechaVal?.seconds ? fechaVal.seconds * 1000 : fechaVal).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
             return (
-              <a href={`/blog/${p.slug || p.id || ''}`} class="ib_card">
+              <a href={`/${p.slug || p.id || ''}`} class="ib_card">
                 <div class="ib_img" style={`background-image:url('${p.imagen || '/poster.webp'}')`}>
                   <span class="ib_cat" style={`background:color-mix(in srgb,${c} 12%,transparent);color:${c}`}>{p.categoria || 'Blog'}</span>
                 </div>
