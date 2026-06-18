@@ -1,0 +1,1 @@
+import{o as e,p as o}from"./main-kOxYqnit.js";import{l as a,m as i,n as p}from"./firebase-Csb9F686.js";const n=new Set([`${e}.web.app`,o,"localhost","wtaype.me"]),s=n.has(window.location.hostname),t=s?p({apiKey:"",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""}):null,m=t?i(t):null,c=t?a(t):null;export{m as auth,c as db};
