@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 import { rutaRoles } from '../lib/rutas.js';
 
 const ROUTE_ROLES = rutaRoles();
-const wtema = "Paz|#29C72E";
+const wtema = "paz|#29C72E";
 
 interface Props {
   name?: string;
@@ -160,15 +160,15 @@ const seoSchema = {
 
       --white: #fff;
       --offline: #ddd;
-      --Cielo: #0EBEFF;
-      --Dulce: #FF5C69;
-      --Paz: #29C72E;
-      --Oro: #FFDA34;
-      --Mora: #7000FF;
-      --Futuro: #21273B;
+      --cielo: #0EBEFF;
+      --dulce: #FF5C69;
+      --paz: #29C72E;
+      --oro: #FFDA34;
+      --mora: #7000FF;
+      --futuro: #21273B;
     }
 
-    :root[data-theme="Cielo"] {
+    :root[data-theme="cielo"] {
       --bg: #ccefff;
       --wb: #e5f7ff;
       --tx: #000;
@@ -194,7 +194,7 @@ const seoSchema = {
       --bt: #1978d7;
     }
 
-    :root[data-theme="Dulce"] {
+    :root[data-theme="dulce"] {
       --bg: #ffccd1;
       --wb: #ffebed;
       --tx: #000;
@@ -220,7 +220,7 @@ const seoSchema = {
       --bt: #ff3849;
     }
 
-    :root[data-theme="Paz"] {
+    :root[data-theme="paz"] {
       --bg: #ccffce;
       --wb: #ebffeb;
       --tx: #000;
@@ -246,7 +246,7 @@ const seoSchema = {
       --bt: #25b62a;
     }
 
-    :root[data-theme="Oro"] {
+    :root[data-theme="oro"] {
       --bg: #fff8d1;
       --wb: #fffde8;
       --tx: #000;
@@ -272,7 +272,7 @@ const seoSchema = {
       --bt: #FFDA34;
     }
 
-    :root[data-theme="Mora"] {
+    :root[data-theme="mora"] {
       --bg: #e4ccff;
       --wb: #f4ebff;
       --tx: #000;
@@ -298,7 +298,7 @@ const seoSchema = {
       --bt: #6a00f5;
     }
 
-    :root[data-theme="Futuro"] {
+    :root[data-theme="futuro"] {
       --bg: #0a0e1a;
       --wb: #151b2e;
       --tx: #e0e7ff;
@@ -588,28 +588,28 @@ const seoSchema = {
       top: 0
     }
 
-    .tema[data-ths^="Cielo"] {
-      background: var(--Cielo)
+    .tema[data-ths^="cielo"] {
+      background: var(--cielo)
     }
 
-    .tema[data-ths^="Dulce"] {
-      background: var(--Dulce)
+    .tema[data-ths^="dulce"] {
+      background: var(--dulce)
     }
 
-    .tema[data-ths^="Paz"] {
-      background: var(--Paz)
+    .tema[data-ths^="paz"] {
+      background: var(--paz)
     }
 
-    .tema[data-ths^="Mora"] {
-      background: var(--Mora)
+    .tema[data-ths^="mora"] {
+      background: var(--mora)
     }
 
-    .tema[data-ths^="Futuro"] {
-      background: var(--Futuro)
+    .tema[data-ths^="futuro"] {
+      background: var(--futuro)
     }
 
-    .tema[data-ths^="Oro"] {
-      background: var(--Oro)
+    .tema[data-ths^="oro"] {
+      background: var(--oro)
     }
 
     #wiTema:hover {
@@ -1186,10 +1186,10 @@ const seoSchema = {
     /* ── REDES SOCIALES FOOTER ── */
     .redsscc {
       width: 3.6vh;
-      height: 31.22px;
-      border-radius: .5vh;
+      height: 3.6vh;
+      border-radius: 0.8vh;
       background: var(--rb, var(--mco));
-      color: #fff;
+      color: var(--white);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1245,11 +1245,12 @@ const seoSchema = {
     }
 
     .cookiess_link {
-      display: inline;
+      display: inline-flex;
       color: var(--mco);
       font-weight: 500;
       text-decoration: underline;
-      display: inline-flex; padding: 0.3vh 0; margin-left: 1vh;
+      padding: 0.3vh 0; 
+      margin-left: 1vh;
     }
 
     .cookiess_btns {
@@ -1351,12 +1352,12 @@ const seoSchema = {
     <Footer />
 
     <div id="wiTema">
-      <div class="tema" data-ths="Cielo|#0EBEFF"></div>
-      <div class="tema" data-ths="Dulce|#FF5C69"></div>
-      <div class="tema mtha" data-ths="Paz|#29C72E"></div>
-      <div class="tema" data-ths="Oro|#FFC107"></div>
-      <div class="tema" data-ths="Mora|#7000FF"></div>
-      <div class="tema" data-ths="Futuro|#21273B"></div>
+      <div class="tema" data-ths="cielo|#0EBEFF"></div>
+      <div class="tema" data-ths="dulce|#FF5C69"></div>
+      <div class="tema mtha" data-ths="paz|#29C72E"></div>
+      <div class="tema" data-ths="oro|#FFDA34"></div>
+      <div class="tema" data-ths="mora|#7000FF"></div>
+      <div class="tema" data-ths="futuro|#21273B"></div>
     </div>
 
     <!-- Script Interactivo de Selección de Temas (Optimizado al final del Body) -->

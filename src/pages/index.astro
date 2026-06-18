@@ -129,7 +129,7 @@ try {
 ---
 
 <style is:global>
-.inicio { max-width: 1400px; margin: 0 auto; padding: 0 2vw; }
+.inicio { max-width: 1400px; margin: 0 auto; padding: 0 2vw; overflow: hidden; }
 
 /* ══════════════════ HERO SECTION ══════════════════ */
 .hero {
@@ -166,7 +166,7 @@ try {
   transform-origin: 70% 70%;
 }
 .hero_title {
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-size: var(--fz_x2);
   font-weight: 900;
   color: var(--tx);
   line-height: 1.1;
@@ -230,7 +230,7 @@ try {
   text-align: center;
   padding: 2.5vh 1.2vw;
   background: var(--bg1);
-  border-radius: 12px;
+  border-radius: 1.2vh;
   border: 1px solid transparent;
   transition: all var(--tr_m);
 }
@@ -264,7 +264,7 @@ try {
   justify-content: center;
   gap: 1.2vh;
   padding: 1.5vh 3.5vh;
-  border-radius: 12px;
+  border-radius: 1.2vh;
   font-size: var(--fz_m2);
   font-weight: 700;
   cursor: pointer;
@@ -356,7 +356,7 @@ try {
   bottom: 8%;
   right: 8%;
   background: var(--success);
-  color: #fff;
+  color: var(--white);
   padding: 0.8vh 1.8vh;
   border-radius: 50px;
   font-size: var(--fz_s4);
@@ -377,11 +377,11 @@ try {
   height: 65px;
   background: var(--wb);
   border: 1px solid var(--brd);
-  border-radius: 16px;
+  border-radius: 1.6vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.8rem;
+  font-size: var(--fz_l1);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   animation: float 4s ease-in-out infinite;
   cursor: pointer;
@@ -459,7 +459,7 @@ try {
 }
 .about_card {
   background: var(--wb);
-  border-radius: 16px;
+  border-radius: 1.6vh;
   padding: 4vh 2.2vw;
   border: 1px solid var(--bg5);
   transition: all var(--tr_m);
@@ -481,7 +481,7 @@ try {
   width: 55px;
   height: 55px;
   background: var(--bg4);
-  border-radius: 12px;
+  border-radius: 1.2vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -552,6 +552,9 @@ try {
   color: var(--tx2);
   line-height: 1.7;
 }
+.mision_vision_sep {
+  margin-top: 2vh;
+}
 
 /* ══════════════════ PROYECTOS DESTACADOS ══════════════════ */
 .pdin_section {
@@ -562,13 +565,13 @@ try {
 }
 .pdin_grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 4vh;
   margin-top: 5vh;
 }
 .pdin_card {
   background: var(--wb);
-  border-radius: 18px;
+  border-radius: 1.8vh;
   overflow: hidden;
   border: 1px solid var(--brd);
   transition: all var(--tr_m);
@@ -608,7 +611,7 @@ try {
   opacity: 1;
 }
 .pdin_overlay i {
-  color: #fff;
+  color: var(--white);
   font-size: 2rem;
 }
 .pdin_info {
@@ -652,7 +655,7 @@ try {
   align-items: center;
   gap: 1.2vh;
   padding: 1.5vh 3.5vh;
-  border-radius: 12px;
+  border-radius: 1.2vh;
   font-size: var(--fz_m2);
   font-weight: 700;
   color: var(--txa);
@@ -700,18 +703,21 @@ try {
   box-shadow: 0 8px 24px color-mix(in srgb, var(--pill-color) 12%, rgba(0, 0, 0, 0.05));
   background: color-mix(in srgb, var(--pill-color) 4%, var(--wb));
 }
+.stack_pill i {
+  color: var(--pill-color);
+}
 
 /* ══════════════════ SERVICIOS ══════════════════ */
 .servicios_grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: 4vh;
   margin-top: 5vh;
 }
 .servicio_card {
   background: var(--wb);
   padding: 5vh 3.5vw;
-  border-radius: 20px;
+  border-radius: 2vh;
   border: 1px solid var(--brd);
   text-align: center;
   transition: all var(--tr_m);
@@ -745,7 +751,7 @@ try {
 }
 .servicio_card:hover .servicio_icon {
   background: var(--mco);
-  color: #fff;
+  color: var(--white);
   transform: scale(1.1) rotate(6deg);
 }
 .servicio_card h3 {
@@ -771,7 +777,7 @@ try {
 .ib_card {
   background: var(--wb);
   border: 1px solid var(--brd);
-  border-radius: 18px;
+  border-radius: 1.8vh;
   overflow: hidden;
   transition: all var(--tr_m);
   display: flex;
@@ -832,6 +838,7 @@ try {
   border-top: 1px solid var(--brd);
 }
 .ib_meta i { color: var(--mco); margin-right: 0.4vh; }
+.ib_heart { color: var(--dulce); }
 .ib_footer {
   text-align: center;
   margin-top: 5vh;
@@ -841,7 +848,7 @@ try {
   align-items: center;
   gap: 1.2vh;
   padding: 1.5vh 3.5vh;
-  border-radius: 12px;
+  border-radius: 1.2vh;
   font-size: var(--fz_m2);
   font-weight: 700;
   color: var(--txa);
@@ -870,8 +877,9 @@ try {
 
 /* ══════════════════ CTA SECCION ══════════════════ */
 .cta_section {
-  background: linear-gradient(135deg, var(--mco), var(--bg2));
-  border-radius: 24px;
+  background: linear-gradient(135deg, var(--mco) 0%, var(--bg2) 100%);
+  padding: 8vh 5vw;
+  border-radius: 2.4vh;
   padding: 8vh 4vw;
   text-align: center;
   color: var(--txa);
@@ -902,7 +910,7 @@ try {
 .cta_icon {
   font-size: 3rem;
   margin-bottom: 2vh;
-  color: #fff;
+  color: var(--white);
 }
 .cta_content h2 {
   font-size: var(--fz_x1);
@@ -919,10 +927,10 @@ try {
   display: inline-flex;
   align-items: center;
   gap: 1.2vh;
-  background: #fff;
+  background: var(--white);
   color: var(--mco);
   padding: 1.6vh 3.5vh;
-  border-radius: 12px;
+  border-radius: 1.2vh;
   font-size: var(--fz_m2);
   font-weight: 800;
   text-decoration: none;
@@ -985,7 +993,7 @@ try {
   .floating_tech {
     width: 58px;
     height: 58px;
-    font-size: 1.6rem;
+    font-size: var(--fz_m5);
   }
   /* Estabilizar posiciones flotantes para evitar desbordes */
   .tech1 { top: 6%; left: 15%; }
@@ -1030,7 +1038,7 @@ try {
   .floating_tech {
     width: 48px;
     height: 48px;
-    font-size: 1.3rem;
+    font-size: var(--fz_m3);
   }
   .tech1 { top: 4%; left: 22%; }
   .tech2 { top: 20%; right: 18%; }
@@ -1038,7 +1046,7 @@ try {
   .tech4 { bottom: 8%; right: 22%; }
 
   .hero_title {
-    font-size: clamp(2rem, 8vw, 2.8rem);
+    font-size: var(--fz_x1);
   }
   .hero_subtitle {
     font-size: var(--fz_m2);
@@ -1064,8 +1072,8 @@ try {
   .floating_tech {
     width: 42px;
     height: 42px;
-    font-size: 1.15rem;
-    border-radius: 12px;
+    font-size: var(--fz_m2);
+    border-radius: 1.2vh;
   }
   .tech1 { top: 0%; left: 26%; }
   .tech2 { top: 20%; right: 22%; }
@@ -1155,7 +1163,7 @@ try {
           <div class="profile_ring"></div>
           <div class="profile_ring ring2"></div>
           <div class="profile_img_wrapper">
-            <img src="/wilder.webp" alt="Wilder Taype" class="profile_img" />
+            <img src="/wilder.webp" alt="Wilder Taype" class="profile_img" width="320" height="320" loading="eager" decoding="async" />
           </div>
           <div class="profile_badge"><i class="fas fa-circle"></i><span>Disponible</span></div>
         </div>
@@ -1205,7 +1213,7 @@ try {
           <h3>Misión & Visión</h3>
           <div class="mision_text">
             <p><strong>Misión:</strong> Diseñar y construir productos de software que no solo cumplan especificaciones técnicas, sino que deleiten a los usuarios finales en rapidez y usabilidad.</p>
-            <p style="margin-top: 2vh;"><strong>Visión:</strong> Ser un referente en la creación de soluciones tecnológicas multiplataforma de rendimiento extremo y SEO impecable, impulsando la innovación en cada línea de código.</p>
+            <p class="mision_vision_sep"><strong>Visión:</strong> Ser un referente en la creación de soluciones tecnológicas multiplataforma de rendimiento extremo y SEO impecable, impulsando la innovación en cada línea de código.</p>
           </div>
         </div>
 
@@ -1217,11 +1225,11 @@ try {
       <div class="sec_header">
         <h2 class="sec_title"><i class="fas fa-star"></i> Proyectos Destacados</h2>
         <div class="sec_line"></div>
-        <p class="sec_desc" style="color: var(--tx2);">Una selección especial de mis trabajos favoritos y soluciones tecnológicas reales.</p>
+        <p class="sec_desc sec_desc_alt">Una selección especial de mis trabajos favoritos y soluciones tecnológicas reales.</p>
       </div>
       <div class="pdin_grid">
         {proyectosDestacados.map((p) => (
-          <a href={p.url} target="_blank" rel="noopener" class="pdin_card">
+          <a href={p.url} target="_blank" rel="noopener" class="pdin_card" aria-label={`Visitar proyecto destacado ${p.titulo} (se abre en una pestaña nueva)`}>
             <div class="pdin_img_box">
               <img data-src={p.img} alt={p.titulo} class="wi_skeleton img_fade" />
               <div class="pdin_overlay"><i class="fas fa-external-link-alt"></i></div>
@@ -1251,7 +1259,7 @@ try {
       <div class="stack_grid">
         {STACK.map(([nombre, icon, color]) => (
           <div class="stack_pill" data-witip={nombre} style={`--pill-color:${color}`}>
-            <i class={icon} style={`color:${color}`}></i>
+            <i class={icon}></i>
             <span>{nombre}</span>
           </div>
         ))}
@@ -1286,22 +1294,22 @@ try {
       <div class="ib_grid">
         {posts.length > 0 ? (
           posts.map((p) => {
-            const catColors = { IA: '#FF5D01', Sistemas: '#6a00f5', Web: '#0EBEFF', Cloud: '#29C72E', Dev: '#ffa726' };
+            const catColors = { IA: 'var(--dulce)', Sistemas: 'var(--mora)', Web: 'var(--cielo)', Cloud: 'var(--paz)', Dev: 'var(--oro)' };
             const c = catColors[p.categoria as keyof typeof catColors] ?? 'var(--mco)';
             const fechaVal = p.creado || p.creadoEn;
             const formattedDate = fechaVal ? new Date(fechaVal?.seconds ? fechaVal.seconds * 1000 : fechaVal).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
             return (
               <a href={`/${p.slug || p.id || ''}`} class="ib_card">
                 <div class="ib_img wi_skeleton" data-bg={p.imagen || '/poster.webp'}>
-                  <span class="ib_cat" style={`background:color-mix(in srgb,${c} 12%,transparent);color:${c}`}>{p.categoria || 'Blog'}</span>
+                  <span class="ib_cat" style={`--cat-color:${c}; background:color-mix(in srgb, var(--cat-color) 12%, transparent); color: var(--cat-color);`}>{p.categoria || 'Blog'}</span>
                 </div>
                 <div class="ib_body">
                   <h3 class="ib_tit">{p.titulo || 'Sin título'}</h3>
-                  <p class="ib_resumen">{(p.descripcion || p.resumen || '').slice(0, 90)}...</p>
+                  <p class="ib_resumen">{p.descripcion || p.resumen || ''}</p>
                   <div class="ib_meta">
                     <span><i class="fas fa-calendar-alt"></i> {formattedDate}</span>
                     <span><i class="fas fa-eye"></i> {p.vistas || 0}</span>
-                    <span><i class="fas fa-heart" style="color:#fe0149"></i> {p.likes || 0}</span>
+                    <span><i class="fas fa-heart ib_heart"></i> {p.likes || 0}</span>
                   </div>
                 </div>
               </a>
@@ -1319,7 +1327,7 @@ try {
     </section>
 
     <!-- ★ CTA FINAL ──────────────────────────────────────────────────── -->
-    <section class="sec_cta" style="padding-top: 4vh; padding-bottom: 8vh;">
+    <section class="sec_cta">
       <div class="cta_section">
         <div class="cta_content">
           <div class="cta_icon"><i class="fas fa-handshake"></i></div>
