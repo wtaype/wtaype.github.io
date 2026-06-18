@@ -11,7 +11,13 @@ export async function getStaticPaths() {
     const res: any = {};
     for (const [k, v] of Object.entries(fields)) {
       const val: any = v;
-      res[k] = val.stringValue ?? val.timestampValue ?? val.booleanValue ?? val.integerValue ?? val.doubleValue ?? val.arrayValue?.values?.map((x: any) => x.stringValue) ?? null;
+      if (val.integerValue !== undefined) {
+        res[k] = Number(val.integerValue);
+      } else if (val.doubleValue !== undefined) {
+        res[k] = Number(val.doubleValue);
+      } else {
+        res[k] = val.stringValue ?? val.timestampValue ?? val.booleanValue ?? val.arrayValue?.values?.map((x: any) => x.stringValue) ?? null;
+      }
     }
     res.id = doc.name.split('/').pop();
     return res;
@@ -957,8 +963,10 @@ const keywords = seoMeta.keywords || '';
 
             // Registro de vistas único usando localStorage (24h)
             const viewMarkKey = `wi_view_${slug}`;
+            let viewIncremented = false;
             if (!getls(viewMarkKey)) {
               savels(viewMarkKey, '1', 24);
+              viewIncremented = true;
 
               if (stats) {
                 stats.vistas = (stats.vistas || 0) + 1;
@@ -968,14 +976,37 @@ const keywords = seoMeta.keywords || '';
                 });
                 updateLocalBlogCaches(slug, { vistas: stats.vistas });
               }
-
-              updateDoc(postRef, { vistas: increment(1) }).catch((err: any) => {
-                console.error('Error al incrementar vistas:', err);
-              });
             }
 
-            // Si no tenemos estadísticas en caché, hacer la lectura única de inicialización
-            if (!stats) {
+            if (viewIncremented) {
+              updateDoc(postRef, { vistas: increment(1) })
+                .then(() => {
+                  return getDoc(postRef);
+                })
+                .then((docSnap) => {
+                  if (docSnap && docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data) {
+                      const vistas = typeof data.vistas === 'number' ? data.vistas : 0;
+                      const likes = typeof data.likes === 'number' ? data.likes : 0;
+
+                      document.querySelectorAll('.po_likes_count_text').forEach(el => {
+                        el.textContent = String(likes);
+                      });
+                      document.querySelectorAll('.po_vistas_count_text').forEach(el => {
+                        el.textContent = String(vistas);
+                      });
+
+                      const fetchedStats = { vistas, likes };
+                      savels(`wi_stats_${slug}`, fetchedStats, 24);
+                      updateLocalBlogCaches(slug, fetchedStats);
+                    }
+                  }
+                })
+                .catch((err: any) => {
+                  console.error('Error al incrementar y revalidar vistas:', err);
+                });
+            } else {
               getDoc(postRef)
                 .then((docSnap) => {
                   if (docSnap.exists()) {
