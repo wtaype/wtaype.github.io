@@ -9,16 +9,16 @@ export let linkweb = 'https://wtaype.me'; // Sin slash (/), al final
 export let lanzamiento = 2024;
 export let by = '@wilder.taype';
 export let linkme = 'https://wtaype.github.io/';
-export let version = 'v30';
+export let version = 'v31';
 
 /** ACTUALIZAR AL TAG POR SEGURIDAD [TAG NUEVO] (1)
-git tag v30 -m "Version v30" ; git push origin v30
+git tag v31 -m "Version v31" ; git push origin v31
 
 ACTUALIZACIÓN AL MAIN PRINCIPAL DEL PROYECTO [MAIN] (2)
-git add . ; git commit -m "Actualizacion Principal v30.10.10" ; git push origin main
+git add . ; git commit -m "Actualizacion Principal v31.10.10" ; git push origin main
 
 // REEMPLAZAR TAG DE SEGURIDAD EXISTENTE [TAG REMPLAZO] (3)
-git tag -d v30 ; git tag v30 -m "Version v30 actualizada" ; git push origin v30 --force
+git tag -d v31 ; git tag v31 -m "Version v31 actualizada" ; git push origin v31 --force
 
 // Actualizar versiones de seguridad [ELIMINAR CARPETA - ARCHIVO ONLINE] (5)
 git rm --cached skills-lock.json ; git commit -m "Archivo Eliminado" ; git push origin main

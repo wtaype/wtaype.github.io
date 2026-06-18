@@ -1,5 +1,7 @@
 /* src/lib/blog/post.css */
-
+.po_wrap *:not(i):not(.fa):not(.fas):not(.far):not(.fab):not([class*="fa-"]) {
+  font-family: var(--ff_O);
+}
 .po_contenido {
   padding-top: 0;
   padding-block: 2vh;

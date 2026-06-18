@@ -787,12 +787,47 @@ const keywords = seoMeta.keywords || '';
 </Layout>
 
 <script>
-  import { db } from '../lib/firebase.js';
-  import { doc, updateDoc, increment, getDoc } from 'firebase/firestore';
-  import { wicopy, showi, herowi, wiImgs } from '../lib/widev.js';
+  import { wicopy, showi, herowi, wiImgs, getls, savels, wiSmart } from '../lib/widev.js';
 
   let scrollListener: any = null;
   let handleYtClickRef: any = null;
+
+  const updateLocalBlogCaches = (postSlug: string, stats: { vistas?: number; likes?: number }) => {
+    try {
+      const postCacheKey = `wi_post_${postSlug}`;
+      const postData = getls(postCacheKey);
+      if (postData) {
+        if (typeof stats.vistas === 'number') postData.vistas = stats.vistas;
+        if (typeof stats.likes === 'number') postData.likes = stats.likes;
+        savels(postCacheKey, postData, 12);
+      }
+
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('wi_blogs')) {
+          const cachedList = getls(key);
+          if (Array.isArray(cachedList)) {
+            let updated = false;
+            const newList = cachedList.map((p: any) => {
+              if (p.slug === postSlug || p.id === postSlug) {
+                updated = true;
+                return {
+                  ...p,
+                  vistas: typeof stats.vistas === 'number' ? stats.vistas : p.vistas,
+                  likes: typeof stats.likes === 'number' ? stats.likes : p.likes
+                };
+              }
+              return p;
+            });
+            if (updated) {
+              savels(key, newList, 0.5);
+            }
+          }
+        }
+      });
+    } catch (e) {
+      console.error('Error al actualizar las cachés de blogs locales:', e);
+    }
+  };
 
   const initPost = () => {
     const postEl = document.querySelector('.po_wrap') as HTMLElement;
@@ -805,15 +840,25 @@ const keywords = seoMeta.keywords || '';
     // _____________ LAZY LOADING (Inicializar skeletons en el contenedor principal) _____________
     wiImgs('.po_wrap');
 
-    // 1. Aumentar vistas (solo una vez por sesión del navegador)
-    if (!sessionStorage.getItem(`wi_view_${slug}`)) {
-      sessionStorage.setItem(`wi_view_${slug}`, '1');
-      if (postId) {
-        const postRef = doc(db, 'blog', postId);
-        updateDoc(postRef, { vistas: increment(1) }).catch((err: any) => {
-          console.error('Error al incrementar vistas:', err);
-        });
+    // 1. Cargar datos de la caché local para evitar parpadeos y obtener velocidad extrema
+    let stats = getls(`wi_stats_${slug}`);
+    if (!stats) {
+      const prefetched = getls(`wi_post_${slug}`);
+      if (prefetched) {
+        stats = {
+          vistas: typeof prefetched.vistas === 'number' ? prefetched.vistas : 0,
+          likes: typeof prefetched.likes === 'number' ? prefetched.likes : 0
+        };
       }
+    }
+
+    if (stats) {
+      document.querySelectorAll('.po_vistas_count_text').forEach(el => {
+        el.textContent = String(stats.vistas);
+      });
+      document.querySelectorAll('.po_likes_count_text').forEach(el => {
+        el.textContent = String(stats.likes);
+      });
     }
 
     // 2. Controlar la barra de progreso al hacer scroll
@@ -827,41 +872,60 @@ const keywords = seoMeta.keywords || '';
       window.addEventListener('scroll', scrollListener);
     }
 
-    // 3. Generación de la Tabla de Contenidos (TOC) migrada al servidor para máxima velocidad y rendimiento Lighthouse.
-
-    // 4. Sincronización de Me encanta (Likes)
+    // 3. Sincronización de Me encanta (Likes) con soporte Toggle (dar/quitar) e importación dinámica
     document.querySelectorAll('.po_like_sync').forEach(btn => {
       if (localStorage.getItem(`wi_like_${slug}`)) {
         btn.classList.add('active');
       }
 
-      btn.addEventListener('click', () => {
-        if (localStorage.getItem(`wi_like_${slug}`)) return;
-        localStorage.setItem(`wi_like_${slug}`, '1');
+      btn.addEventListener('click', async () => {
+        const hasLiked = localStorage.getItem(`wi_like_${slug}`);
+        const diff = hasLiked ? -1 : 1;
 
-        document.querySelectorAll('.po_like_sync').forEach(b => b.classList.add('active'));
+        if (hasLiked) {
+          localStorage.removeItem(`wi_like_${slug}`);
+          document.querySelectorAll('.po_like_sync').forEach(b => b.classList.remove('active'));
+        } else {
+          localStorage.setItem(`wi_like_${slug}`, '1');
+          document.querySelectorAll('.po_like_sync').forEach(b => b.classList.add('active'));
+        }
 
+        // Actualizar UI de inmediato
         document.querySelectorAll('.po_likes_count_text').forEach(el => {
-          el.textContent = String((parseInt(el.textContent || '0') || 0) + 1);
+          const current = parseInt(el.textContent || '0') || 0;
+          el.textContent = String(Math.max(0, current + diff));
         });
 
+        // Actualizar caché local de inmediato
+        const currentStats = getls(`wi_stats_${slug}`) || { vistas: 0, likes: 0 };
+        currentStats.likes = Math.max(0, (currentStats.likes || 0) + diff);
+        savels(`wi_stats_${slug}`, currentStats, 24);
+        updateLocalBlogCaches(slug, { likes: currentStats.likes });
+
         if (postId) {
-          const postRef = doc(db, 'blog', postId);
-          updateDoc(postRef, { likes: increment(1) }).catch((err: any) => {
-            console.error('Error al incrementar likes:', err);
-          });
+          try {
+            // Importar Firebase dinámicamente solo en la interacción
+            const { db } = await import('../lib/firebase.js');
+            const { doc, updateDoc, increment } = await import('firebase/firestore');
+            const postRef = doc(db, 'blog', postId);
+            updateDoc(postRef, { likes: increment(diff) }).catch((err: any) => {
+              console.error('Error al actualizar likes en Firestore:', err);
+            });
+          } catch (e) {
+            console.error('Error al cargar Firebase SDK dinámicamente:', e);
+          }
         }
       });
     });
 
-    // 5. Copiar enlace del artículo
+    // 4. Copiar enlace del artículo
     document.querySelectorAll('.po_copy').forEach(btn => {
       btn.addEventListener('click', () => {
         wicopy(window.location.href, btn as any, '¡Enlace copiado! 🔗');
       });
     });
 
-    // 6. Lightbox de video de YouTube por delegación y MutationObserver
+    // 5. Lightbox de video de YouTube por delegación y MutationObserver
     handleYtClickRef = (e: any) => {
       const link = e.target?.closest?.('a');
       if (!link) return;
@@ -883,7 +947,6 @@ const keywords = seoMeta.keywords || '';
           </div>`;
         document.body.appendChild(modal);
 
-        // Limpiar el reproductor automáticamente si el modal pierde la clase "active"
         const obs = new MutationObserver(() => {
           if (!modal!.classList.contains('active')) {
             const player = document.getElementById('wi_yt_player');
@@ -902,42 +965,71 @@ const keywords = seoMeta.keywords || '';
     };
     document.addEventListener('click', handleYtClickRef);
 
-    // 7. Conexión diferida para obtener estadísticas (Likes y Vistas) de Firestore
-    if (postId) {
-      const fetchStats = () => {
-        const postRef = doc(db, 'blog', postId);
-        
-        getDoc(postRef)
-          .then((docSnap) => {
-            if (docSnap.exists()) {
-              const data = docSnap.data();
-              if (data) {
-                if (typeof data.likes === 'number') {
-                  document.querySelectorAll('.po_likes_count_text').forEach(el => {
-                    el.textContent = String(data.likes);
-                  });
-                }
-                if (typeof data.vistas === 'number') {
-                  document.querySelectorAll('.po_vistas_count_text').forEach(el => {
-                    el.textContent = String(data.vistas);
-                  });
-                }
+    // 6. Cargar el SDK de Firebase de manera inteligente con wiSmart() para vistas y revalidación asíncrona
+    wiSmart({
+      fn: [
+        async () => {
+          try {
+            const { db } = await import('../lib/firebase.js');
+            const { doc, updateDoc, increment, getDoc } = await import('firebase/firestore');
+
+            if (!postId) return;
+            const postRef = doc(db, 'blog', postId);
+
+            // Registro de vistas único usando localStorage (24h)
+            const viewMarkKey = `wi_view_${slug}`;
+            if (!getls(viewMarkKey)) {
+              savels(viewMarkKey, '1', 24);
+
+              if (stats) {
+                stats.vistas = (stats.vistas || 0) + 1;
+                savels(`wi_stats_${slug}`, stats, 24);
+                document.querySelectorAll('.po_vistas_count_text').forEach(el => {
+                  el.textContent = String(stats.vistas);
+                });
+                updateLocalBlogCaches(slug, { vistas: stats.vistas });
               }
+
+              updateDoc(postRef, { vistas: increment(1) }).catch((err: any) => {
+                console.error('Error al incrementar vistas:', err);
+              });
             }
-          })
-          .catch((err: any) => {
-            console.error('Error fetching stats:', err);
-          });
-      };
 
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => fetchStats());
-      } else {
-        setTimeout(fetchStats, 1500);
-      }
-    }
+            // Si no tenemos estadísticas en caché, hacer la lectura única de inicialización
+            if (!stats) {
+              getDoc(postRef)
+                .then((docSnap) => {
+                  if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data) {
+                      const vistas = typeof data.vistas === 'number' ? data.vistas : 0;
+                      const likes = typeof data.likes === 'number' ? data.likes : 0;
 
-    // 8. Lanzar efectos de entrada
+                      document.querySelectorAll('.po_likes_count_text').forEach(el => {
+                        el.textContent = String(likes);
+                      });
+                      document.querySelectorAll('.po_vistas_count_text').forEach(el => {
+                        el.textContent = String(vistas);
+                      });
+
+                      const fetchedStats = { vistas, likes };
+                      savels(`wi_stats_${slug}`, fetchedStats, 24);
+                      updateLocalBlogCaches(slug, fetchedStats);
+                    }
+                  }
+                })
+                .catch((err: any) => {
+                  console.error('Error fetching stats:', err);
+                });
+            }
+          } catch (e) {
+            console.error('Error al inicializar Firebase con wiSmart:', e);
+          }
+        }
+      ]
+    });
+
+    // 7. Lanzar efectos de entrada
     if (typeof herowi === 'function') herowi();
     if (typeof showi === 'function') showi();
   };
