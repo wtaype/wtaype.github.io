@@ -106,7 +106,7 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
           return (
             <a href={p.url} target="_blank" rel="noopener" class="proyecto_card visible" data-id={p.id}>
               <div class="project_img">
-                <img src={p.img} alt={p.titulo} loading="lazy" class="img_fade" onload="this.classList.add('loaded')" />
+                <img data-src={p.img} alt={p.titulo} class="wi_skeleton img_fade" />
                 <div class="project_overlay">
                   <div class="btn_overlay"><i class="fas fa-external-link-alt"></i></div>
                 </div>
@@ -168,7 +168,7 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
           return (
             <a href={p.url} target="_blank" rel="noopener" class="proyecto_card visible" data-id={p.id}>
               <div class="project_img">
-                <img src={p.img} alt={p.titulo} loading="lazy" class="img_fade" onload="this.classList.add('loaded')" />
+                <img data-src={p.img} alt={p.titulo} class="wi_skeleton img_fade" />
                 <div class="project_overlay">
                   <div class="btn_overlay"><i class="fas fa-external-link-alt"></i></div>
                 </div>
@@ -803,7 +803,7 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
 
 
 <script>
-  import { wiVista, savels, getls, wiSuma, Mensaje } from '../lib/widev.js';
+  import { wiVista, savels, getls, wiSuma, Mensaje, wiImgs } from '../lib/widev.js';
 
   const TAG_COLORS: Record<string, string> = {
     JavaScript: '#F7DF1E',
@@ -897,7 +897,7 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
     card.setAttribute('data-id', p.id);
     card.innerHTML = `
       <div class="project_img">
-        <img src="${p.img}" alt="${p.titulo}" loading="lazy" class="img_fade" />
+        <img data-src="${p.img}" alt="${p.titulo}" class="wi_skeleton img_fade" />
         <div class="project_overlay">
           <div style="display:flex;gap:1.5vh;">${overlayActions}</div>
         </div>
@@ -910,12 +910,7 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
       </div>
     `;
 
-    // Fade-in suave de imagen
-    const img = card.querySelector('.img_fade') as HTMLImageElement;
-    if (img) {
-      if (img.complete) img.classList.add('loaded');
-      else img.onload = () => img.classList.add('loaded');
-    }
+    wiImgs(card);
     return card;
   };
 
@@ -942,7 +937,7 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
     card.setAttribute('data-id', p.id);
     card.innerHTML = `
       <div class="project_img">
-        <img src="${p.img}" alt="${p.titulo}" loading="lazy" class="img_fade" />
+        <img data-src="${p.img}" alt="${p.titulo}" class="wi_skeleton img_fade" />
         <div class="project_overlay">
           <div style="display:flex;gap:1.5vh;">${overlayActions}</div>
         </div>
@@ -956,11 +951,7 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
       </div>
     `;
 
-    const img = card.querySelector('.img_fade') as HTMLImageElement;
-    if (img) {
-      if (img.complete) img.classList.add('loaded');
-      else img.onload = () => img.classList.add('loaded');
-    }
+    wiImgs(card);
     return card;
   };
 
@@ -1210,11 +1201,9 @@ const coleccionInicial = coleccionOrdenada.slice(0, 10);
       });
     }
 
-    // Fade-in para imágenes SSR ya presentes en el DOM
-    document.querySelectorAll('.img_fade').forEach((img: any) => {
-      if (img.complete) img.classList.add('loaded');
-      else img.onload = () => img.classList.add('loaded');
-    });
+    // Lazy loading diferido para imágenes SSR ya presentes en el DOM
+    wiImgs('#destacadosGrid');
+    wiImgs('#proyectosGrid');
   };
 
   const destroy = () => { if (cleanupFn) cleanupFn(); };

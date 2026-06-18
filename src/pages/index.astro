@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Saludar, year, wiTip } from '../lib/widev.js';
+import { Saludar, year } from '../lib/widev.js';
 import { seo } from '../lib/seo.js';
 
 // ── Datos Estáticos ──────────────────────────────────────────────────────────
@@ -1223,7 +1223,7 @@ try {
         {proyectosDestacados.map((p) => (
           <a href={p.url} target="_blank" rel="noopener" class="pdin_card">
             <div class="pdin_img_box">
-              <img src={p.img} alt={p.titulo} loading="lazy" />
+              <img data-src={p.img} alt={p.titulo} class="wi_skeleton img_fade" />
               <div class="pdin_overlay"><i class="fas fa-external-link-alt"></i></div>
             </div>
             <div class="pdin_info">
@@ -1292,7 +1292,7 @@ try {
             const formattedDate = fechaVal ? new Date(fechaVal?.seconds ? fechaVal.seconds * 1000 : fechaVal).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
             return (
               <a href={`/${p.slug || p.id || ''}`} class="ib_card">
-                <div class="ib_img" style={`background-image:url('${p.imagen || '/poster.webp'}')`}>
+                <div class="ib_img wi_skeleton" data-bg={p.imagen || '/poster.webp'}>
                   <span class="ib_cat" style={`background:color-mix(in srgb,${c} 12%,transparent);color:${c}`}>{p.categoria || 'Blog'}</span>
                 </div>
                 <div class="ib_body">
@@ -1334,7 +1334,7 @@ try {
 </Layout>
 
 <script>
-  import { wiVista, wiTip } from '../lib/widev.js';
+  import { wiVista, wiTip, wiImgs } from '../lib/widev.js';
 
   let roleInterval: any = null;
 
@@ -1404,6 +1404,10 @@ try {
 
     // 6. Fade de la sección CTA
     wiVista('.cta_section', (el: any) => el.classList.add('visible'), { once: true });
+
+    // 7. Lazy loading diferido para imágenes de API REST
+    wiImgs('#sec_proyectos_favoritos');  // Proyectos destacados <img data-src>
+    wiImgs('#sec_blog');                 // Blog cards con data-bg (background-image)
 
     checkSession();
   };

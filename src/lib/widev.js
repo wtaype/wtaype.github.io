@@ -264,23 +264,123 @@ export const wiSmart = (() => {
 })();
 
 
-// CARGA DIFERIDA DE IMÁGENES v1_________________________________
+// CARGA DIFERIDA DE IMÁGENES v2 — Híbrido: Evento + IntersectionObserver + Skeleton _____________
 export const wiImgs = (() => {
-  let done = false;
-  return (imgs) => {
-    if (done || !imgs?.length) return;
-    const apply = () => {
+  let activated = false;
+  let obs = null;
+
+  // CSS del skeleton — se inyecta solo una vez
+  const injectCSS = (() => {
+    let done = false;
+    return () => {
       if (done) return;
       done = true;
-      imgs.forEach(({ selector, url }) => {
-        const el = typeof selector === 'string' ? document.querySelector(selector) : selector;
-        if (el) el.style.backgroundImage = `url('${url}'), none`;
-      });
+      const s = document.createElement('style');
+      s.textContent = `
+        .wi_skeleton {
+          position: relative;
+          background: linear-gradient(90deg,
+            var(--wb2, #e8e8e8) 25%,
+            var(--wb3, #d4d4d4) 50%,
+            var(--wb2, #e8e8e8) 75%
+          );
+          background-size: 200% 100%;
+          animation: wi_shimmer 1.4s infinite ease-in-out;
+        }
+        @keyframes wi_shimmer {
+          0%   { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+        img[data-src] { opacity: 0; }
+        img.wi_loaded  { opacity: 1; transition: opacity 0.45s ease; }
+      `;
+      document.head.appendChild(s);
     };
-    if (document.readyState === 'complete') {
-      ['scroll', 'click', 'mousemove', 'touchstart'].forEach(ev => document.addEventListener(ev, apply, { once: true }));
+  })();
+
+  // Aplica la imagen real: <img data-src> o div data-bg (background-image)
+  const applyImg = (el) => {
+    if (el.dataset.src) {
+      el.src = el.dataset.src;
+      delete el.dataset.src;
+      const finish = () => {
+        el.classList.remove('wi_skeleton');
+        el.classList.add('wi_loaded', 'loaded');
+      };
+      if (el.complete && el.naturalWidth > 0) finish();
+      else { el.onload = finish; el.onerror = finish; }
+    } else if (el.dataset.bg) {
+      el.style.backgroundImage = `url('${el.dataset.bg}')`;
+      el.classList.remove('wi_skeleton');
+      delete el.dataset.bg;
     }
   };
+
+  // Crea o reutiliza el IntersectionObserver global
+  const getObserver = () => {
+    if (obs) return obs;
+    obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        obs.unobserve(e.target);
+        applyImg(e.target);
+      });
+    }, { rootMargin: '100px', threshold: 0 });
+    return obs;
+  };
+
+  // Observa todos los [data-src] y [data-bg] dentro del scope
+  const observeScope = (scope) => {
+    const root = scope instanceof HTMLElement ? scope : document;
+    const observer = getObserver();
+    root.querySelectorAll('[data-src],[data-bg]').forEach(el => observer.observe(el));
+  };
+
+  // Activa el observer (inmediato si ya hubo interacción previa)
+  const activate = (scope) => {
+    if (activated) { observeScope(scope); return; }
+    activated = true;
+    observeScope(scope);
+  };
+
+  // Función principal exportada
+  /** @param {string | HTMLElement | Document} [scopeOrEl] @param {object} [_opts] */
+  const fn = (scopeOrEl = document, _opts = {}) => {
+    injectCSS();
+
+    // Modo dinámico: HTMLElement recién creado, aún no en el DOM
+    if (scopeOrEl instanceof HTMLElement && !scopeOrEl.isConnected) {
+      const mo = new MutationObserver(() => {
+        if (scopeOrEl.isConnected) { mo.disconnect(); activate(scopeOrEl); }
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+      return;
+    }
+
+    // Resolver selector CSS → HTMLElement
+    const scope = typeof scopeOrEl === 'string'
+      ? document.querySelector(scopeOrEl) ?? document
+      : scopeOrEl;
+
+    // Si ya activado o el usuario ya interactuó antes (wiSmart cache)
+    if (activated) { activate(scope); return; }
+
+    // Primera visita: esperar evento del usuario (mismo patrón que wiSmart)
+    const trigger = () => {
+      activate(scope);
+      ['touchstart','scroll','click','mousemove']
+        .forEach(ev => document.removeEventListener(ev, trigger));
+    };
+    ['touchstart','scroll','click','mousemove']
+      .forEach(ev => document.addEventListener(ev, trigger, { once: true }));
+  };
+
+  // Reset en Astro View Transitions para evitar observers duplicados
+  if (typeof document !== 'undefined') {
+    document.addEventListener('astro:page-load', () => { activated = false; obs = null; });
+  }
+
+  return fn;
 })();
 
 // SALUDO V10.1_________________________________
