@@ -787,12 +787,11 @@ const keywords = seoMeta.keywords || '';
 
 <script>
   import { db } from '../lib/firebase.js';
-  import { doc, updateDoc, increment, getDoc, onSnapshot } from 'firebase/firestore';
+  import { doc, updateDoc, increment, getDoc } from 'firebase/firestore';
   import { wicopy, showi, herowi } from '../lib/widev.js';
 
   let scrollListener: any = null;
   let handleYtClickRef: any = null;
-  let realtimeChannel: any = null;
 
   const initPost = () => {
     const postEl = document.querySelector('.po_wrap') as HTMLElement;
@@ -900,12 +899,11 @@ const keywords = seoMeta.keywords || '';
     };
     document.addEventListener('click', handleYtClickRef);
 
-    // 7. Conexión diferida y pasiva a Firebase Firestore Realtime (onSnapshot)
+    // 7. Conexión diferida para obtener estadísticas (Likes y Vistas) de Firestore
     if (postId) {
-      const startRealtime = () => {
+      const fetchStats = () => {
         const postRef = doc(db, 'blog', postId);
         
-        // Consultar valores de la base de datos al montarse para sincronizar con la verdad absoluta
         getDoc(postRef)
           .then((docSnap) => {
             if (docSnap.exists()) {
@@ -927,35 +925,12 @@ const keywords = seoMeta.keywords || '';
           .catch((err: any) => {
             console.error('Error fetching stats:', err);
           });
-
-        // Suscribirse al canal en tiempo real
-        realtimeChannel = onSnapshot(postRef, (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            if (data) {
-              const nuevosLikes = data.likes;
-              const nuevasVistas = data.vistas;
-              if (typeof nuevosLikes === 'number') {
-                document.querySelectorAll('.po_likes_count_text').forEach(el => {
-                  el.textContent = String(nuevosLikes);
-                });
-              }
-              if (typeof nuevasVistas === 'number') {
-                document.querySelectorAll('.po_vistas_count_text').forEach(el => {
-                  el.textContent = String(nuevasVistas);
-                });
-              }
-            }
-          }
-        }, (err: any) => {
-          console.error('Error in stats realtime listener:', err);
-        });
       };
 
       if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => startRealtime());
+        requestIdleCallback(() => fetchStats());
       } else {
-        setTimeout(startRealtime, 1500);
+        setTimeout(fetchStats, 1500);
       }
     }
 
@@ -972,10 +947,6 @@ const keywords = seoMeta.keywords || '';
     if (handleYtClickRef) {
       document.removeEventListener('click', handleYtClickRef);
       handleYtClickRef = null;
-    }
-    if (realtimeChannel) {
-      realtimeChannel();
-      realtimeChannel = null;
     }
   };
 

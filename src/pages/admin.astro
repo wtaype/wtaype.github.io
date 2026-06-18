@@ -532,6 +532,7 @@ import { app, version, lanzamiento, by, linkweb, titulo } from '../wii.js';
 </Layout>
 
 <script>
+  import { app } from '../wii.js';
   import { db } from '../lib/firebase.js';
   import { collection, query, where, getCountFromServer } from 'firebase/firestore';
   import { protegerRuta } from '../lib/auth.js';

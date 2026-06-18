@@ -1,5 +1,6 @@
 import './login.css';
-import { auth, db } from './firebase.js';
+import { db } from './firebase.js';
+import { auth } from './firebase-auth.js';
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 

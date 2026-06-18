@@ -345,7 +345,8 @@ body:has(.vf_screen) {
 </Layout>
 
 <script>
-  import { auth, db } from '../lib/firebase.js';
+  import { db } from '../lib/firebase.js';
+  import { auth } from '../lib/firebase-auth.js';
   import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
   import { protegerRuta, waitAuth } from '../lib/auth.js';
   import { Notificacion } from '../lib/widev.js';

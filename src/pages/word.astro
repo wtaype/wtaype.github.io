@@ -373,7 +373,8 @@ import { app } from '../wii.js';
 </Layout>
 
 <script>
-  import { auth, db } from '../lib/firebase.js';
+  import { db } from '../lib/firebase.js';
+  import { auth } from '../lib/firebase-auth.js';
   import { collection, query, where, limit, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
   import { protegerRuta, waitAuth } from '../lib/auth.js';
   import { Notificacion, getls, savels, Saludar, wiFade, wiTiempo, formatearFechaHora, wiTip } from '../lib/widev.js';

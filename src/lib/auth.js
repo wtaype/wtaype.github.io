@@ -1,4 +1,4 @@
-import { auth } from './firebase.js';
+import { auth } from './firebase-auth.js';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getls } from './widev.js';
 

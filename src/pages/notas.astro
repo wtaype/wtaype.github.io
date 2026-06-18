@@ -548,7 +548,8 @@ import { app } from '../wii.js';
 </Layout>
 
 <script>
-  import { auth, db } from '../lib/firebase.js';
+  import { db } from '../lib/firebase.js';
+  import { auth } from '../lib/firebase-auth.js';
   import { collection, query, where, limit, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
   import { protegerRuta, waitAuth } from '../lib/auth.js';
   import { Notificacion, getls, savels, Saludar, wiTip, wicopy, wiTiempo } from '../lib/widev.js';
@@ -936,7 +937,7 @@ import { app } from '../wii.js';
     if (cont) cont.innerHTML = nota.contenido || '';
     const tagsDisplay = card.querySelector('.wn_tags_display');
     if (tagsDisplay) {
-      tagsDisplay.innerHTML = nota.tags.map(t => `<span class="wn_tag_badge">${_escVal(t)}</span>`).join('');
+      tagsDisplay.innerHTML = nota.tags.map((t: string) => `<span class="wn_tag_badge">${_escVal(t)}</span>`).join('');
     }
   };
 
