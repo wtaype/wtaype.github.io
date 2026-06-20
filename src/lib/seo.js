@@ -1,4 +1,4 @@
-import { app, descri, titulo } from '../wii.js';
+import { app, descri } from '../wii.js';
 
 export const seo = {
   inicio: {
