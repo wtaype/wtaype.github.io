@@ -1,8 +1,9 @@
-import { app, descri } from '../wii.js';
+import { app, descri, titulo } from '../wii.js';
 
 export const seo = {
   inicio: {
     title: 'Wilder Taype | Desarrollador Web Full Stack Pro',
+    title: `${app} Blog de tecnología y programación: Consejos y Guías `,,
     description: 'Desarrollador Full Stack experto en JavaScript, Firebase y webs modernas. +60 proyectos reales y 6 años de experiencia creando soluciones de software.',
     path: '/',
     keywords: [

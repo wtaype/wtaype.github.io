@@ -2,7 +2,7 @@
 export let id = 'wtaype';
 export let app = 'Wtaype';
 export let icon = 'fa-code';
-export let titulo = 'Wilder Taype | Desarrollador Web Full Stack Pro';
+export let titulo = 'Wilder Taype Portafolio - Desarrollador Web Full Stack Pro';
 export let keywii = 'javascript, firebase, full stack, wilder taype, portafolio web';
 export let descri = 'Desarrollador Full Stack experto en JavaScript, Firebase y webs modernas. +60 proyectos reales y 6 años de experiencia creando soluciones de software.';
 export let linkweb = 'https://wtaype.me'; // Sin slash (/), al final
